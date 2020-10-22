@@ -1,7 +1,7 @@
-import appAction from './appAction'
+import appAction from './appAction';
 
 const rootActions = {
     appAction
 }
 
-export default rootActions
+export default rootActions;

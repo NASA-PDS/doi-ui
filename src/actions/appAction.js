@@ -19,9 +19,17 @@ const setIsReserving = (payload) => dispatch => {
     });
 }
 
+const updateReserveExcel = (payload) => dispatch => {
+    dispatch({
+        type: 'UPDATE_RESERVE_EXCEL',
+        payload
+    });
+}
+
 export default{
     setIsSelecting,
     setIsReleasing,
-    setIsReserving
+    setIsReserving,
+    updateReserveExcel
 }
 

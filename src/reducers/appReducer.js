@@ -1,7 +1,8 @@
 const initialState = {
   isSelecting: true,
   isReleasing: false,
-  isReserving: false
+  isReserving: false,
+  reserveExcel: null
 }
   
 export default (state = initialState, action) => {
@@ -26,6 +27,11 @@ export default (state = initialState, action) => {
         isSelecting: false,
         isReleasing: false,
         isReserving: action.payload
+      }
+    case 'UPDATE_RESERVE_EXCEL':
+      return {
+        ...state,
+        reserveExcel: action.payload
       }
     default:
       return state;
