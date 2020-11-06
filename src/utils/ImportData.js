@@ -8,7 +8,7 @@ const ImportData = () => {
 
     const excelToJson = (reader) => {
         let fileData = reader.result;
-        let wb = XLSX.read(fileData, {type : 'binary'});
+        let wb = XLSX.read(fileData, {type : 'binary', cellDates: true});
         let data = [];
 
         wb.SheetNames.forEach(sheetName => {
@@ -21,7 +21,14 @@ const ImportData = () => {
                 keys.forEach(key => {
                     let newKey = key.split(/\s(.+)/)[0].trim();
                     convertedRowObj[newKey] = rowObj[key];
-
+                    
+                    if(rowObj[key] instanceof Date){
+                        if(typeof rowObj[key].getMonth === 'function'){
+                            let date = rowObj[key].getFullYear() + "-" + ("0"+(rowObj[key].getMonth()+1)).slice(-2) + "-" + ("0" + rowObj[key].getDate()).slice(-2);
+                            convertedRowObj[newKey] = date;
+                        }
+                    }
+                    
                     return;
                 });
     
