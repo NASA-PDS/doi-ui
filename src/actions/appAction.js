@@ -26,10 +26,50 @@ const updateReserveExcel = (payload) => dispatch => {
     });
 }
 
+const sendReserveRequest = (payload) => dispatch => {
+    dispatch({
+        type: 'SEND_RESERVE_REQUEST',
+        payload
+    });
+}
+
+const setReserveAction = (payload) => dispatch => {
+    dispatch({
+        type: 'SET_RESERVE_ACTION',
+        payload
+    });
+}
+
+const setReserveSubmitter = (payload) => dispatch => {
+    dispatch({
+        type: 'SET_RESERVE_SUBMITTER',
+        payload
+    });
+}
+
+const setReserveNode = (payload) => dispatch => {
+    dispatch({
+        type: 'SET_RESERVE_NODE',
+        payload
+    });
+}
+
+const setReserveUrl = (payload) => dispatch => {
+    dispatch({
+        type: 'SET_RESERVE_URL',
+        payload
+    });
+}
+
 export default{
     setIsSelecting,
     setIsReleasing,
     setIsReserving,
-    updateReserveExcel
+    updateReserveExcel,
+    sendReserveRequest,
+    setReserveAction,
+    setReserveSubmitter,
+    setReserveNode,
+    setReserveUrl
 }
 
