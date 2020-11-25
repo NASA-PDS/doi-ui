@@ -9,7 +9,7 @@ function* sendReserveContent(action){
     json = JSON.stringify(json);
 
     let endpoint = Config.api.reserveUrl;
-    endpoint += '?action=draft';
+    endpoint += '?action=reserve';
 
     if(submitter){
         endpoint += '&submitter=' + submitter;
