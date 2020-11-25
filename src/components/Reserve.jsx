@@ -12,10 +12,6 @@ const Reserve = () => {
     state.appReducer.reserveExcel
   );
 
-  const action = useSelector(state =>
-    state.appReducer.reserveAction
-  );
-
   const submitter = useSelector(state =>
     state.appReducer.reserveSubmitter
   );
@@ -24,17 +20,9 @@ const Reserve = () => {
     state.appReducer.reserveNode
   );
 
-  const url = useSelector(state =>
-    state.appReducer.reserveUrl
-  );
-
   const reserveResponse = useSelector(state =>
     state.appReducer.reserveResponse
   );
-
-  const handleActionChange = event => {
-    dispatch(rootActions.appAction.setReserveAction(event.target.value));
-  }
 
   const handleSubmitterChange = event => {
     dispatch(rootActions.appAction.setReserveSubmitter(event.target.value));
@@ -44,10 +32,6 @@ const Reserve = () => {
     dispatch(rootActions.appAction.setReserveNode(event.target.value));
   }
 
-  const handleUrlChange = event => {
-    dispatch(rootActions.appAction.setReserveUrl(event.target.value));
-  }
-
   const handleReserveButtonClick = event => {
     const convertedExcelContent = {
       labels: excelContent
@@ -55,10 +39,8 @@ const Reserve = () => {
 
     const reserveVariables = {
       excelContent: convertedExcelContent,
-      action,
       submitter,
-      node,
-      url
+      node
     }
 
     dispatch(rootActions.appAction.sendReserveRequest(reserveVariables));
@@ -74,20 +56,6 @@ const Reserve = () => {
       :
       <div>
       <form>
-        <FormControl required>
-          <InputLabel id="demo-simple-select-required-label">Action</InputLabel>
-          <Select
-            labelId="demo-simple-select-required-label"
-            id="demo-simple-select-required"
-            value={action}
-            onChange={handleActionChange}
-          >
-            <MenuItem value={'reserve'}>Reserve</MenuItem>
-            <MenuItem value={'draft'}>Draft</MenuItem>
-          </Select>
-        </FormControl>
-        <br/>
-        <br/>
         <TextField 
           label="Submitter" 
           variant="outlined"
@@ -103,14 +71,6 @@ const Reserve = () => {
           value={node}
           onChange={handleNodeChange}
           required
-        />
-        <br/>
-        <br/>
-        <TextField 
-          label="Url" 
-          variant="outlined"
-          value={url}
-          onChange={handleUrlChange}
         />
       </form>
       <br/>

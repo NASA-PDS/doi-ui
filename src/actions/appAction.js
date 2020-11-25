@@ -33,13 +33,6 @@ const sendReserveRequest = (payload) => dispatch => {
     });
 }
 
-const setReserveAction = (payload) => dispatch => {
-    dispatch({
-        type: 'SET_RESERVE_ACTION',
-        payload
-    });
-}
-
 const setReserveSubmitter = (payload) => dispatch => {
     dispatch({
         type: 'SET_RESERVE_SUBMITTER',
@@ -54,22 +47,13 @@ const setReserveNode = (payload) => dispatch => {
     });
 }
 
-const setReserveUrl = (payload) => dispatch => {
-    dispatch({
-        type: 'SET_RESERVE_URL',
-        payload
-    });
-}
-
 export default{
     setIsSelecting,
     setIsReleasing,
     setIsReserving,
     updateReserveExcel,
     sendReserveRequest,
-    setReserveAction,
     setReserveSubmitter,
-    setReserveNode,
-    setReserveUrl
+    setReserveNode
 }
 

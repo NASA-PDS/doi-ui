@@ -3,10 +3,8 @@ const initialState = {
   isReleasing: false,
   isReserving: false,
   reserveExcel: null,
-  reserveAction: null,
   reserveSubmitter: null,
-  reserveNode: null,
-  reserveUrl: null,
+  reserveNode: null
 }
   
 export default (state = initialState, action) => {
@@ -37,11 +35,6 @@ export default (state = initialState, action) => {
         ...state,
         reserveExcel: action.payload
       }
-    case 'SET_RESERVE_ACTION':
-      return {
-        ...state,
-        reserveAction: action.payload
-      }
     case 'SET_RESERVE_SUBMITTER':
       return {
         ...state,
@@ -51,11 +44,6 @@ export default (state = initialState, action) => {
       return {
         ...state,
         reserveNode: action.payload
-      }
-    case 'SET_RESERVE_URL':
-      return {
-        ...state,
-        reserveUrl: action.payload
       }
     case 'RENDER_RESERVE_RESPONSE':
       return {

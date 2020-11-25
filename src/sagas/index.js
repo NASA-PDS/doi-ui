@@ -1,31 +1,21 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
+import Config from '../Config';
 
 function* sendReserveContent(action){
-    const reserveAction = action.payload.action;
     const submitter = action.payload.submitter;
     const node = action.payload.node;
-    const url = action.payload.url;
 
     let json = action.payload.excelContent;
     json = JSON.stringify(json);
 
-    let endpoint = 'http://localhost:8085/PDS_APIs/pds_doi_api/0.1/dois';
+    let endpoint = Config.api.reserveUrl;
+    endpoint += '?action=draft';
 
-    if(reserveAction || submitter || node || url){
-        endpoint += '?';
-
-        if(reserveAction){
-            endpoint += 'action=' + reserveAction;
-        }
-        if(submitter){
-            endpoint += '&submitter=' + submitter;
-        }
-        if(node){
-            endpoint += '&node=' + node;
-        }
-        if(url){
-            endpoint += '&url=' + url;
-        }
+    if(submitter){
+        endpoint += '&submitter=' + submitter;
+    }
+    if(node){
+        endpoint += '&node=' + node;
     }
 
     endpoint = encodeURI(endpoint);
