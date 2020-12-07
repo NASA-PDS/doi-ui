@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import Release from '../components/Release';
-import Reserve from '../components/Reserve';
+import Release from './Release';
+import Reserve from './Reserve';
 import Button from '@material-ui/core/Button';
 import rootActions from '../actions/rootActions';
  
-const Select = () => {
+const AppBody = () => {
 
   const isSelecting = useSelector(state =>
     state.appReducer.isSelecting
@@ -29,10 +29,27 @@ const Select = () => {
   }
 
   return <div>
-    {isSelecting? 
+    {isSelecting?
       <div>
-        <Button onClick={handleReserveClick}>Reserve</Button>
-        <Button onClick={handleReleaseClick}>Release</Button>
+        <br/>
+        <br/>
+        <br/>
+
+        <p>Would you like to reserve or release?</p>
+
+        <Button 
+          variant="outlined"
+          onClick={handleReserveClick}
+        >
+          Reserve
+        </Button>
+        &nbsp;
+        <Button
+          variant="outlined" 
+          onClick={handleReleaseClick}
+        >
+          Release
+        </Button>
       </div>
       :
       ''
@@ -54,4 +71,4 @@ const Select = () => {
   </div>;
 };
 
-export default Select;
+export default AppBody;

@@ -47,6 +47,7 @@ const Reserve = () => {
   }
 
   return <div>
+    <br/>
     <Typography>Reserve</Typography>
     <br/>
     {reserveResponse?
