@@ -46,13 +46,26 @@ const Reserve = () => {
     dispatch(rootActions.appAction.sendReserveRequest(reserveVariables));
   }
 
+  const handleRetryReserve = event => {
+    dispatch(rootActions.appAction.resetReserveInputs());
+  }
+
   return <div>
     <br/>
     <Typography>Reserve</Typography>
     <br/>
     {reserveResponse?
       <div>
-        Detail:{String(reserveResponse)}
+        <p>An error has occured:</p>
+        <p>{String(reserveResponse)}</p>
+        <p>
+          <Button
+            variant="outlined"
+            onClick={handleRetryReserve}
+          >
+            Retry
+          </Button>
+        </p>
       </div>
       :
       <div>
@@ -82,6 +95,7 @@ const Reserve = () => {
         variant="contained"
         color="primary"
         onClick={handleReserveButtonClick}
+        disabled={!(submitter && node && excelContent)}
       >
           Reserve
       </Button>

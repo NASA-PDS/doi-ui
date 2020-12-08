@@ -47,6 +47,12 @@ const setReserveNode = (payload) => dispatch => {
     });
 }
 
+const resetReserveInputs = () => dispatch => {
+    dispatch({
+        type: 'RESET_RESERVE_INPUTS'
+    })
+}
+
 export default{
     setIsSelecting,
     setIsReleasing,
@@ -54,6 +60,7 @@ export default{
     updateReserveExcel,
     sendReserveRequest,
     setReserveSubmitter,
-    setReserveNode
+    setReserveNode,
+    resetReserveInputs
 }
 
