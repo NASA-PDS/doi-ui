@@ -23,7 +23,8 @@ function* sendReserveContent(action){
     const response = yield fetch(endpoint, {
         method: 'POST',
         headers: {
-            "Accept": "application/json"
+            "Accept": "application/json",
+            'Content-Type': 'application/json'
         },
         body: json
     });

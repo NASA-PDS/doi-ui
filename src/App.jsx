@@ -2,7 +2,8 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from './store';
 import Banner from './components/Banner';
-import Select from './components/Select';
+import DoiAppBar from './components/DoiAppBar';
+import AppBody from './components/AppBody';
 import 'fontsource-roboto';
 import './App.css';
 
@@ -12,7 +13,8 @@ function App() {
     <Provider store={configureStore()}>
       <div className="App">
         <Banner/>
-        <Select/>
+        <DoiAppBar/>
+        <AppBody/>
       </div>
     </Provider>
   );

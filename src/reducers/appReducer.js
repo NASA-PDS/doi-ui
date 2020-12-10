@@ -4,7 +4,8 @@ const initialState = {
   isReserving: false,
   reserveExcel: null,
   reserveSubmitter: null,
-  reserveNode: null
+  reserveNode: null,
+  reserveResponse: null
 }
   
 export default (state = initialState, action) => {
@@ -49,6 +50,14 @@ export default (state = initialState, action) => {
       return {
         ...state,
         reserveResponse: action.payload
+      }
+    case 'RESET_RESERVE_INPUTS':
+      return {
+        ...state,
+        reserveSubmitter: null,
+        reserveNode: null,
+        reserveExcel: null,
+        reserveResponse: null
       }
     default:
       return state;
