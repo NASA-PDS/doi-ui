@@ -4,7 +4,7 @@ import Release from './Release';
 import Reserve from './Reserve';
 import Button from '@material-ui/core/Button';
 import rootActions from '../actions/rootActions';
- 
+
 const AppBody = () => {
 
   const isSelecting = useSelector(state =>
