@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField, Typography } from '@material-ui/core';
-import ImportData from '../utils/ImportData.js';
+import ImportData from './ImportData.js';
 import { useDispatch, useSelector } from 'react-redux';
 import rootActions from '../actions/rootActions';
 import ReserveExcelContent from './ReserveExcelContent';
@@ -55,51 +55,57 @@ const Reserve = () => {
     <Typography>Reserve</Typography>
     <br/>
     {reserveResponse?
+      reserveResponse.errors?
+        <div>
+          <p><b>An error has occured:</b> {String(reserveResponse.errors[0].name)}</p>
+          <p><b>Description:</b> {String(reserveResponse.errors[0].message)}</p>
+          <p>
+            <Button
+              variant="outlined"
+              onClick={handleRetryReserve}
+            >
+              Retry
+            </Button>
+          </p>
+        </div>
+        :
+        <div>
+          <p>Your submission was successful</p>
+          <p>An email will be sent to you when your submission has been reserved.</p>
+        </div>
+    :
       <div>
-        <p>An error has occured:</p>
-        <p>{String(reserveResponse)}</p>
-        <p>
-          <Button
+        <form>
+          <TextField 
+            label="Submitter" 
             variant="outlined"
-            onClick={handleRetryReserve}
-          >
-            Retry
-          </Button>
-        </p>
-      </div>
-      :
-      <div>
-      <form>
-        <TextField 
-          label="Submitter" 
-          variant="outlined"
-          value={submitter}
-          onChange={handleSubmitterChange}
-          required
-        />
+            value={submitter}
+            onChange={handleSubmitterChange}
+            required
+          />
+          <br/>
+          <br/>
+          <TextField 
+            label="Node" 
+            variant="outlined" 
+            value={node}
+            onChange={handleNodeChange}
+            required
+          />
+        </form>
         <br/>
+        <ImportData/>
+        <ReserveExcelContent></ReserveExcelContent>
         <br/>
-        <TextField 
-          label="Node" 
-          variant="outlined" 
-          value={node}
-          onChange={handleNodeChange}
-          required
-        />
-      </form>
-      <br/>
-      <ImportData/>
-      <ReserveExcelContent></ReserveExcelContent>
-      <br/>
-      <Button 
-        variant="contained"
-        color="primary"
-        onClick={handleReserveButtonClick}
-        disabled={!(submitter && node && excelContent)}
-      >
+        <Button 
+          variant="contained"
+          color="primary"
+          onClick={handleReserveButtonClick}
+          disabled={!(submitter && node && excelContent)}
+        >
           Reserve
-      </Button>
-    </div>
+        </Button>
+      </div>
     }
     
   </div>;

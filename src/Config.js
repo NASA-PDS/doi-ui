@@ -1,6 +1,7 @@
 const Config = {
     api:{
-        reserveUrl: 'http://localhost:8085/PDS_APIs/pds_doi_api/0.1/dois'
+        reserveUrl: 'http://localhost:8085/PDS_APIs/pds_doi_api/0.1/dois',
+        getDoiUrl: 'http://localhost:8085/PDS_APIs/pds_doi_api/0.1/dois/'
     } 
 }
 

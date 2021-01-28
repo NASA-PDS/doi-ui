@@ -53,6 +53,47 @@ const resetReserveInputs = () => dispatch => {
     })
 }
 
+const sendLidvidSearchRequest = (payload) => dispatch => {
+    dispatch({
+        type: "SEND_LIDVID_SEARCH_REQUEST",
+        payload
+    })
+}
+
+const sendPds4LabelSearchRequest = (payload) => dispatch => {
+    dispatch({
+        type: "SEND_PDS4_LABEL_SEARCH_REQUEST",
+        payload
+    })
+}
+
+const sendReleaseRequest = (payload) => dispatch => {
+    dispatch({
+        type: "SEND_RELEASE_REQUEST",
+        payload
+    })
+}
+
+const resetRelease = (payload) => dispatch => {
+    dispatch({
+        type: 'RESET_RELEASE'
+    })
+}
+
+const updateReleaseXml = (payload) => dispatch => {
+    dispatch({
+        type: 'UPDATE_RELEASE_XML',
+        payload
+    })
+}
+
+const updateReleaseKeywords = (payload) => dispatch => {
+    dispatch({
+        type: 'UPDATE_RELEASE_KEYWORDS',
+        payload
+    })
+}
+
 export default{
     setIsSelecting,
     setIsReleasing,
@@ -61,6 +102,12 @@ export default{
     sendReserveRequest,
     setReserveSubmitter,
     setReserveNode,
-    resetReserveInputs
+    resetReserveInputs,
+    sendLidvidSearchRequest,
+    sendPds4LabelSearchRequest,
+    sendReleaseRequest,
+    resetRelease,
+    updateReleaseXml,
+    updateReleaseKeywords
 }
 
