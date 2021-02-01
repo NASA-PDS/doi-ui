@@ -50,9 +50,11 @@ const ReleaseAlert = () => {
   }
 
   return <div>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Release
-      </Button>
+      <p>
+        <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+          Release
+        </Button>
+      </p>
 
       <Dialog
         open={open}

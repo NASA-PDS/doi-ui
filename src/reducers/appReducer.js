@@ -55,14 +55,16 @@ export default (state = initialState, action) => {
         ...state,
         reserveResponse: action.payload
       }
-    case 'RESET_RESERVE_INPUTS':
+    case 'RETRY_RESERVE':
       return {
         ...state,
-        reserveSubmitter: null,
-        reserveNode: null,
-        reserveExcel: null,
         reserveResponse: null
       }
+    case 'RETRY_RELEASE':
+        return {
+          ...state,
+          releaseResponse: null
+        }
     case 'RENDER_DOI_SEARCH_RESULTS':
       return {
         ...state,

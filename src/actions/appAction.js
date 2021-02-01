@@ -47,9 +47,15 @@ const setReserveNode = (payload) => dispatch => {
     });
 }
 
-const resetReserveInputs = () => dispatch => {
+const retryReserve = () => dispatch => {
     dispatch({
-        type: 'RESET_RESERVE_INPUTS'
+        type: 'RETRY_RESERVE'
+    })
+}
+
+const retryRelease = () => dispatch => {
+    dispatch({
+        type: 'RETRY_RELEASE'
     })
 }
 
@@ -102,7 +108,8 @@ export default{
     sendReserveRequest,
     setReserveSubmitter,
     setReserveNode,
-    resetReserveInputs,
+    retryReserve,
+    retryRelease,
     sendLidvidSearchRequest,
     sendPds4LabelSearchRequest,
     sendReleaseRequest,

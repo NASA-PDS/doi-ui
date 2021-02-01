@@ -4,8 +4,20 @@ import ImportData from './ImportData.js';
 import { useDispatch, useSelector } from 'react-redux';
 import rootActions from '../actions/rootActions';
 import ReserveExcelContent from './ReserveExcelContent';
+import { Alert, AlertTitle } from '@material-ui/lab';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+  alert: {
+    '& .MuiAlert-message':{
+      marginLeft: "auto",
+      marginRight: "auto"
+    }
+  }
+}));
 
 const Reserve = () => {
+  const classes = useStyles();
   const dispatch = useDispatch();
 
   const excelContent = useSelector(state =>
@@ -47,18 +59,21 @@ const Reserve = () => {
   }
 
   const handleRetryReserve = event => {
-    dispatch(rootActions.appAction.resetReserveInputs());
+    dispatch(rootActions.appAction.retryReserve());
   }
 
   return <div>
     <br/>
-    <Typography>Reserve</Typography>
+    <Typography variant="h4">Reserve</Typography>
     <br/>
+    
     {reserveResponse?
       reserveResponse.errors?
         <div>
-          <p><b>An error has occured:</b> {String(reserveResponse.errors[0].name)}</p>
-          <p><b>Description:</b> {String(reserveResponse.errors[0].message)}</p>
+          <Alert icon={false} severity="error" className={classes.alert}>
+            <p><b>Error:</b> {String(reserveResponse.errors[0].name)}</p>
+            <p><b>Description:</b> {String(reserveResponse.errors[0].message)}</p>
+          </Alert>
           <p>
             <Button
               variant="outlined"
@@ -70,10 +85,12 @@ const Reserve = () => {
         </div>
         :
         <div>
-          <p>Your submission was successful</p>
-          <p>An email will be sent to you when your submission has been reserved.</p>
+          <Alert icon={false} severity="success">
+            <AlertTitle>Submission Successful!</AlertTitle>
+            An email will be sent to you when your submission has been reserved.
+          </Alert>
         </div>
-    :
+      :
       <div>
         <form>
           <TextField 
@@ -107,7 +124,6 @@ const Reserve = () => {
         </Button>
       </div>
     }
-    
   </div>;
 };
  
