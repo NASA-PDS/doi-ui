@@ -77,6 +77,14 @@ const Release = () => {
     state.appReducer.releaseXml
   );
 
+  const submitter = useSelector(state =>
+    state.appReducer.releaseSubmitter
+  );
+
+  const node = useSelector(state =>
+    state.appReducer.releaseNode
+  );
+
   const handleDoiLidvidChange = (event) => {
     setDoiOrLidvid(event.target.value);
   };
@@ -108,6 +116,14 @@ const Release = () => {
 
   const handleRetryRelease = event => {
     dispatch(rootActions.appAction.retryRelease());
+  }
+
+  const handleSubmitterChange = event => {
+    dispatch(rootActions.appAction.setReleaseSubmitter(event.target.value));
+  }
+
+  const handleNodeChange = event => {
+    dispatch(rootActions.appAction.setReleaseNode(event.target.value));
   }
 
   return <div>
@@ -220,6 +236,7 @@ const Release = () => {
                 <Alert icon={false} severity="info">
                   Your DOI is ready to be released. Please update the metadata below if necessary.
                 </Alert>
+
                 <p>
                   <TextField
                     className={classes.xmlTextBox}
@@ -230,7 +247,30 @@ const Release = () => {
                     onChange={handleReleaseXmlChange}
                   />
                 </p>
+
                 <UatKeyWordAutoComplete></UatKeyWordAutoComplete>
+
+                <br/>
+
+                <form>
+                  <TextField 
+                    label="Submitter" 
+                    variant="outlined"
+                    InputLabelProps={{ shrink: true }}  
+                    value={submitter}
+                    onChange={handleSubmitterChange}
+                  />
+                  <br/>
+                  <br/>
+                  <TextField 
+                    label="Node" 
+                    variant="outlined" 
+                    value={node}
+                    InputLabelProps={{ shrink: true }}  
+                    onChange={handleNodeChange}
+                  />
+                </form>
+
               </div>
               <div>
                 <ReleaseAlert></ReleaseAlert>

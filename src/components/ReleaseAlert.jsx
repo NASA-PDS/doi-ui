@@ -26,6 +26,18 @@ const ReleaseAlert = () => {
     state.appReducer.doiSearchResponse
   );
 
+  const submitter = useSelector(state =>
+    state.appReducer.releaseSubmitter
+  );
+
+  const node = useSelector(state =>
+    state.appReducer.releaseNode
+  );
+
+  const appReducer = useSelector(state =>
+    state.appReducer
+  );
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -37,7 +49,7 @@ const ReleaseAlert = () => {
   const handleRelease = () => {
     setOpen(false);
 
-    const {doi, lidvid, node, status, submitter} = doiSearchResults;
+    const {doi, lidvid, status} = doiSearchResults;
     const releaseData = {
       doi,
       lidvid,
