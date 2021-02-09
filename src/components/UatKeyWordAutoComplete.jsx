@@ -62,7 +62,7 @@ export default function Tags() {
           <TextField
             {...params}
             variant="outlined"
-            label="filterSelectedOptions"
+            label="Keywords"
             placeholder="Keywords"
           />
         )}

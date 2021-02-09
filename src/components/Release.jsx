@@ -19,6 +19,7 @@ import TextField from '@material-ui/core/TextField';
 import ReleaseAlert from './ReleaseAlert';
 import UatKeyWordAutoComplete from './UatKeyWordAutoComplete';
 import { findXmlTag } from '../utils/xmlUtil';
+import { Alert, AlertTitle } from '@material-ui/lab';
  
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,10 +44,16 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center"
   },
   xmlTextBox: {
-    width: "95%"
+    width: "100%"
   },
   disabled: {
     color: theme.palette.text.disabled,
+  },
+  alert: {
+    '& .MuiAlert-message':{
+      marginLeft: "auto",
+      marginRight: "auto"
+    }
   }
 }));
 
@@ -55,7 +62,7 @@ const Release = () => {
 
   const dispatch = useDispatch();
   const [doiOrLidvid, setDoiOrLidvid] = useState("pds4lidvid");
-  const [doiLidvid, setDoiLidvid] = useState("doi");
+  const [doiLidvid, setDoiLidvid] = useState("");
   const [labelUrl, setLabelUrl] = useState("");
 
   const doiSearchResults = useSelector(state => {
@@ -68,6 +75,14 @@ const Release = () => {
 
   const releaseXml = useSelector(state =>
     state.appReducer.releaseXml
+  );
+
+  const submitter = useSelector(state =>
+    state.appReducer.releaseSubmitter
+  );
+
+  const node = useSelector(state =>
+    state.appReducer.releaseNode
   );
 
   const handleDoiLidvidChange = (event) => {
@@ -99,113 +114,172 @@ const Release = () => {
     dispatch(rootActions.appAction.updateReleaseKeywords(findXmlTag(event.target.value, "keywords")));
   }
 
+  const handleRetryRelease = event => {
+    dispatch(rootActions.appAction.retryRelease());
+  }
+
+  const handleSubmitterChange = event => {
+    dispatch(rootActions.appAction.setReleaseSubmitter(event.target.value));
+  }
+
+  const handleNodeChange = event => {
+    dispatch(rootActions.appAction.setReleaseNode(event.target.value));
+  }
+
   return <div>
     <br/>
-    <Typography>Release</Typography>
-
-    <div>
-      <p>This is where a description of release will go</p>
-      <p>Update a release by typing in a LIDVID or DOI</p>
-    </div>
-
-    <div className={classes.center}>
-      <Paper component="form" className={classes.root}>
-        <FormControl>
-          <Select
-            value={doiOrLidvid}
-            onChange={handleDoiLidvidChange}
-            disabled
-          >
-            <MenuItem value={"doi"}>DOI</MenuItem>
-            <MenuItem value={"pds4lidvid"}>PDS4 LIDVID</MenuItem>
-          </Select>
-        </FormControl>
-
-        <InputBase
-          className={classes.input}
-          inputProps={{ 'aria-label': 'search google maps' }}
-          onChange={handleDoiLidvidInputChange}
-        />
-        <IconButton 
-          className={classes.iconButton} 
-          aria-label="search"
-          onClick={handleDoiLidvidSearch}
-        >
-          <SearchIcon />
-        </IconButton>
-      </Paper>
-    </div>
+    <Typography variant="h4">Release</Typography>
+    <br/>
     
-    <p>OR</p>
-
-    <div className={classes.center}>
-      <Paper component="form" className={classes.root}>
-        <Typography
-          className={classes.disabled}
-        >
-          PDS4 Label URL
-        </Typography>
-        <InputBase
-          className={classes.input}
-          placeholder="urn:nasa:pds:lab_shocked_feldspars::1.0"
-          inputProps={{ 'aria-label': 'Enter PDS4 Label Url' }}
-          onChange={handleLabelUrlChange}
-          disabled
-        />
-        <IconButton 
-          className={classes.iconButton}
-          aria-label="search"
-          onClick={handleLabelUrlSearch}
-          disabled
-        >
-          <SearchIcon />
-        </IconButton>
-      </Paper>
-    </div>
-
-    {doiSearchResults?
-      doiSearchResults.errors?
-        <div>
-          <p><b>An error has occured:</b> {String(doiSearchResults.errors[0].name)}</p>
-          <p><b>Description:</b> {String(doiSearchResults.errors[0].message)}</p>
-          <p>Please try searching again.</p>
-        </div>
-        :
-        <div>
-          <div>
-            <p>Your DOI is ready to be released. Please update the metadata below if necessary.</p>
-            <p>
-              <TextField
-                className={classes.xmlTextBox}
-                label="Metadata"
-                multiline
-                variant="outlined"
-                value={releaseXml}
-                onChange={handleReleaseXmlChange}
-              />
-            </p>
-            <UatKeyWordAutoComplete></UatKeyWordAutoComplete>
-          </div>
-          <div>
-            <ReleaseAlert></ReleaseAlert>
-          </div>
-        </div>
-      :
-      ""
-    }
-
-
     {releaseResponse?
       releaseResponse.errors?
         <div>
-          <p><b>An error has occured:</b> {String(releaseResponse.errors[0].name)}</p>
-          <p><b>Description:</b> {String(releaseResponse.errors[0].message)}</p>
-          <p>Please try releasing again.</p>
+          <Alert icon={false} severity="error" className={classes.alert}>
+            <AlertTitle>Error: {String(releaseResponse.errors[0].name)}</AlertTitle>
+              <b>Description:</b> {String(releaseResponse.errors[0].message)}
+              <p>Please try releasing again.</p>
+          </Alert>
+
+          <p>
+            <Button
+              variant="outlined"
+              onClick={handleRetryRelease}
+            >
+              Retry
+            </Button>
+          </p>
         </div>
         :
-        ""
+        <div>
+          <Alert icon={false} severity="success" className={classes.alert}>
+            <AlertTitle>Release Successful!</AlertTitle>
+            An email will be sent to you when your release has been completed.
+          </Alert>
+        </div>
       :
-      ""
+      <div>
+        <div>
+          <p>This is where a description of release will go</p>
+          <p>Update a release by typing in a LIDVID or DOI</p>
+        </div>
+
+        <div className={classes.center}>
+          <Paper component="form" className={classes.root}>
+            <FormControl>
+              <Select
+                value={doiOrLidvid}
+                onChange={handleDoiLidvidChange}
+                disabled
+              >
+                <MenuItem value={"doi"}>DOI</MenuItem>
+                <MenuItem value={"pds4lidvid"}>PDS4 LIDVID</MenuItem>
+              </Select>
+            </FormControl>
+
+            <InputBase
+              className={classes.input}
+              value={doiLidvid}
+              inputProps={{ 'aria-label': 'search google maps' }}
+              onChange={handleDoiLidvidInputChange}
+            />
+            <IconButton 
+              className={classes.iconButton} 
+              aria-label="search"
+              onClick={handleDoiLidvidSearch}
+            >
+              <SearchIcon />
+            </IconButton>
+          </Paper>
+        </div>
+      
+        <p>OR</p>
+
+        <div className={classes.center}>
+          <Paper component="form" className={classes.root}>
+            <Typography
+              className={classes.disabled}
+            >
+              PDS4 Label URL
+            </Typography>
+            <InputBase
+              className={classes.input}
+              placeholder="urn:nasa:pds:lab_shocked_feldspars::1.0"
+              inputProps={{ 'aria-label': 'Enter PDS4 Label Url' }}
+              onChange={handleLabelUrlChange}
+              disabled
+            />
+            <IconButton 
+              className={classes.iconButton}
+              aria-label="search"
+              onClick={handleLabelUrlSearch}
+              disabled
+            >
+              <SearchIcon />
+            </IconButton>
+          </Paper>
+        </div>
+
+        {doiSearchResults?
+          doiSearchResults.errors?
+            <div>
+              <br/>
+              <Alert icon={false} severity="error" className={classes.alert}>
+                <AlertTitle>Error: {String(doiSearchResults.errors[0].name)}</AlertTitle>
+                  <b>Description:</b> {String(doiSearchResults.errors[0].message)}
+                  Please try searching again.
+              </Alert>
+            </div>
+            :
+            <div>
+              <div>
+                <br/>
+                <Alert icon={false} severity="info">
+                  Your DOI is ready to be released. Please update the metadata below if necessary.
+                </Alert>
+
+                <p>
+                  <TextField
+                    className={classes.xmlTextBox}
+                    label="Metadata"
+                    multiline
+                    variant="outlined"
+                    value={releaseXml}
+                    onChange={handleReleaseXmlChange}
+                  />
+                </p>
+
+                <UatKeyWordAutoComplete></UatKeyWordAutoComplete>
+
+                <br/>
+
+                <form>
+                  <TextField 
+                    label="Submitter" 
+                    variant="outlined"
+                    InputLabelProps={{ shrink: true }}  
+                    value={submitter}
+                    onChange={handleSubmitterChange}
+                  />
+                  <br/>
+                  <br/>
+                  <TextField 
+                    label="Node" 
+                    variant="outlined" 
+                    value={node}
+                    InputLabelProps={{ shrink: true }}  
+                    onChange={handleNodeChange}
+                  />
+                </form>
+
+              </div>
+              <div>
+                <ReleaseAlert></ReleaseAlert>
+              </div>
+            </div>
+          :
+          ""
+        }
+      </div>
     }
   </div>;
 };

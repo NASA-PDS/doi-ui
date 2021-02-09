@@ -47,9 +47,23 @@ const setReserveNode = (payload) => dispatch => {
     });
 }
 
-const resetReserveInputs = () => dispatch => {
+const retryReserve = () => dispatch => {
     dispatch({
-        type: 'RESET_RESERVE_INPUTS'
+        type: 'RETRY_RESERVE'
+    })
+}
+
+const setReleaseSubmitter = (payload) => dispatch => {
+    dispatch({
+        type: 'SET_RELEASE_SUBMITTER',
+        payload
+    })
+}
+
+const setReleaseNode = (payload) => dispatch => {
+    dispatch({
+        type: 'SET_RELEASE_NODE',
+        payload
     })
 }
 
@@ -71,6 +85,12 @@ const sendReleaseRequest = (payload) => dispatch => {
     dispatch({
         type: "SEND_RELEASE_REQUEST",
         payload
+    })
+}
+
+const retryRelease = () => dispatch => {
+    dispatch({
+        type: 'RETRY_RELEASE'
     })
 }
 
@@ -102,7 +122,10 @@ export default{
     sendReserveRequest,
     setReserveSubmitter,
     setReserveNode,
-    resetReserveInputs,
+    retryReserve,
+    retryRelease,
+    setReleaseSubmitter,
+    setReleaseNode,
     sendLidvidSearchRequest,
     sendPds4LabelSearchRequest,
     sendReleaseRequest,

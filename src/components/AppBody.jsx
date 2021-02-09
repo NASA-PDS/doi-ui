@@ -4,6 +4,7 @@ import Release from './Release';
 import Reserve from './Reserve';
 import Button from '@material-ui/core/Button';
 import rootActions from '../actions/rootActions';
+import Container from '@material-ui/core/Container';
 
 const AppBody = () => {
 
@@ -28,7 +29,7 @@ const AppBody = () => {
     dispatch(rootActions.appAction.setIsReleasing(true));
   }
 
-  return <div>
+  return <Container>
     {isSelecting?
       <div>
         <br/>
@@ -68,7 +69,7 @@ const AppBody = () => {
       :
       ''
     }
-  </div>;
+  </Container>;
 };
 
 export default AppBody;

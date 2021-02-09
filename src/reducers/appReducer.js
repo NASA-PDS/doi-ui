@@ -9,7 +9,9 @@ const initialState = {
   doiSearchResponse: null,
   releaseXml: null,
   releaseKeywords: null,
-  releaseResponse: null
+  releaseResponse: null,
+  releaseSubmitter: null,
+  releaseNode: null
 }
   
 export default (state = initialState, action) => {
@@ -55,20 +57,34 @@ export default (state = initialState, action) => {
         ...state,
         reserveResponse: action.payload
       }
-    case 'RESET_RESERVE_INPUTS':
+    case 'RETRY_RESERVE':
       return {
         ...state,
-        reserveSubmitter: null,
-        reserveNode: null,
-        reserveExcel: null,
         reserveResponse: null
+      }
+    case 'RETRY_RELEASE':
+      return {
+        ...state,
+        releaseResponse: null
+      }
+    case 'SET_RELEASE_SUBMITTER':
+      return {
+        ...state,
+        releaseSubmitter: action.payload
+      }
+    case 'SET_RELEASE_NODE':
+      return {
+        ...state,
+        releaseNode: action.payload
       }
     case 'RENDER_DOI_SEARCH_RESULTS':
       return {
         ...state,
         doiSearchResponse: action.payload.data,
         releaseKeywords: action.payload.keywords,
-        releaseXml: action.payload.xml
+        releaseXml: action.payload.xml,
+        releaseSubmitter: action.payload.data.submitter,
+        releaseNode: action.payload.data.node
       }
     case 'RESET_RELEASE':
       return {
