@@ -103,6 +103,7 @@ const Release = () => {
 
   const handleDoiLidvidSearch = () => {
     if(doiOrLidvid === "doi"){
+      dispatch(rootActions.appAction.sendDoiSearchRequest(doiLidvid));
     }
     if(doiOrLidvid === "pds4lidvid"){
       dispatch(rootActions.appAction.sendLidvidSearchRequest(doiLidvid));
@@ -129,8 +130,8 @@ const Release = () => {
   return <div>
     <br/>
     <Typography variant="h4">Release</Typography>
-    <br/>
-    
+    <br/>  
+
     {releaseResponse?
       releaseResponse.errors?
         <div>
@@ -169,7 +170,6 @@ const Release = () => {
               <Select
                 value={doiOrLidvid}
                 onChange={handleDoiLidvidChange}
-                disabled
               >
                 <MenuItem value={"doi"}>DOI</MenuItem>
                 <MenuItem value={"pds4lidvid"}>PDS4 LIDVID</MenuItem>
@@ -225,8 +225,7 @@ const Release = () => {
               <br/>
               <Alert icon={false} severity="error" className={classes.alert}>
                 <AlertTitle>Error: {String(doiSearchResults.errors[0].name)}</AlertTitle>
-                  <b>Description:</b> {String(doiSearchResults.errors[0].message)}
-                  Please try searching again.
+                  <b>Description:</b> {String(doiSearchResults.errors[0].message)} Please try searching again.
               </Alert>
             </div>
             :
