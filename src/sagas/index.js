@@ -126,6 +126,52 @@ function* sendDoiSearchRequest(){
     yield takeLatest('SEND_DOI_SEARCH_REQUEST', sendDoiSearch);
 }
 
+function* sendPds4LabelUrlSearch(action){
+    const labelUrl = action.payload;
+
+    let endpoint = Config.api.getDoiByPds4LabelUrl;
+    endpoint += '?action=draft';
+    endpoint += '&submitter=';
+    endpoint += '&node=atm';
+    endpoint += '&url=' + encodeURI(labelUrl);
+
+    const response = yield fetch(endpoint, {
+        method: 'POST',
+        headers: {
+            "Accept": "application/json",
+            'Content-Type': 'application/json'
+        }
+    });
+
+    let data = yield response.json();
+
+    if(!data.errors){
+        if(data.length < 1){
+            data = {data: doiNotFound};
+        }
+        else{
+            data = data[0];
+            data = {
+                data: data,
+                xml: printXML(data.record),
+                keywords: findXmlTag(data.record, "keywords")
+            }
+        }
+    }
+    else{
+        data = data[0];
+        data = {
+            data: data
+        }
+    }
+
+    yield put({ type: 'RENDER_DOI_SEARCH_RESULTS', payload: data});
+}
+
+function* sendPdsLabelUrlSearchRequest(){
+    yield takeLatest('SEND_PDS4_LABEL_SEARCH_REQUEST', sendPds4LabelUrlSearch);
+}
+
 function* sendRelease(action){
     const releaseData = action.payload;
     const json = JSON.stringify(releaseData);
@@ -156,6 +202,7 @@ export default function* rootSaga(){
         sendReserveRequest(),
         sendLidvidSearchRequest(),
         sendDoiSearchRequest(),
+        sendPdsLabelUrlSearchRequest(),
         sendReleaseRequest()
     ])
 }

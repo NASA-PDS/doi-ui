@@ -196,23 +196,18 @@ const Release = () => {
 
         <div className={classes.center}>
           <Paper component="form" className={classes.root}>
-            <Typography
-              className={classes.disabled}
-            >
+            <Typography>
               PDS4 Label URL
             </Typography>
             <InputBase
               className={classes.input}
-              placeholder="urn:nasa:pds:lab_shocked_feldspars::1.0"
               inputProps={{ 'aria-label': 'Enter PDS4 Label Url' }}
               onChange={handleLabelUrlChange}
-              disabled
             />
             <IconButton 
               className={classes.iconButton}
               aria-label="search"
               onClick={handleLabelUrlSearch}
-              disabled
             >
               <SearchIcon />
             </IconButton>
