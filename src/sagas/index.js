@@ -2,6 +2,7 @@ import { useScrollTrigger } from '@material-ui/core';
 import { all, call, put, takeLatest } from 'redux-saga/effects';
 import Config from '../Config';
 import { printXML, findXmlTag } from '../utils/xmlUtil';
+import doiNotFound from '../sagas/error';
 
 function* sendReserveContent(action){
     const submitter = action.payload.submitter;
@@ -41,10 +42,10 @@ function* sendReserveRequest(){
 }
 
 function* sendLidvidSearch(action){
-    const url = action.payload;
+    const lidvid = action.payload;
 
-    let endpoint = Config.api.getDoiUrl;
-    endpoint += encodeURI(url);
+    let endpoint = Config.api.getDoiByLidvidUrl;
+    endpoint += encodeURIComponent(lidvid);
 
     const response = yield call(fetch, endpoint);
     let data = yield response.json();
@@ -69,11 +70,113 @@ function* sendLidvidSearchRequest(){
     yield takeLatest('SEND_LIDVID_SEARCH_REQUEST', sendLidvidSearch);
 }
 
+function* sendDoiSearch(action){
+    const doi = action.payload;
+    
+    let doiEndpoint = Config.api.getDoiByDoiUrl + '?doi=';
+    doiEndpoint += encodeURIComponent(doi);
+
+    const doiResponse = yield call(fetch, doiEndpoint);
+    let doiData = yield doiResponse.json();
+    let data;
+
+    let hasErrors = false;
+    let lidvid;
+    if(!doiData.errors){
+        if(doiData.length < 1){
+            hasErrors = true;
+            data = {data: doiNotFound};
+        }
+        else{
+            lidvid = doiData[0].lidvid;
+        }
+    }
+    else{
+        hasErrors = true;
+        data = {
+            doiData
+        }
+    }
+
+    if(!hasErrors){
+        let lidvidEndpoint = Config.api.getDoiByLidvidUrl;
+        lidvidEndpoint += encodeURIComponent(lidvid);
+
+        const responseLidvid = yield call(fetch, lidvidEndpoint);
+        let lidvidData = yield responseLidvid.json();
+
+        if(!lidvidData.errors){
+            data = {
+                data: lidvidData,
+                xml: printXML(lidvidData.record),
+                keywords: findXmlTag(lidvidData.record, "keywords")
+            }
+        }
+        else{
+            data = {
+                lidvidData
+            }
+        }
+    }
+
+    yield put({ type: 'RENDER_DOI_SEARCH_RESULTS', payload: data});
+}
+
+function* sendDoiSearchRequest(){
+    yield takeLatest('SEND_DOI_SEARCH_REQUEST', sendDoiSearch);
+}
+
+function* sendPds4LabelUrlSearch(action){
+    const labelUrl = action.payload;
+
+    let endpoint = Config.api.getDoiByPds4LabelUrl;
+    endpoint += '?action=draft';
+    endpoint += '&submitter=';
+    endpoint += '&node=atm';
+    endpoint += '&url=' + encodeURI(labelUrl);
+
+    const response = yield fetch(endpoint, {
+        method: 'POST',
+        headers: {
+            "Accept": "application/json",
+            'Content-Type': 'application/json'
+        }
+    });
+
+    let data = yield response.json();
+
+    if(!data.errors){
+        if(data.length < 1){
+            data = {data: doiNotFound};
+        }
+        else{
+            data = data[0];
+            data = {
+                data: data,
+                xml: printXML(data.record),
+                keywords: findXmlTag(data.record, "keywords")
+            }
+        }
+    }
+    else{
+        data = data[0];
+        data = {
+            data: data
+        }
+    }
+
+    yield put({ type: 'RENDER_DOI_SEARCH_RESULTS', payload: data});
+}
+
+function* sendPdsLabelUrlSearchRequest(){
+    yield takeLatest('SEND_PDS4_LABEL_SEARCH_REQUEST', sendPds4LabelUrlSearch);
+}
+
 function* sendRelease(action){
     const releaseData = action.payload;
     const json = JSON.stringify(releaseData);
     
-    let endpoint = Config.api.getDoiUrl + releaseData.lidvid + "/release";
+    let endpoint = Config.api.releaseDoiUrl + releaseData.lidvid + "/release";
     endpoint = encodeURI(endpoint);
 
     const response = yield fetch(endpoint, {
@@ -98,6 +201,8 @@ export default function* rootSaga(){
     yield all([
         sendReserveRequest(),
         sendLidvidSearchRequest(),
+        sendDoiSearchRequest(),
+        sendPdsLabelUrlSearchRequest(),
         sendReleaseRequest()
     ])
 }

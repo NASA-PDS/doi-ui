@@ -103,6 +103,7 @@ const Release = () => {
 
   const handleDoiLidvidSearch = () => {
     if(doiOrLidvid === "doi"){
+      dispatch(rootActions.appAction.sendDoiSearchRequest(doiLidvid));
     }
     if(doiOrLidvid === "pds4lidvid"){
       dispatch(rootActions.appAction.sendLidvidSearchRequest(doiLidvid));
@@ -129,8 +130,8 @@ const Release = () => {
   return <div>
     <br/>
     <Typography variant="h4">Release</Typography>
-    <br/>
-    
+    <br/>  
+
     {releaseResponse?
       releaseResponse.errors?
         <div>
@@ -169,7 +170,6 @@ const Release = () => {
               <Select
                 value={doiOrLidvid}
                 onChange={handleDoiLidvidChange}
-                disabled
               >
                 <MenuItem value={"doi"}>DOI</MenuItem>
                 <MenuItem value={"pds4lidvid"}>PDS4 LIDVID</MenuItem>
@@ -196,23 +196,18 @@ const Release = () => {
 
         <div className={classes.center}>
           <Paper component="form" className={classes.root}>
-            <Typography
-              className={classes.disabled}
-            >
+            <Typography>
               PDS4 Label URL
             </Typography>
             <InputBase
               className={classes.input}
-              placeholder="urn:nasa:pds:lab_shocked_feldspars::1.0"
               inputProps={{ 'aria-label': 'Enter PDS4 Label Url' }}
               onChange={handleLabelUrlChange}
-              disabled
             />
             <IconButton 
               className={classes.iconButton}
               aria-label="search"
               onClick={handleLabelUrlSearch}
-              disabled
             >
               <SearchIcon />
             </IconButton>
@@ -225,8 +220,7 @@ const Release = () => {
               <br/>
               <Alert icon={false} severity="error" className={classes.alert}>
                 <AlertTitle>Error: {String(doiSearchResults.errors[0].name)}</AlertTitle>
-                  <b>Description:</b> {String(doiSearchResults.errors[0].message)}
-                  Please try searching again.
+                  <b>Description:</b> {String(doiSearchResults.errors[0].message)} Please try searching again.
               </Alert>
             </div>
             :
