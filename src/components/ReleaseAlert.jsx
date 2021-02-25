@@ -79,7 +79,7 @@ const ReleaseAlert = () => {
         <DialogTitle id="alert-dialog-title">{"Release"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to release? Once you release you cannot unrelease.
+            Are you sure you want to release?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
