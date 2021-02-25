@@ -173,22 +173,45 @@ function* sendPdsLabelUrlSearchRequest(){
 }
 
 function* sendRelease(action){
-    const releaseData = action.payload;
-    const json = JSON.stringify(releaseData);
-    
-    let endpoint = Config.api.releaseDoiUrl + releaseData.lidvid + "/release";
+    const {submitter, node, lidvid } = action.payload;
+
+    let endpoint = Config.api.reserveUrl;
+    endpoint += '?action=draft';
+
+    if(submitter){
+        endpoint += '&submitter=' + submitter;
+    }
+    if(node){
+        endpoint += '&node=' + node;
+    }
+
     endpoint = encodeURI(endpoint);
 
-    const response = yield fetch(endpoint, {
+    const saveResponse = yield fetch(endpoint, {
         method: 'POST',
         headers: {
             "Accept": "application/json",
             'Content-Type': 'application/json'
         },
-        body: json
+        body: action.payload.record
     });
 
-    let data = yield response.json();
+    let data = yield saveResponse.json();
+
+    if(!data.errors){
+        let endpoint = Config.api.releaseDoiUrl + encodeURI(lidvid) + "/submit";
+
+        const submitResponse = yield fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                'Content-Type': 'application/json'
+            }
+        });
+    
+        data = yield submitResponse.json();
+    }
+
 
     yield put({type: 'RENDER_RELEASE_RESPONSE', payload: data});
 }

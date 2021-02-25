@@ -168,8 +168,8 @@ const Release = () => {
         :
         <div>
           <Alert icon={false} severity="success" className={classes.alert}>
-            <AlertTitle>Release Successful!</AlertTitle>
-            An email will be sent to you when your release has been completed.
+            <AlertTitle>Release Submission Successful!</AlertTitle>
+            Your DOI has been submitted to Engineering Node. You will be notified if the DOI can be released or if updates are required.
           </Alert>
         </div>
       :
