@@ -7,8 +7,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { useDispatch, useSelector } from 'react-redux';
+import { unprettify } from '../utils/xmlUtil';
 import rootActions from '../actions/rootActions';
- 
+
 const useStyles = makeStyles((theme) => ({
  
 }));
@@ -55,7 +56,8 @@ const ReleaseAlert = () => {
       lidvid,
       node,
       status,
-      submitter
+      submitter,
+      record: unprettify(releaseXml)
     };
     
     dispatch(rootActions.appAction.sendReleaseRequest(releaseData));
@@ -77,7 +79,7 @@ const ReleaseAlert = () => {
         <DialogTitle id="alert-dialog-title">{"Release"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to release? Once you release you cannot unrelease.
+            Are you sure you want to release?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

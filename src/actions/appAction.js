@@ -88,6 +88,13 @@ const sendPds4LabelSearchRequest = (payload) => dispatch => {
     })
 }
 
+const sendSaveReleaseRequest = (payload) => dispatch => {
+    dispatch({
+        type: "SEND_SAVE_RELEASE_REQUEST",
+        payload
+    });
+}
+
 const sendReleaseRequest = (payload) => dispatch => {
     dispatch({
         type: "SEND_RELEASE_REQUEST",
@@ -136,6 +143,7 @@ export default{
     sendLidvidSearchRequest,
     sendDoiSearchRequest,
     sendPds4LabelSearchRequest,
+    sendSaveReleaseRequest,
     sendReleaseRequest,
     resetRelease,
     updateReleaseXml,

@@ -18,7 +18,7 @@ import rootActions from '../actions/rootActions';
 import TextField from '@material-ui/core/TextField';
 import ReleaseAlert from './ReleaseAlert';
 import UatKeyWordAutoComplete from './UatKeyWordAutoComplete';
-import { findXmlTag } from '../utils/xmlUtil';
+import { findXmlTag, unprettify } from '../utils/xmlUtil';
 import { Alert, AlertTitle } from '@material-ui/lab';
  
 const useStyles = makeStyles((theme) => ({
@@ -127,6 +127,21 @@ const Release = () => {
     dispatch(rootActions.appAction.setReleaseNode(event.target.value));
   }
 
+  const handleSaveClick = event => {
+    const {doi, lidvid, status} = doiSearchResults;
+
+    const releaseData = {
+      doi,
+      lidvid,
+      node,
+      status,
+      submitter,
+      record: unprettify(releaseXml)
+    };
+    
+    dispatch(rootActions.appAction.sendSaveReleaseRequest(releaseData));
+  }
+
   return <div>
     <br/>
     <Typography variant="h4">Release</Typography>
@@ -153,8 +168,8 @@ const Release = () => {
         :
         <div>
           <Alert icon={false} severity="success" className={classes.alert}>
-            <AlertTitle>Release Successful!</AlertTitle>
-            An email will be sent to you when your release has been completed.
+            <AlertTitle>Release Submission Successful!</AlertTitle>
+            Your DOI will be submitted to Engineering Node. You will be notified if the DOI can be released or if updates are required.
           </Alert>
         </div>
       :
@@ -267,6 +282,10 @@ const Release = () => {
 
               </div>
               <div>
+              <Button variant="outlined" color="primary" onClick={handleSaveClick}>
+                Save
+              </Button>
+
                 <ReleaseAlert></ReleaseAlert>
               </div>
             </div>
