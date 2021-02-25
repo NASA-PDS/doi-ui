@@ -36,8 +36,16 @@ const replaceXmlTagValue = (sourceXml, tag, newValue) => {
     return new XMLSerializer().serializeToString(xmlDoc);
 }
 
+const unprettify = (sourceXml) => {
+    sourceXml = '<?xml version="1.0" encoding="utf-8"?>' + sourceXml;
+    var xmlDoc  = new DOMParser().parseFromString(sourceXml, "application/xml");
+    var resultXml = new XMLSerializer().serializeToString(xmlDoc);
+    return resultXml;
+}
+
 export { 
     printXML, 
     findXmlTag, 
-    replaceXmlTagValue 
+    replaceXmlTagValue,
+    unprettify
 };

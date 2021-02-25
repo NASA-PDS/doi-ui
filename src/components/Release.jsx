@@ -18,7 +18,7 @@ import rootActions from '../actions/rootActions';
 import TextField from '@material-ui/core/TextField';
 import ReleaseAlert from './ReleaseAlert';
 import UatKeyWordAutoComplete from './UatKeyWordAutoComplete';
-import { findXmlTag } from '../utils/xmlUtil';
+import { findXmlTag, unprettify } from '../utils/xmlUtil';
 import { Alert, AlertTitle } from '@material-ui/lab';
  
 const useStyles = makeStyles((theme) => ({
@@ -125,6 +125,21 @@ const Release = () => {
 
   const handleNodeChange = event => {
     dispatch(rootActions.appAction.setReleaseNode(event.target.value));
+  }
+
+  const handleSaveClick = event => {
+    const {doi, lidvid, status} = doiSearchResults;
+
+    const releaseData = {
+      doi,
+      lidvid,
+      node,
+      status,
+      submitter,
+      record: unprettify(releaseXml)
+    };
+    
+    dispatch(rootActions.appAction.sendSaveReleaseRequest(releaseData));
   }
 
   return <div>
@@ -267,6 +282,10 @@ const Release = () => {
 
               </div>
               <div>
+              <Button variant="outlined" color="primary" onClick={handleSaveClick}>
+                Save
+              </Button>
+
                 <ReleaseAlert></ReleaseAlert>
               </div>
             </div>

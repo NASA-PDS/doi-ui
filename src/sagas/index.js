@@ -197,12 +197,47 @@ function* sendReleaseRequest(){
     yield takeLatest('SEND_RELEASE_REQUEST', sendRelease);
 }
 
+function* sendSaveRelease(action){
+    const submitter = action.payload.submitter;
+    const node = action.payload.node;
+
+    let endpoint = Config.api.reserveUrl;
+    endpoint += '?action=draft';
+
+    if(submitter){
+        endpoint += '&submitter=' + submitter;
+    }
+    if(node){
+        endpoint += '&node=' + node;
+    }
+
+    endpoint = encodeURI(endpoint);
+
+    const response = yield fetch(endpoint, {
+        method: 'POST',
+        headers: {
+            "Accept": "application/json",
+            'Content-Type': 'application/json'
+        },
+        body: action.payload.record
+    });
+
+    let data = yield response.json();
+
+    yield put({type: 'RENDER_SAVE_RELEASE_RESPONSE', payload: data});
+}
+
+function* sendSaveReleaseRequest(){
+    yield takeLatest('SEND_SAVE_RELEASE_REQUEST', sendSaveRelease);
+}
+
 export default function* rootSaga(){
     yield all([
         sendReserveRequest(),
         sendLidvidSearchRequest(),
         sendDoiSearchRequest(),
         sendPdsLabelUrlSearchRequest(),
-        sendReleaseRequest()
+        sendReleaseRequest(),
+        sendSaveReleaseRequest()
     ])
 }
