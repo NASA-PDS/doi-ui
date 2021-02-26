@@ -159,7 +159,6 @@ function* sendPds4LabelUrlSearch(action){
         }
     }
     else{
-        data = data[0];
         data = {
             data: data
         }
