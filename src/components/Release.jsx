@@ -17,6 +17,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import rootActions from '../actions/rootActions';
 import TextField from '@material-ui/core/TextField';
 import ReleaseAlert from './ReleaseAlert';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import UatKeyWordAutoComplete from './UatKeyWordAutoComplete';
 import { findXmlTag, unprettify } from '../utils/xmlUtil';
 import { Alert, AlertTitle } from '@material-ui/lab';
@@ -64,6 +66,7 @@ const Release = () => {
   const [doiOrLidvid, setDoiOrLidvid] = useState("pds4lidvid");
   const [doiLidvid, setDoiLidvid] = useState("");
   const [labelUrl, setLabelUrl] = useState("");
+  const [force, setForce] = React.useState(false);
 
   const doiSearchResults = useSelector(state => {
     return state.appReducer.doiSearchResponse;
@@ -127,6 +130,10 @@ const Release = () => {
     dispatch(rootActions.appAction.setReleaseNode(event.target.value));
   }
 
+  const handleForceChange = (event) => {
+    setForce(event.target.checked);
+  };
+
   const handleSaveClick = event => {
     const {doi, lidvid, status} = doiSearchResults;
 
@@ -136,6 +143,7 @@ const Release = () => {
       node,
       status,
       submitter,
+      force,
       record: unprettify(releaseXml)
     };
     
@@ -279,12 +287,21 @@ const Release = () => {
                     onChange={handleNodeChange}
                   />
                 </form>
-
               </div>
+
+              <br/>
+
               <div>
-              <Button variant="outlined" color="primary" onClick={handleSaveClick}>
-                Save
-              </Button>
+                <Button variant="outlined" color="primary" onClick={handleSaveClick}>
+                  Save
+                </Button>
+
+                <FormControlLabel
+                  control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}
+                  label="Ignore warnings"
+                />
+
+                <br/>
 
                 <ReleaseAlert></ReleaseAlert>
               </div>

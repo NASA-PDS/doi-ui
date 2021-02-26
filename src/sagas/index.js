@@ -5,8 +5,7 @@ import { printXML, findXmlTag } from '../utils/xmlUtil';
 import doiNotFound from '../sagas/error';
 
 function* sendReserveContent(action){
-    const submitter = action.payload.submitter;
-    const node = action.payload.node;
+    const {submitter, node, force} = action.payload;
 
     let json = action.payload.excelContent;
     json = JSON.stringify(json);
@@ -19,6 +18,9 @@ function* sendReserveContent(action){
     }
     if(node){
         endpoint += '&node=' + node;
+    }
+    if(force){
+        endpoint += '&force=' + force;
     }
 
     endpoint = encodeURI(endpoint);
@@ -172,7 +174,7 @@ function* sendPdsLabelUrlSearchRequest(){
 }
 
 function* sendRelease(action){
-    const {submitter, node, lidvid } = action.payload;
+    const {submitter, node, lidvid, force } = action.payload;
 
     let endpoint = Config.api.reserveUrl;
     endpoint += '?action=draft';
@@ -182,6 +184,9 @@ function* sendRelease(action){
     }
     if(node){
         endpoint += '&node=' + node;
+    }
+    if(force){
+        endpoint += '&force=' + force;
     }
 
     endpoint = encodeURI(endpoint);
@@ -199,6 +204,9 @@ function* sendRelease(action){
 
     if(!data.errors){
         let endpoint = Config.api.releaseDoiUrl + encodeURI(lidvid) + "/submit";
+        if(force){
+            endpoint += '?force=' + force;
+        }
 
         const submitResponse = yield fetch(endpoint, {
             method: 'POST',
@@ -220,8 +228,7 @@ function* sendReleaseRequest(){
 }
 
 function* sendSaveRelease(action){
-    const submitter = action.payload.submitter;
-    const node = action.payload.node;
+    const {submitter, node, force} = action.payload;
 
     let endpoint = Config.api.reserveUrl;
     endpoint += '?action=draft';
@@ -231,6 +238,9 @@ function* sendSaveRelease(action){
     }
     if(node){
         endpoint += '&node=' + node;
+    }
+    if(force){
+        endpoint += '&force=' + force;
     }
 
     endpoint = encodeURI(endpoint);

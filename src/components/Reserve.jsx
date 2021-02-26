@@ -6,6 +6,8 @@ import rootActions from '../actions/rootActions';
 import ReserveExcelContent from './ReserveExcelContent';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 const useStyles = makeStyles((theme) => ({
   alert: {
@@ -19,6 +21,8 @@ const useStyles = makeStyles((theme) => ({
 const Reserve = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+
+  const [force, setForce] = React.useState(false);
 
   const excelContent = useSelector(state =>
     state.appReducer.reserveExcel
@@ -44,6 +48,10 @@ const Reserve = () => {
     dispatch(rootActions.appAction.setReserveNode(event.target.value));
   }
 
+  const handleForceChange = (event) => {
+    setForce(event.target.checked);
+  };
+
   const handleReserveButtonClick = event => {
     const convertedExcelContent = {
       labels: excelContent
@@ -52,7 +60,8 @@ const Reserve = () => {
     const reserveVariables = {
       excelContent: convertedExcelContent,
       submitter,
-      node
+      node,
+      force
     }
 
     dispatch(rootActions.appAction.sendReserveRequest(reserveVariables));
@@ -74,6 +83,7 @@ const Reserve = () => {
             <p><b>Error:</b> {String(reserveResponse.errors[0].name)}</p>
             <p><b>Description:</b> {String(reserveResponse.errors[0].message)}</p>
           </Alert>
+
           <p>
             <Button
               variant="outlined"
@@ -100,8 +110,11 @@ const Reserve = () => {
             onChange={handleSubmitterChange}
             required
           />
+
           <br/>
+
           <br/>
+
           <TextField 
             label="Node" 
             variant="outlined" 
@@ -110,18 +123,30 @@ const Reserve = () => {
             required
           />
         </form>
+
         <br/>
+
         <ImportData/>
+
         <ReserveExcelContent></ReserveExcelContent>
+
         <br/>
-        <Button 
-          variant="contained"
-          color="primary"
-          onClick={handleReserveButtonClick}
-          disabled={!(submitter && node && excelContent)}
-        >
-          Reserve
-        </Button>
+
+        <div>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleReserveButtonClick}
+            disabled={!(submitter && node && excelContent)}
+          >
+            Reserve
+          </Button>
+
+          <FormControlLabel
+            control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}
+            label="Ignore warnings"
+          />
+        </div>
       </div>
     }
   </div>;
