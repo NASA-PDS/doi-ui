@@ -6,6 +6,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import { useDispatch, useSelector } from 'react-redux';
 import { unprettify } from '../utils/xmlUtil';
 import rootActions from '../actions/rootActions';
@@ -16,8 +18,10 @@ const useStyles = makeStyles((theme) => ({
 
 const ReleaseAlert = () => {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
+
+  const [open, setOpen] = React.useState(false);
+  const [force, setForce] = React.useState(false);
 
   const releaseXml = useSelector(state =>
     state.appReducer.releaseXml
@@ -47,6 +51,10 @@ const ReleaseAlert = () => {
     setOpen(false);
   };
 
+  const handleForceChange = (event) => {
+    setForce(event.target.checked);
+  };
+
   const handleRelease = () => {
     setOpen(false);
 
@@ -57,6 +65,7 @@ const ReleaseAlert = () => {
       node,
       status,
       submitter,
+      force,
       record: unprettify(releaseXml)
     };
     
@@ -68,6 +77,11 @@ const ReleaseAlert = () => {
         <Button variant="outlined" color="primary" onClick={handleClickOpen}>
           Release
         </Button>
+
+        <FormControlLabel
+          control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}
+          label="Ignore warnings"
+        />
       </p>
 
       <Dialog
