@@ -292,10 +292,6 @@ const Release = () => {
               <br/>
 
               <div>
-                <Button variant="outlined" color="primary" onClick={handleSaveClick}>
-                  Save
-                </Button>
-
                 <FormControlLabel
                   control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}
                   label="Ignore warnings"
@@ -303,7 +299,13 @@ const Release = () => {
 
                 <br/>
 
-                <ReleaseAlert></ReleaseAlert>
+                <Button variant="outlined" color="primary" onClick={handleSaveClick}>
+                  Save
+                </Button>
+
+                <br/>
+
+                <ReleaseAlert force={force}></ReleaseAlert>
               </div>
             </div>
           :
