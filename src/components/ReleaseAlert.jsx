@@ -16,12 +16,11 @@ const useStyles = makeStyles((theme) => ({
  
 }));
 
-const ReleaseAlert = () => {
+const ReleaseAlert = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
   const [open, setOpen] = React.useState(false);
-  const [force, setForce] = React.useState(false);
 
   const releaseXml = useSelector(state =>
     state.appReducer.releaseXml
@@ -51,10 +50,6 @@ const ReleaseAlert = () => {
     setOpen(false);
   };
 
-  const handleForceChange = (event) => {
-    setForce(event.target.checked);
-  };
-
   const handleRelease = () => {
     setOpen(false);
 
@@ -65,7 +60,7 @@ const ReleaseAlert = () => {
       node,
       status,
       submitter,
-      force,
+      force: props.force,
       record: unprettify(releaseXml)
     };
     
@@ -77,11 +72,6 @@ const ReleaseAlert = () => {
         <Button variant="outlined" color="primary" onClick={handleClickOpen}>
           Release
         </Button>
-
-        <FormControlLabel
-          control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}
-          label="Ignore warnings"
-        />
       </p>
 
       <Dialog

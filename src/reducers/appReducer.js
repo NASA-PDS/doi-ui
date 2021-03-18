@@ -105,6 +105,11 @@ export default (state = initialState, action) => {
         ...state,
         releaseResponse: action.payload
       }
+    case 'RENDER_SAVE_RELEASE_RESPONSE':
+      return {
+        ...state,
+        doiSearchResponse: action.payload
+      }
     default:
       return state;
   }

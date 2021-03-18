@@ -239,13 +239,83 @@ const Release = () => {
 
         {doiSearchResults?
           doiSearchResults.errors?
-            <div>
-              <br/>
-              <Alert icon={false} severity="error" className={classes.alert}>
-                <AlertTitle>Error: {String(doiSearchResults.errors[0].name)}</AlertTitle>
-                  <b>Description:</b> {String(doiSearchResults.errors[0].message)} Please try searching again.
-              </Alert>
-            </div>
+            doiSearchResults.errors[0].message.startsWith("No record(s) could be found")?
+              <div>
+                <br/>
+                <Alert icon={false} severity="error" className={classes.alert}>
+                  <AlertTitle>Error: {String(doiSearchResults.errors[0].name)}</AlertTitle>
+                    <b>Description:</b> {String(doiSearchResults.errors[0].message)} Please try searching again.
+                </Alert>
+              </div>
+              :
+              <div>
+                <div>
+                  <br/>
+                  <Alert icon={false} severity="info">
+                    Your DOI is ready to be released. Please update the metadata below if necessary.
+                  </Alert>
+
+                  <p>
+                  <TextField
+                      className={classes.xmlTextBox}
+                      label="Metadata"
+                      multiline
+                      variant="outlined"
+                      value={releaseXml}
+                      onChange={handleReleaseXmlChange}
+                  />
+                </p>
+
+                  <UatKeyWordAutoComplete></UatKeyWordAutoComplete>
+
+                  <br/>
+
+                  <form>
+                    <TextField
+                        label="Submitter"
+                        variant="outlined"
+                        InputLabelProps={{ shrink: true }}
+                        value={submitter}
+                        onChange={handleSubmitterChange}
+                    />
+                    <br/>
+                    <br/>
+                    <TextField
+                        label="Node"
+                        variant="outlined"
+                        value={node}
+                        InputLabelProps={{ shrink: true }}
+                        onChange={handleNodeChange}
+                    />
+                  </form>
+                </div>
+
+                <br/>
+
+                <Alert icon={false} severity="error" className={classes.alert}>
+                  <AlertTitle>Error: {String(doiSearchResults.errors[0].name)}</AlertTitle>
+                  <b>Description:</b> {String(doiSearchResults.errors[0].message)}
+                </Alert>
+
+                <br/>
+
+                <div>
+                  <FormControlLabel
+                      control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}
+                      label="Ignore warnings"
+                  />
+
+                  <br/>
+
+                  <Button variant="outlined" color="primary" onClick={handleSaveClick}>
+                    Save
+                  </Button>
+
+                  <br/>
+
+                  <ReleaseAlert force={force}></ReleaseAlert>
+                </div>
+              </div>
             :
             <div>
               <div>
@@ -292,10 +362,6 @@ const Release = () => {
               <br/>
 
               <div>
-                <Button variant="outlined" color="primary" onClick={handleSaveClick}>
-                  Save
-                </Button>
-
                 <FormControlLabel
                   control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}
                   label="Ignore warnings"
@@ -303,7 +369,13 @@ const Release = () => {
 
                 <br/>
 
-                <ReleaseAlert></ReleaseAlert>
+                <Button variant="outlined" color="primary" onClick={handleSaveClick}>
+                  Save
+                </Button>
+
+                <br/>
+
+                <ReleaseAlert force={force}></ReleaseAlert>
               </div>
             </div>
           :
