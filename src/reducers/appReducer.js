@@ -1,7 +1,8 @@
 const initialState = {
-  isSelecting: true,
+  isSelecting: false,
   isReleasing: false,
   isReserving: false,
+  isViewing: true,
   reserveExcel: null,
   reserveSubmitter: null,
   reserveNode: null,
@@ -11,7 +12,8 @@ const initialState = {
   releaseKeywords: null,
   releaseResponse: null,
   releaseSubmitter: null,
-  releaseNode: null
+  releaseNode: null,
+  identifier: null
 }
   
 export default (state = initialState, action) => {
@@ -21,21 +23,33 @@ export default (state = initialState, action) => {
         ...state,
         isSelecting: action.payload,
         isReleasing: false,
-        isReserving: false
+        isReserving: false,
+        isViewing: false
       }
     case 'SET_IS_RELEASING':
       return {
         ...state,
         isSelecting: false,
         isReleasing: action.payload,
-        isReserving: false
+        isReserving: false,
+        isViewing: false
       }
     case 'SET_IS_RESERVING':
       return {
         ...state,
         isSelecting: false,
         isReleasing: false,
-        isReserving: action.payload
+        isReserving: action.payload,
+        isViewing: false
+      }
+    case 'SET_IS_VIEWING':
+      return {
+        ...state,
+        isSelecting: false,
+        isReleasing: false,
+        isReserving: false,
+        isViewing: action.payload,
+        doiSearchResponse: null
       }
     case 'UPDATE_RESERVE_EXCEL':
       return {
@@ -109,6 +123,25 @@ export default (state = initialState, action) => {
       return {
         ...state,
         doiSearchResponse: action.payload
+      }
+    case 'EXACT_VIEW_TO_RELEASE':
+      return {
+        ...state,
+        isSelecting: false,
+        isReleasing: action.payload.page,
+        isReserving: false,
+        isViewing: false,
+        identifier: action.payload.identifier
+      }
+    case 'RELATED_VIEW_TO_RELEASE':
+      return {
+        ...state,
+        isSelecting: false,
+        isReleasing: action.payload.page,
+        isReserving: false,
+        isViewing: false,
+        identifier: action.payload.identifier,
+        doiSearchResponse: null
       }
     default:
       return state;

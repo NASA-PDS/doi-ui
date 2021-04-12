@@ -36,7 +36,7 @@ const DoiAppBar = () => {
   }
 
   const handleTitleClick = event => {
-    dispatch(rootActions.appAction.setIsSelecting(true));
+    dispatch(rootActions.appAction.setIsViewing(true));
   }
 
   const classes = useStyles();

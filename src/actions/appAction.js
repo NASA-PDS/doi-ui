@@ -19,6 +19,13 @@ const setIsReserving = (payload) => dispatch => {
     });
 }
 
+const setIsViewing = (payload) => dispatch => {
+    dispatch({
+        type: 'SET_IS_VIEWING',
+        payload
+    });
+}
+
 const updateReserveExcel = (payload) => dispatch => {
     dispatch({
         type: 'UPDATE_RESERVE_EXCEL',
@@ -128,10 +135,25 @@ const updateReleaseKeywords = (payload) => dispatch => {
     })
 }
 
+const exactViewToRelease = (payload) => dispatch => {
+    dispatch({
+        type: 'EXACT_VIEW_TO_RELEASE',
+        payload
+    });
+}
+
+const relatedViewToRelease = (payload) => dispatch => {
+    dispatch({
+        type: 'RELATED_VIEW_TO_RELEASE',
+        payload
+    });
+}
+
 export default{
     setIsSelecting,
     setIsReleasing,
     setIsReserving,
+    setIsViewing,
     updateReserveExcel,
     sendReserveRequest,
     setReserveSubmitter,
@@ -147,6 +169,8 @@ export default{
     sendReleaseRequest,
     resetRelease,
     updateReleaseXml,
-    updateReleaseKeywords
+    updateReleaseKeywords,
+    exactViewToRelease,
+    relatedViewToRelease
 }
 
