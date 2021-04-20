@@ -1,12 +1,9 @@
-import React, {useEffect, useRef, useState} from 'react';
-import { useSelector } from 'react-redux';
+import React, {useEffect, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import Divider from '@material-ui/core/Divider';
-import {Alert} from '@material-ui/lab';
-import ViewDataExact from './ViewDataExact';
-import ViewDataRelated from './ViewDataRelated';
+import ViewDataTable from './ViewDataTable';
 import SearchIdentifier from './SearchIdentifier';
 import Config from "../Config";
+import {useSelector} from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   mtcRootChild: {
@@ -16,28 +13,23 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     flexDirection: 'column'
-  },
-  subsectionHeader: {
-    textAlign: 'left',
-    marginBottom: 0
   }
 }));
 
 const ViewData = () => {
   const classes = useStyles();
-  const [dataState, setDataState] = useState('initial');
+  const [dataState, setDataState] = useState('loading');
   const [allData, setAllData] = useState();
   const [exactData, setExactData] = useState();
   const [relatedData, setRelatedData] = useState();
-  const [searchedIdentifier, setSearchedIdentifier] = useState();
-  const [searchedIdentifierType, setSearchedIdentifierType] = useState();
-
+  
   useEffect(() => {
     if (allData === undefined) {
       let isSubscribed = true;
-      fetchDois().then(data => {
+      fetchAllData().then(data => {
         if (isSubscribed) {
           setAllData(data);
+          setRelatedData(data);
           setDataState('default');
         }
       });
@@ -45,152 +37,84 @@ const ViewData = () => {
         isSubscribed = false;
       }
     }
-  }, [allData]);
+  }, []);
 
-  const fetchDois = async () => {
+  const fetchAllData = async () => {
     const response = await fetch(Config.api.baseUrl)
     return await response.json();
   };
-
-  const getSearchType = (type) => {
-    setSearchedIdentifierType(type);
-  };
-
-  const getSearchValue = (value) => {
-    setSearchedIdentifier(value);
-  };
-
-  const getSearchResponse = (searchResponse) => {
-    setExactData(searchResponse);
-  };
-
-  const getSearchClearBoolean = (searchClear) => {
-    if (searchClear) {
-      setDataState('default');
+  
+  const searchClear = useSelector(state => {
+    return state.appReducer.searchClear;
+  });
+  
+  const searchIdentifier = useSelector(state => {
+    return state.appReducer.searchIdentifier;
+  });
+  
+  const searchResults = useSelector(state => {
+    return state.appReducer.searchResponse;
+  });
+  
+  useEffect(() => {
+    const exactMatch = (results, identifier) => {
+      return results.length === 1 && (identifier === results[0].doi || identifier === results[0].lidvid);
     }
-  };
-
-  const getRelatedData = () => {
-    if (exactData.errors && searchedIdentifierType === "doi") {
+    
+    let toSearchIdentifier;
+    if (searchClear) {
+      setExactData(null);
       setRelatedData(allData);
     } else {
-      let lidvid = null;
-      if (searchedIdentifierType === "doi") {
-        lidvid = exactData.lidvid;
-      } else if (searchedIdentifierType === "pds4lidvid") {
-        lidvid = searchedIdentifier;
-      }
-      while (lidvid.charAt(lidvid.length - 1) === ':') {
-        lidvid = lidvid.slice(0, -1);
-      }
-      const idx = lidvid.indexOf("::");
-      let lid;
-      if (idx !== -1) {
-        lid = lidvid.substring(0, idx).split(":");
-      } else {
-        lid = lidvid.split(":");
-      }
-      const lidLength = lid.length;
-
-      // urn:nasa:pds:<bundle_id>:<collection_id>:<product_id>::<version_id>
-      // baseId should be "urn:nasa:pds:".
-      // there's test data that doesn't follow this, e.g. lidvid=101::1.0
-      const baseLid = lid[0] + ":" + lid[1] + ":" + lid[2];
-      let bundleLid = null, collectionLid = null, productLid = null;
-      const SPLIT_IDX_BUNDLE = 3, SPLIT_IDX_COLLECTION = 4, SPLIT_IDX_PRODUCT = 5
-      if (lidLength > 3) {
-        bundleLid = baseLid + ":" + lid[SPLIT_IDX_BUNDLE];
-        if (lidLength > 4) {
-          collectionLid = bundleLid + ":" + lid[SPLIT_IDX_COLLECTION]
-          if (lidLength > 5) {
-            productLid = collectionLid + ":" + lid[SPLIT_IDX_PRODUCT]
-          }
+      if (searchResults.length >= 1) {
+        if (exactMatch(searchResults, searchIdentifier)) {
+          setExactData(searchResults);
+          // Look at searchResult's identifier b/c searchIdentifier could be a DOI. Extract bundle_id
+          toSearchIdentifier = searchResults[0].lidvid.split(':', 4)[3];   // i.e. urn:nasa:pds:bundle:collection:product::version
+        } else { // wildcard search with one or more results
+          setExactData([]);
+          setRelatedData(searchResults);
+        }
+      } else { // no match.
+        setExactData([]);
+        // Look at searchIdentifier. Assume if it's all numbers that it's a DOI and not usable for wildcard search
+        toSearchIdentifier = searchIdentifier.replace(/\./g, '').replace(/\//g, '');
+        const isDoi = /^\d+$/.test(toSearchIdentifier);
+        if (isDoi) {
+          toSearchIdentifier = undefined;
         }
       }
-
-
-      let relatedBundles = [], relatedCollections = [], relatedProducts = [];
-      if (bundleLid !== null) {
-        for (const dataItem of allData) {
-          const tempLid = dataItem.lidvid.split(":", SPLIT_IDX_BUNDLE + 1);
-          const tempBundleLid = baseLid + ":" + tempLid[SPLIT_IDX_BUNDLE];
-          if (tempBundleLid === bundleLid && lidvid !== dataItem.lidvid) {
-            relatedBundles.push(dataItem);
-          }
-        }
-
-        if (collectionLid !== null) {
-          for (const bundleItem of relatedBundles) {
-            const tempLid = bundleItem.lidvid.split(":", SPLIT_IDX_COLLECTION + 1);
-            const tempCollectionLid = bundleLid + ":" + tempLid[SPLIT_IDX_COLLECTION];
-            if (tempCollectionLid === collectionLid && lidvid !== bundleItem.lidvid) {
-              relatedCollections.push(bundleItem);
-            }
-          }
-
-          if (productLid !== null) {
-            for (const collectionItem of relatedCollections) {
-              const tempLid = collectionItem.lidvid.split(":", SPLIT_IDX_PRODUCT + 1);
-              const tempProductLid = collectionLid + ":" + tempLid[SPLIT_IDX_PRODUCT];
-              if (tempProductLid === productLid && lidvid !== collectionItem.lidvid) {
-                relatedProducts.push(collectionItem);
-              }
-            }
-          }
-        }
-      }
-
-      if (relatedBundles.length > 0) {
-        if (relatedCollections.length > 0) {
-          relatedBundles = relatedBundles.filter(x => relatedCollections.includes(x));
-          if (relatedProducts.length > 0) {
-            relatedCollections = relatedCollections.filter(x => relatedProducts.includes(x));
-            setRelatedData(relatedBundles.concat(relatedCollections, relatedProducts));
+      
+      if (toSearchIdentifier) {
+        toSearchIdentifier = '*' + toSearchIdentifier + '*';
+        fetchRelatedData(toSearchIdentifier).then(data => {
+          if (!exactMatch(data, searchResults[0].lidvid) || data.length > 1) {
+            setRelatedData(data);
           } else {
-            setRelatedData(relatedBundles.concat(relatedCollections));
+            setRelatedData(allData);
           }
-        } else {
-          setRelatedData(relatedBundles);
-        }
-      } else {
-        setRelatedData(allData);
+        });
       }
     }
-
-    setDataState('filtered');
+  }, [searchClear, searchIdentifier, searchResults]);
+  
+  const fetchRelatedData = async (identifier) => {
+    const response = await fetch(Config.api.baseUrl + '?lid=' + encodeURIComponent(identifier));
+    return await response.json();
   };
-
-  useEffect(() => {
-    if (exactData !== undefined) {
-      getRelatedData();
-    }
-  }, [exactData]);
-
 
   return (
       <div className={`${classes.flex} ${classes.mtcRootChild}`}>
-        <SearchIdentifier type={getSearchType} value={getSearchValue} onResponse={getSearchResponse} clearSearch={getSearchClearBoolean}/>
-
-        {searchedIdentifierType === 'N/A' && <Alert icon={false} className={classes.alert}>Unrecognized format for DOI and PDS4 LIDVID.</Alert>}
-
+        <SearchIdentifier />
         {(() => {
-          switch(dataState) {
-            case 'initial':
+          switch (dataState) {
+            case 'loading':
               return <div>SPINNER</div>
             case 'default':
               return (
                 <>
-                  <br/><br/><br/>
-                  <ViewDataRelated data={allData}/>
-                </>
-              )
-            case 'filtered':
-              return (
-                <>
-                  <ViewDataExact data={exactData}/>
-                  <Divider variant='middle'/>
-                  <h4 className={classes.subsectionHeader}>Related Products:</h4>
-                  <ViewDataRelated data={relatedData}/>
+                  <ViewDataTable data={exactData} table={"primary"}/>
+                  <ViewDataTable data={relatedData} table={"secondary"}/>
                 </>
               )
             default:

@@ -135,18 +135,18 @@ const updateReleaseKeywords = (payload) => dispatch => {
     })
 }
 
-const exactViewToRelease = (payload) => dispatch => {
+const setSearchClear = (payload) => dispatch => {
     dispatch({
-        type: 'EXACT_VIEW_TO_RELEASE',
+        type: 'SET_SEARCH_CLEAR',
         payload
     });
 }
 
-const relatedViewToRelease = (payload) => dispatch => {
+const sendSearchRequest = (payload) => dispatch => {
     dispatch({
-        type: 'RELATED_VIEW_TO_RELEASE',
+        type: "SEND_SEARCH_REQUEST",
         payload
-    });
+    })
 }
 
 export default{
@@ -170,7 +170,7 @@ export default{
     resetRelease,
     updateReleaseXml,
     updateReleaseKeywords,
-    exactViewToRelease,
-    relatedViewToRelease
+    setSearchClear,
+    sendSearchRequest
 }
 

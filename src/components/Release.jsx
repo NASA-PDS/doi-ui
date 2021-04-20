@@ -162,17 +162,17 @@ const Release = () => {
     
     dispatch(rootActions.appAction.sendSaveReleaseRequest(releaseData));
   }
-
-  const identifier =  useSelector(state => {
-    return state.appReducer.identifier;
+  
+  const releaseIdentifier =  useSelector(state => {
+    return state.appReducer.releaseIdentifier;
   });
-
+  
   useEffect(() => {
-    if (identifier !== null && doiSearchResults === null) {
-      dispatch(rootActions.appAction.sendLidvidSearchRequest(identifier));
+    if (releaseIdentifier !== null) {
+      dispatch(rootActions.appAction.sendLidvidSearchRequest(releaseIdentifier));
     }
-  }, [identifier]);
-
+  }, []);
+  
   return <div>
     <br/>
     <Typography variant="h4">Release</Typography>
@@ -205,7 +205,7 @@ const Release = () => {
         </div>
       :
       <div>
-        {identifier ? "" :
+        {!releaseIdentifier && (
           <div>
             <div>
               <p>This is where a description of release will go</p>
@@ -262,7 +262,7 @@ const Release = () => {
               </Paper>
             </div>
           </div>
-        }
+        )}
         {doiSearchResults?
           doiSearchResults.errors?
             doiSearchResults.errors[0].message.startsWith("No record(s) could be found")?

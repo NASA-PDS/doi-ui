@@ -3,6 +3,7 @@ import { all, call, put, takeLatest } from 'redux-saga/effects';
 import Config from '../Config';
 import { printXML, findXmlTag } from '../utils/xmlUtil';
 import doiNotFound from '../sagas/error';
+import recordNotFound from "../sagas/error";
 
 function* sendReserveContent(action){
     const {submitter, node, force} = action.payload;
@@ -263,6 +264,34 @@ function* sendSaveReleaseRequest(){
     yield takeLatest('SEND_SAVE_RELEASE_REQUEST', sendSaveRelease);
 }
 
+function* sendSearch(action){
+    const identifier = action.payload;
+    let endpoint = Config.api.baseUrl;
+    
+    if (identifier.startsWith('10.')) {
+        endpoint += '?doi=' + encodeURIComponent(identifier);
+    } else {
+        let searchIdentifier = identifier + '*';
+        if (!identifier.startsWith('urn:nasa:pds:')) {
+            searchIdentifier = '*' + searchIdentifier;
+        }
+        endpoint += '?lid=' + encodeURIComponent(searchIdentifier);
+    }
+    
+    const response = yield call(fetch, endpoint);
+    let data = yield response.json();
+    
+    if (data.length === 0) {
+        data = recordNotFound;
+    }
+
+    yield put({type: 'RENDER_SEARCH_RESULTS', payload: {identifier, data}});
+}
+
+function* sendSearchRequest(){
+    yield takeLatest('SEND_SEARCH_REQUEST', sendSearch);
+}
+
 export default function* rootSaga(){
     yield all([
         sendReserveRequest(),
@@ -270,6 +299,7 @@ export default function* rootSaga(){
         sendDoiSearchRequest(),
         sendPdsLabelUrlSearchRequest(),
         sendReleaseRequest(),
-        sendSaveReleaseRequest()
+        sendSaveReleaseRequest(),
+        sendSearchRequest()
     ])
 }

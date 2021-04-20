@@ -32,7 +32,7 @@ const AppBody = () => {
   }
 
   const handleReleaseClick = event => {
-    dispatch(rootActions.appAction.setIsReleasing(true));
+    dispatch(rootActions.appAction.setIsReleasing({"page": true, "identifier": null}));
   }
 
   return <Container>

@@ -13,7 +13,10 @@ const initialState = {
   releaseResponse: null,
   releaseSubmitter: null,
   releaseNode: null,
-  identifier: null
+  releaseIdentifier: null,  // always lidvid
+  searchClear: true,
+  searchIdentifier: null,   // doi, lidvid, or partial
+  searchResponse: null
 }
   
 export default (state = initialState, action) => {
@@ -30,9 +33,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isSelecting: false,
-        isReleasing: action.payload,
+        isReleasing: action.payload.page,
         isReserving: false,
-        isViewing: false
+        isViewing: false,
+        releaseIdentifier: action.payload.identifier
+        // searchResponse: null
       }
     case 'SET_IS_RESERVING':
       return {
@@ -49,7 +54,8 @@ export default (state = initialState, action) => {
         isReleasing: false,
         isReserving: false,
         isViewing: action.payload,
-        doiSearchResponse: null
+        releaseIdentifier: null,
+        searchResponse: null
       }
     case 'UPDATE_RESERVE_EXCEL':
       return {
@@ -124,24 +130,19 @@ export default (state = initialState, action) => {
         ...state,
         doiSearchResponse: action.payload
       }
-    case 'EXACT_VIEW_TO_RELEASE':
+    case 'SET_SEARCH_CLEAR':
       return {
         ...state,
-        isSelecting: false,
-        isReleasing: action.payload.page,
-        isReserving: false,
-        isViewing: false,
-        identifier: action.payload.identifier
+        searchClear: true,
+        searchIdentifier: null,
+        searchResponse: null
       }
-    case 'RELATED_VIEW_TO_RELEASE':
+    case 'RENDER_SEARCH_RESULTS':
       return {
         ...state,
-        isSelecting: false,
-        isReleasing: action.payload.page,
-        isReserving: false,
-        isViewing: false,
-        identifier: action.payload.identifier,
-        doiSearchResponse: null
+        searchClear: false,
+        searchIdentifier: action.payload.identifier,
+        searchResponse: action.payload.data
       }
     default:
       return state;

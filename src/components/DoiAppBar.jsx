@@ -32,7 +32,7 @@ const DoiAppBar = () => {
   }
   
   const handleReleaseClick = event => {
-    dispatch(rootActions.appAction.setIsReleasing(true));
+    dispatch(rootActions.appAction.setIsReleasing({"page": true, "identifier": null}));
   }
 
   const handleTitleClick = event => {
