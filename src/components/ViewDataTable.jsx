@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 		marginBottom: '20px'
 	},
 	tableContainer: {
-		maxHeight: 'calc(100vh - 400px)',
+		maxHeight: 'calc(100vh - 425px)',
 	},
 	tableHeader: {
 		'& th': {
@@ -70,6 +70,7 @@ const ViewDataTable = (props) => {
 	const [tableType, setTableType] = useState(props.table);
 	
 	const handleReleaseClick = (event, lidvid) => {
+		dispatch(rootActions.appAction.setSearchClear());
 		dispatch(rootActions.appAction.setIsReleasing({"page": true, "identifier": lidvid}));
 	};
 
@@ -109,7 +110,6 @@ const ViewDataTable = (props) => {
 		setPage(0);
 	}, [props.data, props.table]);
 
-
 	return (
 		<div className={`${classes.root} ${classes.margin}`}>
 			{data ?
@@ -126,6 +126,7 @@ const ViewDataTable = (props) => {
 												<TableRow>
 													<TableCell>DOI</TableCell>
 													<TableCell>LIDVID</TableCell>
+													<TableCell>Title</TableCell>
 													<TableCell>Status</TableCell>
 													<TableCell>Action</TableCell>
 													<TableCell>Last Updated</TableCell>
@@ -141,6 +142,7 @@ const ViewDataTable = (props) => {
 													<TableRow hover key={dataItem.lidvid}>
 														<TableCell className={classes.columnDoi}>{dataItem.doi ? dataItem.doi : '-'}</TableCell>
 														<TableCell className={classes.columnLidvid}>{dataItem.lidvid}</TableCell>
+														<TableCell>{dataItem.title}</TableCell>
 														<TableCell className={classes.columnStatus}>{massageStatus(dataItem.status.toLowerCase())}</TableCell>
 														<TableCell>{(() => {
 															switch (dataItem.status.toLowerCase()) {
@@ -148,7 +150,7 @@ const ViewDataTable = (props) => {
 																case 'reserved':
 																	return (
 																			<Button color="primary"
-																							className={classes.buttonLink}
+																							variant="contained"
 																							onClick={(event) => handleReleaseClick(event, dataItem.lidvid)}
 																			>
 																				Release
@@ -157,7 +159,7 @@ const ViewDataTable = (props) => {
 																case 'released':
 																	return (
 																			<Button color="primary"
-																							className={classes.buttonLink}
+																							variant="contained"
 																							onClick={(event) => handleReleaseClick(event, dataItem.lidvid)}
 																			>
 																				Update
@@ -166,9 +168,9 @@ const ViewDataTable = (props) => {
 																case 'review':
 																	return (
 																			<Button disabled
-																							className={classes.buttonLink}
+																							variant="contained"
 																			>
-																				<em>Pending</em>
+																				Pending
 																			</Button>
 																	);
 																default:

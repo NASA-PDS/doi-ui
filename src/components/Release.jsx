@@ -265,7 +265,7 @@ const Release = () => {
         )}
         {doiSearchResults?
           doiSearchResults.errors?
-            doiSearchResults.errors[0].message.startsWith("No record(s) could be found")?
+              doiSearchResults.errors[0].name.startsWith("Unknown") ?
               <div>
                 <br/>
                 <Alert icon={false} severity="error" className={classes.alert}>
@@ -298,7 +298,7 @@ const Release = () => {
 
                   <form>
                     <TextField
-                        label="Submitter"
+                        label="Submitter Email"
                         variant="outlined"
                         InputLabelProps={{ shrink: true }}
                         value={submitter}
@@ -311,13 +311,14 @@ const Release = () => {
                       <Select
                           labelId="select-nodes-label"
                           id="select-nodes"
-                          value={node.toUpperCase()}
+                          value={node? node.toUpperCase() : ''}
                           open={nodesOpen}
                           onOpen={handleNodesOpen}
                           onClose={handleNodesClose}
                           onChange={handleNodesSelect}
                           label="Nodes"
                       >
+                        <MenuItem value=''><em>None</em></MenuItem>
                         <MenuItem value={'ATM'}>ATM</MenuItem>
                         <MenuItem value={'ENG'}>ENG</MenuItem>
                         <MenuItem value={'GEO'}>GEO</MenuItem>
@@ -396,13 +397,14 @@ const Release = () => {
                     <Select
                         labelId="select-nodes-label"
                         id="select-nodes"
-                        value={node.toUpperCase()}
+                        value={node? node.toUpperCase() : ''}
                         open={nodesOpen}
                         onOpen={handleNodesOpen}
                         onClose={handleNodesClose}
                         onChange={handleNodesSelect}
                         label="Nodes"
                     >
+                      <MenuItem value=''><em>None</em></MenuItem>
                       <MenuItem value={'ATM'}>ATM</MenuItem>
                       <MenuItem value={'ENG'}>ENG</MenuItem>
                       <MenuItem value={'GEO'}>GEO</MenuItem>

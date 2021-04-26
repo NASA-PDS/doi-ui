@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Button, FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField, Typography } from '@material-ui/core';
 import ImportData from './ImportData.js';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,6 +15,10 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: "auto",
       marginRight: "auto"
     }
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
   }
 }));
 
@@ -23,6 +27,7 @@ const Reserve = () => {
   const dispatch = useDispatch();
 
   const [force, setForce] = React.useState(false);
+  const [nodesOpen, setNodesOpen] = useState(false);
 
   const excelContent = useSelector(state =>
     state.appReducer.reserveExcel
@@ -43,10 +48,18 @@ const Reserve = () => {
   const handleSubmitterChange = event => {
     dispatch(rootActions.appAction.setReserveSubmitter(event.target.value));
   }
-
-  const handleNodeChange = event => {
+  
+  const handleNodesSelect = event => {
     dispatch(rootActions.appAction.setReserveNode(event.target.value));
-  }
+  };
+  
+  const handleNodesOpen = () => {
+    setNodesOpen(true);
+  };
+  
+  const handleNodesClose = () => {
+    setNodesOpen(false);
+  };
 
   const handleForceChange = (event) => {
     setForce(event.target.checked);
@@ -95,7 +108,7 @@ const Reserve = () => {
         </div>
         :
         <div>
-          <Alert icon={false} severity="success">
+          <Alert icon={false} severity="success" className={classes.alert}>
             <AlertTitle>Submission Successful!</AlertTitle>
             An email will be sent to you when your submission has been reserved.
           </Alert>
@@ -104,7 +117,7 @@ const Reserve = () => {
       <div>
         <form>
           <TextField 
-            label="Submitter" 
+            label="Submitter Email"
             variant="outlined"
             value={submitter}
             onChange={handleSubmitterChange}
@@ -114,14 +127,31 @@ const Reserve = () => {
           <br/>
 
           <br/>
-
-          <TextField 
-            label="Node" 
-            variant="outlined" 
-            value={node}
-            onChange={handleNodeChange}
-            required
-          />
+  
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel id="select-nodes-label">Nodes</InputLabel>
+            <Select
+                labelId="select-nodes-label"
+                id="select-nodes"
+                value={node? node.toUpperCase() : ''}
+                open={nodesOpen}
+                onOpen={handleNodesOpen}
+                onClose={handleNodesClose}
+                onChange={handleNodesSelect}
+                label="Nodes"
+            >
+              <MenuItem value=''><em>None</em></MenuItem>
+              <MenuItem value={'ATM'}>ATM</MenuItem>
+              <MenuItem value={'ENG'}>ENG</MenuItem>
+              <MenuItem value={'GEO'}>GEO</MenuItem>
+              <MenuItem value={'IMG'}>IMG</MenuItem>
+              <MenuItem value={'NAIF'}>NAIF</MenuItem>
+              <MenuItem value={'PPI'}>PPI</MenuItem>
+              <MenuItem value={'RMS'}>RMS</MenuItem>
+              <MenuItem value={'SBN'}>SBN</MenuItem>
+              <MenuItem value={'SBN-PSI'}>SBN-PSI</MenuItem>
+            </Select>
+          </FormControl>
         </form>
 
         <br/>

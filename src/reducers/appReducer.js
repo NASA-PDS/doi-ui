@@ -54,8 +54,7 @@ export default (state = initialState, action) => {
         isReleasing: false,
         isReserving: false,
         isViewing: action.payload,
-        releaseIdentifier: null,
-        searchResponse: null
+        releaseIdentifier: null
       }
     case 'UPDATE_RESERVE_EXCEL':
       return {
