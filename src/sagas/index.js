@@ -2,8 +2,7 @@ import { useScrollTrigger } from '@material-ui/core';
 import { all, call, put, takeLatest } from 'redux-saga/effects';
 import Config from '../Config';
 import { printXML, findXmlTag } from '../utils/xmlUtil';
-import doiNotFound from '../sagas/error';
-import recordNotFound from "../sagas/error";
+import { doiNotFound, recordNotFound } from '../sagas/error';
 
 function* sendReserveContent(action){
     const {submitter, node, force} = action.payload;

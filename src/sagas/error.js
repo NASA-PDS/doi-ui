@@ -1,4 +1,4 @@
-const doiNotFound = {
+export const doiNotFound = {
     "errors": [
       {
         "message": "No record(s) could be found for the entered DOI",
@@ -7,7 +7,7 @@ const doiNotFound = {
     ]
   }
 
-const recordNotFound = {
+export const recordNotFound = {
   "errors": [
     {
       "message": "No record(s) could be found for the entered search term.",
@@ -15,8 +15,3 @@ const recordNotFound = {
     }
   ]
 }
-
-export default {
-  doiNotFound,
-  recordNotFound
-};

@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const SearchIdentifier = (props) => {
+const SearchIdentifier = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [searchIdentifier, setSearchIdentifier] = useState('');
@@ -40,6 +40,13 @@ const SearchIdentifier = (props) => {
 
     // doesn't need immediate listener unless real-time filter on user type
     // dispatch(rootActions.appAction.setSearchIdentifier(event.target.value.trim()));
+  };
+  
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleSearch();
+    }
   };
   
   const handleSearch = () => {
@@ -59,6 +66,7 @@ const SearchIdentifier = (props) => {
               value={searchIdentifier}
               inputProps={{ 'aria-label': 'search searchIdentifier' }}
               onChange={handleInputChange}
+              onKeyPress={handleKeyPress}
           />
           <IconButton
               className={classes.iconButton}

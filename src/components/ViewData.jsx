@@ -82,16 +82,30 @@ const ViewData = () => {
         const isDoi = /^\d+$/.test(toSearchIdentifier);
         if (isDoi) {
           toSearchIdentifier = undefined;
+        } else {
+          if (toSearchIdentifier.indexOf(':') !== -1) {
+            let idx;
+            if (toSearchIdentifier.startsWith('urn:nasa:pds')) {
+              idx = 'urn:nasa:pds:'.length;
+            } else if (toSearchIdentifier.startsWith(':')) {
+              idx = 1;
+            } else {
+              idx = 0;
+            }
+            toSearchIdentifier = toSearchIdentifier.substring(idx, toSearchIdentifier.indexOf(':', idx));
+          }
         }
       }
       
       if (toSearchIdentifier) {
         toSearchIdentifier = '*' + toSearchIdentifier + '*';
         fetchRelatedData(toSearchIdentifier).then(data => {
-          if (!exactMatch(data, searchResults[0].lidvid) || data.length > 1) {
-            setRelatedData(data);
-          } else {
+          if (data.length === 0) {
             setRelatedData(allData);
+          } else {
+            if (searchResults[0] === undefined || !exactMatch(data, searchResults[0].lidvid)) {
+              setRelatedData(data)
+            }
           }
         });
       }
