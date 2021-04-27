@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 		marginBottom: '20px'
 	},
 	tableContainer: {
-		maxHeight: 'calc(100vh - 425px)',
+		maxHeight: 'calc(100vh - 450px)',
 	},
 	tableHeader: {
 		'& th': {
@@ -59,6 +59,9 @@ const useStyles = makeStyles((theme) => ({
 	buttonLink: {
 		textTransform: 'initial',
 		padding: 0
+	},
+	subheader: {
+		display: 'flex'
 	}
 }));
 
@@ -111,7 +114,8 @@ const ViewDataTable = (props) => {
 	}, [props.data, props.table]);
 
 	return (
-		<div className={`${classes.root} ${classes.margin}`}>
+		<div className={`${classes.root} ${tableType === "primary" ? classes.margin : ""}`}>
+			{tableType === "secondary" && <h2 className={classes.subheader}>Recent Activity</h2>}
 			{data ?
 				data.length === 0 ?
 						<Alert icon={false} severity="error" className={`${classes.alert} ${classes.center}`}>
@@ -125,7 +129,7 @@ const ViewDataTable = (props) => {
 											<TableHead className={classes.tableHeader}>
 												<TableRow>
 													<TableCell>DOI</TableCell>
-													<TableCell>LIDVID</TableCell>
+													<TableCell>Identifier</TableCell>
 													<TableCell>Title</TableCell>
 													<TableCell>Status</TableCell>
 													<TableCell>Action</TableCell>
@@ -137,10 +141,15 @@ const ViewDataTable = (props) => {
 										{(rowsPerPage > 0
 														? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 														: data
-										).reverse().map((dataItem) => {
+										).map((dataItem) => {
 											return (
 													<TableRow hover key={dataItem.lidvid}>
-														<TableCell className={classes.columnDoi}>{dataItem.doi ? dataItem.doi : '-'}</TableCell>
+														<TableCell className={classes.columnDoi}>
+															{dataItem.doi ?
+																	dataItem.status.toLowerCase() === 'released' ?
+																			<a href="https://doi.org/" target="_blank">{dataItem.doi}</a> : dataItem.doi
+																	: '-'}
+														</TableCell>
 														<TableCell className={classes.columnLidvid}>{dataItem.lidvid}</TableCell>
 														<TableCell>{dataItem.title}</TableCell>
 														<TableCell className={classes.columnStatus}>{massageStatus(dataItem.status.toLowerCase())}</TableCell>

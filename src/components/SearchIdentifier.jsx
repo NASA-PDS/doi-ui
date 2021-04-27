@@ -62,6 +62,7 @@ const SearchIdentifier = () => {
       <div className={classes.center}>
         <Paper component="form" className={classes.search}>
           <InputBase
+              placeholder='Search by DOI or other PDS Identifier'
               className={classes.input}
               value={searchIdentifier}
               inputProps={{ 'aria-label': 'search searchIdentifier' }}

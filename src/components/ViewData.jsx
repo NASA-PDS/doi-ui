@@ -26,10 +26,21 @@ const ViewData = () => {
   useEffect(() => {
     if (allData === undefined) {
       let isSubscribed = true;
+      const jsonSort = (prop) => {
+        return function(a, b) {
+          if (a[prop] > b[prop]) {
+            return -1;
+          } else if (a[prop] < b[prop]) {
+            return 1;
+          }
+          return 0;
+        }
+      };
       fetchAllData().then(data => {
         if (isSubscribed) {
-          setAllData(data);
-          setRelatedData(data);
+          const sortedData = data.sort(jsonSort('update_date'));
+          setAllData(sortedData);
+          setRelatedData(sortedData);
           setDataState('default');
         }
       });
