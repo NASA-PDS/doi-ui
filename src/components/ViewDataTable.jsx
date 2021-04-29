@@ -146,7 +146,7 @@ const ViewDataTable = (props) => {
 													<TableRow hover key={dataItem.lidvid}>
 														<TableCell className={classes.columnDoi}>
 															{dataItem.doi ?
-																	dataItem.status.toLowerCase() === 'released' ?
+																	dataItem.status.toLowerCase() === 'registered' ?
 																			<a href="https://doi.org/" target="_blank">{dataItem.doi}</a> : dataItem.doi
 																	: '-'}
 														</TableCell>
@@ -165,7 +165,7 @@ const ViewDataTable = (props) => {
 																				Release
 																			</Button>
 																	);
-																case 'released':
+																case 'registered':
 																	return (
 																			<Button color="primary"
 																							variant="contained"

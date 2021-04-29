@@ -206,7 +206,7 @@ const Release = () => {
       :
       <div>
         {!releaseIdentifier && (
-          <div>
+          <>
             <div>
               <p>This is where a description of release will go</p>
               <p>Update a release by typing in a LIDVID or DOI</p>
@@ -261,185 +261,100 @@ const Release = () => {
                 </IconButton>
               </Paper>
             </div>
-          </div>
+          </>
         )}
-        {doiSearchResults?
-          doiSearchResults.errors?
-              doiSearchResults.errors[0].name.startsWith("Unknown") ?
-              <div>
-                <br/>
-                <Alert icon={false} severity="error" className={classes.alert}>
-                  <AlertTitle>Error: {String(doiSearchResults.errors[0].name)}</AlertTitle>
-                    <b>Description:</b> {String(doiSearchResults.errors[0].message)} Please try searching again.
-                </Alert>
-              </div>
-              :
-              <div>
-                <div>
-                  <br/>
-                  <Alert icon={false} severity="info">
-                    Your DOI is ready to be released. Please update the metadata below if necessary.
-                  </Alert>
-
-                  <p>
-                  <TextField
-                      className={classes.xmlTextBox}
-                      label="Metadata"
-                      multiline
-                      variant="outlined"
-                      value={releaseXml}
-                      onChange={handleReleaseXmlChange}
-                  />
-                </p>
-
-                  <UatKeyWordAutoComplete></UatKeyWordAutoComplete>
-
-                  <br/>
-
-                  <form>
-                    <TextField
-                        label="Submitter Email"
-                        variant="outlined"
-                        InputLabelProps={{ shrink: true }}
-                        value={submitter}
-                        onChange={handleSubmitterChange}
-                    />
-                    <br/>
-                    <br/>
-                    <FormControl variant="outlined" className={classes.formControl}>
-                      <InputLabel id="select-nodes-label">Nodes</InputLabel>
-                      <Select
-                          labelId="select-nodes-label"
-                          id="select-nodes"
-                          value={node? node.toUpperCase() : ''}
-                          open={nodesOpen}
-                          onOpen={handleNodesOpen}
-                          onClose={handleNodesClose}
-                          onChange={handleNodesSelect}
-                          label="Nodes"
-                      >
-                        <MenuItem value=''><em>None</em></MenuItem>
-                        <MenuItem value={'ATM'}>ATM</MenuItem>
-                        <MenuItem value={'ENG'}>ENG</MenuItem>
-                        <MenuItem value={'GEO'}>GEO</MenuItem>
-                        <MenuItem value={'IMG'}>IMG</MenuItem>
-                        <MenuItem value={'NAIF'}>NAIF</MenuItem>
-                        <MenuItem value={'PPI'}>PPI</MenuItem>
-                        <MenuItem value={'RMS'}>RMS</MenuItem>
-                        <MenuItem value={'SBN'}>SBN</MenuItem>
-                        <MenuItem value={'SBN-PSI'}>SBN-PSI</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </form>
-                </div>
-
-                <br/>
-
-                <Alert icon={false} severity="error" className={classes.alert}>
-                  <AlertTitle>Error: {String(doiSearchResults.errors[0].name)}</AlertTitle>
-                  <b>Description:</b> {String(doiSearchResults.errors[0].message)}
-                </Alert>
-
-                <br/>
-
-                <div>
-                  <FormControlLabel
-                      control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}
-                      label="Ignore warnings"
-                  />
-
-                  <br/>
-
-                  <Button variant="outlined" color="primary" onClick={handleSaveClick}>
-                    Save
-                  </Button>
-
-                  <br/>
-
-                  <ReleaseAlert force={force}></ReleaseAlert>
-                </div>
-              </div>
+        {doiSearchResults ?
+          doiSearchResults.errors ?
+            <>
+              <Alert icon={false} severity="error" className={classes.alert}>
+                <AlertTitle>Error: {String(doiSearchResults.errors[0].name)}</AlertTitle>
+                <b>Description:</b> {String(doiSearchResults.errors[0].message)}
+              </Alert>
+            </>
             :
+            <>
+              <Alert icon={false} severity="info">
+                Your DOI is ready to be released. Please update the metadata below if necessary.
+              </Alert>
+            </>
+          :
+          null
+        }
+        
+        {releaseXml &&
+          <div>
             <div>
-              <div>
-                <br/>
-                <Alert icon={false} severity="info">
-                  Your DOI is ready to be released. Please update the metadata below if necessary.
-                </Alert>
-
-                <p>
-                  <TextField
+              <p>
+                <TextField
                     className={classes.xmlTextBox}
                     label="Metadata"
                     multiline
                     variant="outlined"
                     value={releaseXml}
                     onChange={handleReleaseXmlChange}
-                  />
-                </p>
+                />
+              </p>
 
-                <UatKeyWordAutoComplete></UatKeyWordAutoComplete>
-
-                <br/>
-
-                <form>
-                  <TextField 
-                    label="Submitter Email"
-                    variant="outlined"
-                    InputLabelProps={{ shrink: true }}  
-                    value={submitter}
-                    onChange={handleSubmitterChange}
-                  />
-                  <br/>
-                  <br/>
-                  <FormControl variant="outlined" className={classes.formControl}>
-                    <InputLabel id="select-nodes-label">Nodes</InputLabel>
-                    <Select
-                        labelId="select-nodes-label"
-                        id="select-nodes"
-                        value={node? node.toUpperCase() : ''}
-                        open={nodesOpen}
-                        onOpen={handleNodesOpen}
-                        onClose={handleNodesClose}
-                        onChange={handleNodesSelect}
-                        label="Nodes"
-                    >
-                      <MenuItem value=''><em>None</em></MenuItem>
-                      <MenuItem value={'ATM'}>ATM</MenuItem>
-                      <MenuItem value={'ENG'}>ENG</MenuItem>
-                      <MenuItem value={'GEO'}>GEO</MenuItem>
-                      <MenuItem value={'IMG'}>IMG</MenuItem>
-                      <MenuItem value={'NAIF'}>NAIF</MenuItem>
-                      <MenuItem value={'PPI'}>PPI</MenuItem>
-                      <MenuItem value={'RMS'}>RMS</MenuItem>
-                      <MenuItem value={'SBN'}>SBN</MenuItem>
-                      <MenuItem value={'SBN-PSI'}>SBN-PSI</MenuItem>
-                    </Select>
-                  </FormControl>
-                </form>
-              </div>
+              <UatKeyWordAutoComplete></UatKeyWordAutoComplete>
 
               <br/>
 
-              <div>
-                <FormControlLabel
+              <form>
+                <TextField
+                    label="Submitter Email"
+                    variant="outlined"
+                    InputLabelProps={{ shrink: true }}
+                    value={submitter}
+                    onChange={handleSubmitterChange}
+                />
+                <br/>
+                <br/>
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <InputLabel id="select-nodes-label">Nodes</InputLabel>
+                  <Select
+                      labelId="select-nodes-label"
+                      id="select-nodes"
+                      value={node? node.toUpperCase() : ''}
+                      open={nodesOpen}
+                      onOpen={handleNodesOpen}
+                      onClose={handleNodesClose}
+                      onChange={handleNodesSelect}
+                      label="Nodes"
+                  >
+                    <MenuItem value=''><em>None</em></MenuItem>
+                    <MenuItem value={'ATM'}>ATM</MenuItem>
+                    <MenuItem value={'ENG'}>ENG</MenuItem>
+                    <MenuItem value={'GEO'}>GEO</MenuItem>
+                    <MenuItem value={'IMG'}>IMG</MenuItem>
+                    <MenuItem value={'NAIF'}>NAIF</MenuItem>
+                    <MenuItem value={'PPI'}>PPI</MenuItem>
+                    <MenuItem value={'RMS'}>RMS</MenuItem>
+                    <MenuItem value={'SBN'}>SBN</MenuItem>
+                    <MenuItem value={'SBN-PSI'}>SBN-PSI</MenuItem>
+                  </Select>
+                </FormControl>
+              </form>
+            </div>
+
+            <br/>
+
+            <div>
+              <FormControlLabel
                   control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}
                   label="Ignore warnings"
-                />
+              />
 
-                <br/>
+              <br/>
 
-                <Button variant="outlined" color="primary" onClick={handleSaveClick}>
-                  Save
-                </Button>
+              <Button variant="outlined" color="primary" onClick={handleSaveClick}>
+                Save
+              </Button>
 
-                <br/>
+              <br/>
 
-                <ReleaseAlert force={force}></ReleaseAlert>
-              </div>
+              <ReleaseAlert force={force}></ReleaseAlert>
             </div>
-          :
-          ""
+          </div>
         }
       </div>
     }
