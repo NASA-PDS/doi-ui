@@ -32,11 +32,11 @@ const DoiAppBar = () => {
   }
   
   const handleReleaseClick = event => {
-    dispatch(rootActions.appAction.setIsReleasing(true));
+    dispatch(rootActions.appAction.setIsReleasing({"page": true, "identifier": null}));
   }
 
   const handleTitleClick = event => {
-    dispatch(rootActions.appAction.setIsSelecting(true));
+    dispatch(rootActions.appAction.setIsViewing(true));
   }
 
   const classes = useStyles();

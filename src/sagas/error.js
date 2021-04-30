@@ -1,4 +1,4 @@
-const doiNotFound = {
+export const doiNotFound = {
     "errors": [
       {
         "message": "No record(s) could be found for the entered DOI",
@@ -7,4 +7,11 @@ const doiNotFound = {
     ]
   }
 
-export default doiNotFound;
+export const recordNotFound = {
+  "errors": [
+    {
+      "message": "No record(s) could be found for the entered search term.",
+      "name": "UnknownIdentifierException"
+    }
+  ]
+}

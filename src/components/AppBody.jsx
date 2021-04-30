@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Release from './Release';
 import Reserve from './Reserve';
+import ViewData from './ViewData';
 import Button from '@material-ui/core/Button';
 import rootActions from '../actions/rootActions';
 import Container from '@material-ui/core/Container';
@@ -15,9 +16,14 @@ const AppBody = () => {
   const isReleasing = useSelector(state => 
     state.appReducer.isReleasing
   )
+
   const isReserving = useSelector(state => 
     state.appReducer.isReserving
   )
+
+  const isViewing = useSelector(state =>
+      state.appReducer.isViewing
+  );
 
   const dispatch = useDispatch();
 
@@ -26,7 +32,7 @@ const AppBody = () => {
   }
 
   const handleReleaseClick = event => {
-    dispatch(rootActions.appAction.setIsReleasing(true));
+    dispatch(rootActions.appAction.setIsReleasing({"page": true, "identifier": null}));
   }
 
   return <Container>
@@ -68,6 +74,13 @@ const AppBody = () => {
       <Reserve/>  
       :
       ''
+    }
+
+    {
+      isViewing?
+        <ViewData/>
+        :
+        ''
     }
   </Container>;
 };

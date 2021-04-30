@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -56,6 +56,10 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: "auto",
       marginRight: "auto"
     }
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
   }
 }));
 
@@ -66,7 +70,8 @@ const Release = () => {
   const [doiOrLidvid, setDoiOrLidvid] = useState("pds4lidvid");
   const [doiLidvid, setDoiLidvid] = useState("");
   const [labelUrl, setLabelUrl] = useState("");
-  const [force, setForce] = React.useState(false);
+  const [force, setForce] = useState(false);
+  const [nodesOpen, setNodesOpen] = useState(false);
 
   const doiSearchResults = useSelector(state => {
     return state.appReducer.doiSearchResponse;
@@ -126,9 +131,17 @@ const Release = () => {
     dispatch(rootActions.appAction.setReleaseSubmitter(event.target.value));
   }
 
-  const handleNodeChange = event => {
+  const handleNodesSelect = event => {
     dispatch(rootActions.appAction.setReleaseNode(event.target.value));
   }
+
+  const handleNodesOpen = () => {
+    setNodesOpen(true);
+  };
+
+  const handleNodesClose = () => {
+    setNodesOpen(false);
+  };
 
   const handleForceChange = (event) => {
     setForce(event.target.checked);
@@ -149,7 +162,17 @@ const Release = () => {
     
     dispatch(rootActions.appAction.sendSaveReleaseRequest(releaseData));
   }
-
+  
+  const releaseIdentifier =  useSelector(state => {
+    return state.appReducer.releaseIdentifier;
+  });
+  
+  useEffect(() => {
+    if (releaseIdentifier !== null) {
+      dispatch(rootActions.appAction.sendLidvidSearchRequest(releaseIdentifier));
+    }
+  }, []);
+  
   return <div>
     <br/>
     <Typography variant="h4">Release</Typography>
@@ -182,204 +205,156 @@ const Release = () => {
         </div>
       :
       <div>
-        <div>
-          <p>This is where a description of release will go</p>
-          <p>Update a release by typing in a LIDVID or DOI</p>
-        </div>
-
-        <div className={classes.center}>
-          <Paper component="form" className={classes.root}>
-            <FormControl>
-              <Select
-                value={doiOrLidvid}
-                onChange={handleDoiLidvidChange}
-              >
-                <MenuItem value={"doi"}>DOI</MenuItem>
-                <MenuItem value={"pds4lidvid"}>PDS4 LIDVID</MenuItem>
-              </Select>
-            </FormControl>
-
-            <InputBase
-              className={classes.input}
-              value={doiLidvid}
-              inputProps={{ 'aria-label': 'search google maps' }}
-              onChange={handleDoiLidvidInputChange}
-            />
-            <IconButton 
-              className={classes.iconButton} 
-              aria-label="search"
-              onClick={handleDoiLidvidSearch}
-            >
-              <SearchIcon />
-            </IconButton>
-          </Paper>
-        </div>
-      
-        <p>OR</p>
-
-        <div className={classes.center}>
-          <Paper component="form" className={classes.root}>
-            <Typography>
-              PDS4 Label URL
-            </Typography>
-            <InputBase
-              className={classes.input}
-              inputProps={{ 'aria-label': 'Enter PDS4 Label Url' }}
-              onChange={handleLabelUrlChange}
-            />
-            <IconButton 
-              className={classes.iconButton}
-              aria-label="search"
-              onClick={handleLabelUrlSearch}
-            >
-              <SearchIcon />
-            </IconButton>
-          </Paper>
-        </div>
-
-        {doiSearchResults?
-          doiSearchResults.errors?
-            doiSearchResults.errors[0].message.startsWith("No record(s) could be found")?
-              <div>
-                <br/>
-                <Alert icon={false} severity="error" className={classes.alert}>
-                  <AlertTitle>Error: {String(doiSearchResults.errors[0].name)}</AlertTitle>
-                    <b>Description:</b> {String(doiSearchResults.errors[0].message)} Please try searching again.
-                </Alert>
-              </div>
-              :
-              <div>
-                <div>
-                  <br/>
-                  <Alert icon={false} severity="info">
-                    Your DOI is ready to be released. Please update the metadata below if necessary.
-                  </Alert>
-
-                  <p>
-                  <TextField
-                      className={classes.xmlTextBox}
-                      label="Metadata"
-                      multiline
-                      variant="outlined"
-                      value={releaseXml}
-                      onChange={handleReleaseXmlChange}
-                  />
-                </p>
-
-                  <UatKeyWordAutoComplete></UatKeyWordAutoComplete>
-
-                  <br/>
-
-                  <form>
-                    <TextField
-                        label="Submitter"
-                        variant="outlined"
-                        InputLabelProps={{ shrink: true }}
-                        value={submitter}
-                        onChange={handleSubmitterChange}
-                    />
-                    <br/>
-                    <br/>
-                    <TextField
-                        label="Node"
-                        variant="outlined"
-                        value={node}
-                        InputLabelProps={{ shrink: true }}
-                        onChange={handleNodeChange}
-                    />
-                  </form>
-                </div>
-
-                <br/>
-
-                <Alert icon={false} severity="error" className={classes.alert}>
-                  <AlertTitle>Error: {String(doiSearchResults.errors[0].name)}</AlertTitle>
-                  <b>Description:</b> {String(doiSearchResults.errors[0].message)}
-                </Alert>
-
-                <br/>
-
-                <div>
-                  <FormControlLabel
-                      control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}
-                      label="Ignore warnings"
-                  />
-
-                  <br/>
-
-                  <Button variant="outlined" color="primary" onClick={handleSaveClick}>
-                    Save
-                  </Button>
-
-                  <br/>
-
-                  <ReleaseAlert force={force}></ReleaseAlert>
-                </div>
-              </div>
-            :
+        {!releaseIdentifier && (
+          <>
             <div>
-              <div>
-                <br/>
-                <Alert icon={false} severity="info">
-                  Your DOI is ready to be released. Please update the metadata below if necessary.
-                </Alert>
+              <p>This is where a description of release will go</p>
+              <p>Update a release by typing in a LIDVID or DOI</p>
+            </div>
 
-                <p>
-                  <TextField
+            <div className={classes.center}>
+              <Paper component="form" className={classes.root}>
+                <FormControl>
+                  <Select
+                    value={doiOrLidvid}
+                    onChange={handleDoiLidvidChange}
+                  >
+                    <MenuItem value={"doi"}>DOI</MenuItem>
+                    <MenuItem value={"pds4lidvid"}>PDS4 LIDVID</MenuItem>
+                  </Select>
+                </FormControl>
+
+                <InputBase
+                  className={classes.input}
+                  value={doiLidvid}
+                  inputProps={{ 'aria-label': 'search google maps' }}
+                  onChange={handleDoiLidvidInputChange}
+                />
+                <IconButton
+                  className={classes.iconButton}
+                  aria-label="search"
+                  onClick={handleDoiLidvidSearch}
+                >
+                  <SearchIcon />
+                </IconButton>
+              </Paper>
+            </div>
+
+            <p>OR</p>
+
+            <div className={classes.center}>
+              <Paper component="form" className={classes.root}>
+                <Typography>
+                  PDS4 Label URL
+                </Typography>
+                <InputBase
+                  className={classes.input}
+                  inputProps={{ 'aria-label': 'Enter PDS4 Label Url' }}
+                  onChange={handleLabelUrlChange}
+                />
+                <IconButton
+                  className={classes.iconButton}
+                  aria-label="search"
+                  onClick={handleLabelUrlSearch}
+                >
+                  <SearchIcon />
+                </IconButton>
+              </Paper>
+            </div>
+          </>
+        )}
+        {doiSearchResults ?
+          doiSearchResults.errors ?
+            <>
+              <Alert icon={false} severity="error" className={classes.alert}>
+                <AlertTitle>Error: {String(doiSearchResults.errors[0].name)}</AlertTitle>
+                <b>Description:</b> {String(doiSearchResults.errors[0].message)}
+              </Alert>
+            </>
+            :
+            <>
+              <Alert icon={false} severity="info">
+                Your DOI is ready to be released. Please update the metadata below if necessary.
+              </Alert>
+            </>
+          :
+          null
+        }
+        
+        {releaseXml &&
+          <div>
+            <div>
+              <p>
+                <TextField
                     className={classes.xmlTextBox}
                     label="Metadata"
                     multiline
                     variant="outlined"
                     value={releaseXml}
                     onChange={handleReleaseXmlChange}
-                  />
-                </p>
+                />
+              </p>
 
-                <UatKeyWordAutoComplete></UatKeyWordAutoComplete>
-
-                <br/>
-
-                <form>
-                  <TextField 
-                    label="Submitter" 
-                    variant="outlined"
-                    InputLabelProps={{ shrink: true }}  
-                    value={submitter}
-                    onChange={handleSubmitterChange}
-                  />
-                  <br/>
-                  <br/>
-                  <TextField 
-                    label="Node" 
-                    variant="outlined" 
-                    value={node}
-                    InputLabelProps={{ shrink: true }}  
-                    onChange={handleNodeChange}
-                  />
-                </form>
-              </div>
+              <UatKeyWordAutoComplete></UatKeyWordAutoComplete>
 
               <br/>
 
-              <div>
-                <FormControlLabel
+              <form>
+                <TextField
+                    label="Submitter Email"
+                    variant="outlined"
+                    InputLabelProps={{ shrink: true }}
+                    value={submitter}
+                    onChange={handleSubmitterChange}
+                />
+                <br/>
+                <br/>
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <InputLabel id="select-nodes-label">Nodes</InputLabel>
+                  <Select
+                      labelId="select-nodes-label"
+                      id="select-nodes"
+                      value={node? node.toUpperCase() : ''}
+                      open={nodesOpen}
+                      onOpen={handleNodesOpen}
+                      onClose={handleNodesClose}
+                      onChange={handleNodesSelect}
+                      label="Nodes"
+                  >
+                    <MenuItem value=''><em>None</em></MenuItem>
+                    <MenuItem value={'ATM'}>ATM</MenuItem>
+                    <MenuItem value={'ENG'}>ENG</MenuItem>
+                    <MenuItem value={'GEO'}>GEO</MenuItem>
+                    <MenuItem value={'IMG'}>IMG</MenuItem>
+                    <MenuItem value={'NAIF'}>NAIF</MenuItem>
+                    <MenuItem value={'PPI'}>PPI</MenuItem>
+                    <MenuItem value={'RMS'}>RMS</MenuItem>
+                    <MenuItem value={'SBN'}>SBN</MenuItem>
+                    <MenuItem value={'SBN-PSI'}>SBN-PSI</MenuItem>
+                  </Select>
+                </FormControl>
+              </form>
+            </div>
+
+            <br/>
+
+            <div>
+              <FormControlLabel
                   control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}
                   label="Ignore warnings"
-                />
+              />
 
-                <br/>
+              <br/>
 
-                <Button variant="outlined" color="primary" onClick={handleSaveClick}>
-                  Save
-                </Button>
+              <Button variant="outlined" color="primary" onClick={handleSaveClick}>
+                Save
+              </Button>
 
-                <br/>
+              <br/>
 
-                <ReleaseAlert force={force}></ReleaseAlert>
-              </div>
+              <ReleaseAlert force={force}></ReleaseAlert>
             </div>
-          :
-          ""
+          </div>
         }
       </div>
     }
