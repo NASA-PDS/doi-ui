@@ -195,7 +195,7 @@ function* sendRelease(action){
         method: 'POST',
         headers: {
             "Accept": "application/json",
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/xml'
         },
         body: action.payload.record
     });
@@ -212,7 +212,7 @@ function* sendRelease(action){
             method: 'POST',
             headers: {
                 "Accept": "application/json",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/xml'
             }
         });
     
@@ -249,7 +249,7 @@ function* sendSaveRelease(action){
         method: 'POST',
         headers: {
             "Accept": "application/json",
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/xml'
         },
         body: action.payload.record
     });
