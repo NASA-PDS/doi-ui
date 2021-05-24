@@ -8,6 +8,7 @@ An example for the reservation excel input file can be found at https://pds-engi
 Install the pds-doi-service:
 
     pip install pds-doi-service
+    pds-doi-api
 
 See https://nasa-pds.github.io/pds-doi-service/ for details
 
