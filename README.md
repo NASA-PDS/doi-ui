@@ -1,9 +1,27 @@
 # pds-doi-ui
 Front-end interface for pds-doi-service
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
 An example for the reservation excel input file can be found at https://pds-engineering.jpl.nasa.gov/user/login?destination=node/691
+
+## Pre-requisites
+
+Install the pds-doi-service:
+
+    pip install pds-doi-service
+
+See https://nasa-pds.github.io/pds-doi-service/ for details
+
+
+## For administrator
+
+Deploy a stable release
+
+    git clone https://github.com/NASA-PDS/pds-doi-ui.git
+    git checkout v0.1.0
+
+
+Then follow instruction for "build locally". no binary packages are available yet for this application.
+
 
 ## To Build Locally
 
