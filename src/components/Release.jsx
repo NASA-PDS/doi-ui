@@ -22,13 +22,16 @@ import Checkbox from '@material-ui/core/Checkbox';
 import UatKeyWordAutoComplete from './UatKeyWordAutoComplete';
 import { findXmlTag, unprettify } from '../utils/xmlUtil';
 import { Alert, AlertTitle } from '@material-ui/lab';
+import Submitter from './Submitter';
+import PageHeader from "./PageHeader";
  
 const useStyles = makeStyles((theme) => ({
-  root: {
+  inputBar: {
     padding: '2px 4px',
     display: 'flex',
     alignItems: 'center',
-    width: 400
+    width: 400,
+    marginBottom: '1em'
   },
   input: {
     marginLeft: theme.spacing(1),
@@ -56,10 +59,6 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: "auto",
       marginRight: "auto"
     }
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
   }
 }));
 
@@ -67,16 +66,16 @@ const Release = () => {
   const classes = useStyles();
 
   const dispatch = useDispatch();
-  const [doiOrLidvid, setDoiOrLidvid] = useState("pds4lidvid");
-  const [doiLidvid, setDoiLidvid] = useState("");
-  const [labelUrl, setLabelUrl] = useState("");
   const [force, setForce] = useState(false);
-  const [nodesOpen, setNodesOpen] = useState(false);
-
+  
   const doiSearchResults = useSelector(state => {
     return state.appReducer.doiSearchResponse;
   });
 
+  const saveResponse = useSelector(state => {
+    return state.appReducer.saveResponse;
+  });
+  
   const releaseResponse = useSelector(state => {
     return state.appReducer.releaseResponse;
   });
@@ -85,38 +84,15 @@ const Release = () => {
     state.appReducer.releaseXml
   );
 
+  const status = doiSearchResults ? doiSearchResults.status : '';
+  
   const submitter = useSelector(state =>
-    state.appReducer.releaseSubmitter
+    state.appReducer.submitter
   );
 
   const node = useSelector(state =>
-    state.appReducer.releaseNode
+    state.appReducer.node
   );
-
-  const handleDoiLidvidChange = (event) => {
-    setDoiOrLidvid(event.target.value);
-  };
-
-  const handleDoiLidvidInputChange = (event) => {
-    setDoiLidvid(event.target.value);
-  };
-
-  const handleLabelUrlChange = (event) => {
-    setLabelUrl(event.target.value);
-  };
-
-  const handleLabelUrlSearch = () => {
-    dispatch(rootActions.appAction.sendPds4LabelSearchRequest(labelUrl));
-  };
-
-  const handleDoiLidvidSearch = () => {
-    if(doiOrLidvid === "doi"){
-      dispatch(rootActions.appAction.sendDoiSearchRequest(doiLidvid));
-    }
-    if(doiOrLidvid === "pds4lidvid"){
-      dispatch(rootActions.appAction.sendLidvidSearchRequest(doiLidvid));
-    }
-  };
 
   const handleReleaseXmlChange = (event) => {
     dispatch(rootActions.appAction.updateReleaseXml(event.target.value));
@@ -126,22 +102,6 @@ const Release = () => {
   const handleRetryRelease = event => {
     dispatch(rootActions.appAction.retryRelease());
   }
-
-  const handleSubmitterChange = event => {
-    dispatch(rootActions.appAction.setReleaseSubmitter(event.target.value));
-  }
-
-  const handleNodesSelect = event => {
-    dispatch(rootActions.appAction.setReleaseNode(event.target.value));
-  }
-
-  const handleNodesOpen = () => {
-    setNodesOpen(true);
-  };
-
-  const handleNodesClose = () => {
-    setNodesOpen(false);
-  };
 
   const handleForceChange = (event) => {
     setForce(event.target.checked);
@@ -162,7 +122,7 @@ const Release = () => {
     
     dispatch(rootActions.appAction.sendSaveReleaseRequest(releaseData));
   }
-  
+
   const releaseIdentifier =  useSelector(state => {
     return state.appReducer.releaseIdentifier;
   });
@@ -172,193 +132,94 @@ const Release = () => {
       dispatch(rootActions.appAction.sendLidvidSearchRequest(releaseIdentifier));
     }
   }, []);
+
+  return <div className="mtc-root-child">
+    <PageHeader header={'Release DOI'}/>
+    <br/><br/>
+    {releaseXml &&
+      <>
+        <p>
+          <TextField
+            className={classes.xmlTextBox}
+            label="Metadata"
+            multiline
+            variant="outlined"
+            value={releaseXml}
+            onChange={handleReleaseXmlChange}
+          />
+        </p>
+    
+        <UatKeyWordAutoComplete></UatKeyWordAutoComplete>
+    
+        <br/>
   
-  return <div>
-    <br/>
-    <Typography variant="h4">Release</Typography>
-    <br/>  
-
-    {releaseResponse?
-      releaseResponse.errors?
-        <div>
-          <Alert icon={false} severity="error" className={classes.alert}>
-            <AlertTitle>Error: {String(releaseResponse.errors[0].name)}</AlertTitle>
-              <b>Description:</b> {String(releaseResponse.errors[0].message)}
-              <p>Please try releasing again.</p>
-          </Alert>
-
-          <p>
-            <Button
-              variant="outlined"
-              onClick={handleRetryRelease}
-            >
-              Retry
-            </Button>
-          </p>
-        </div>
-        :
-        <div>
-          <Alert icon={false} severity="success" className={classes.alert}>
-            <AlertTitle>Release Submission Successful!</AlertTitle>
-            Your DOI will be submitted to Engineering Node. You will be notified if the DOI can be released or if updates are required.
-          </Alert>
-        </div>
-      :
-      <div>
-        {!releaseIdentifier && (
-          <>
-            <div>
-              <p>This is where a description of release will go</p>
-              <p>Update a release by typing in a LIDVID or DOI</p>
-            </div>
-
-            <div className={classes.center}>
-              <Paper component="form" className={classes.root}>
-                <FormControl>
-                  <Select
-                    value={doiOrLidvid}
-                    onChange={handleDoiLidvidChange}
-                  >
-                    <MenuItem value={"doi"}>DOI</MenuItem>
-                    <MenuItem value={"pds4lidvid"}>PDS4 LIDVID</MenuItem>
-                  </Select>
-                </FormControl>
-
-                <InputBase
-                  className={classes.input}
-                  value={doiLidvid}
-                  inputProps={{ 'aria-label': 'search google maps' }}
-                  onChange={handleDoiLidvidInputChange}
-                />
-                <IconButton
-                  className={classes.iconButton}
-                  aria-label="search"
-                  onClick={handleDoiLidvidSearch}
-                >
-                  <SearchIcon />
-                </IconButton>
-              </Paper>
-            </div>
-
-            <p>OR</p>
-
-            <div className={classes.center}>
-              <Paper component="form" className={classes.root}>
-                <Typography>
-                  PDS4 Label URL
-                </Typography>
-                <InputBase
-                  className={classes.input}
-                  inputProps={{ 'aria-label': 'Enter PDS4 Label Url' }}
-                  onChange={handleLabelUrlChange}
-                />
-                <IconButton
-                  className={classes.iconButton}
-                  aria-label="search"
-                  onClick={handleLabelUrlSearch}
-                >
-                  <SearchIcon />
-                </IconButton>
-              </Paper>
-            </div>
-          </>
-        )}
-        {doiSearchResults ?
-          doiSearchResults.errors ?
+        <Submitter/>
+  
+        <div className="flex-column align-center">
+          {saveResponse && saveResponse.errors &&
             <>
               <Alert icon={false} severity="error" className={classes.alert}>
-                <AlertTitle>Error: {String(doiSearchResults.errors[0].name)}</AlertTitle>
-                <b>Description:</b> {String(doiSearchResults.errors[0].message)}
+                <AlertTitle>Error: {String(saveResponse.errors[0].name)}</AlertTitle>
+                <b>Description:</b> {String(saveResponse.errors[0].message)}
               </Alert>
+              <br/>
             </>
+          }
+          <Button
+            variant="contained"
+            onClick={handleSaveClick}
+          >
+            Save
+          </Button>
+          
+          {releaseResponse &&
+            <FormControlLabel
+                control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}
+                label="Ignore warnings"
+            />
+          }
+          
+          {releaseResponse?
+            releaseResponse.errors?
+              <>
+                <br/><br/>
+                <Alert icon={false} severity="error" className={classes.alert}>
+                  <AlertTitle>Error: {String(releaseResponse.errors[0].name)}</AlertTitle>
+                    <b>Description:</b> {String(releaseResponse.errors[0].message)}
+                    <p>Please address the error then try releasing again.</p>
+                </Alert>
+      
+                <p>
+                  <Button
+                    variant="outlined"
+                    onClick={handleRetryRelease}
+                  >
+                    Retry
+                  </Button>
+                </p>
+              </>
+              :
+              <>
+                <br/><br/>
+                <Alert icon={false} severity="success" className={classes.alert}>
+                  <AlertTitle>Release Submission Successful!</AlertTitle>
+                  Your DOI will be submitted to Engineering Node. You will be notified if the DOI can be released or if updates are required.
+                </Alert>
+              </>
             :
             <>
-              <Alert icon={false} severity="info">
-                Your DOI is ready to be released. Please update the metadata below if necessary.
-              </Alert>
-            </>
-          :
-          null
-        }
-        
-        {releaseXml &&
-          <div>
-            <div>
-              <p>
-                <TextField
-                    className={classes.xmlTextBox}
-                    label="Metadata"
-                    multiline
-                    variant="outlined"
-                    value={releaseXml}
-                    onChange={handleReleaseXmlChange}
-                />
-              </p>
-
-              <UatKeyWordAutoComplete></UatKeyWordAutoComplete>
-
-              <br/>
-
-              <form>
-                <TextField
-                    label="Submitter Email"
-                    variant="outlined"
-                    InputLabelProps={{ shrink: true }}
-                    value={submitter}
-                    onChange={handleSubmitterChange}
-                />
-                <br/>
-                <br/>
-                <FormControl variant="outlined" className={classes.formControl}>
-                  <InputLabel id="select-nodes-label">Nodes</InputLabel>
-                  <Select
-                      labelId="select-nodes-label"
-                      id="select-nodes"
-                      value={node? node.toUpperCase() : ''}
-                      open={nodesOpen}
-                      onOpen={handleNodesOpen}
-                      onClose={handleNodesClose}
-                      onChange={handleNodesSelect}
-                      label="Nodes"
-                  >
-                    <MenuItem value=''><em>None</em></MenuItem>
-                    <MenuItem value={'ATM'}>ATM</MenuItem>
-                    <MenuItem value={'ENG'}>ENG</MenuItem>
-                    <MenuItem value={'GEO'}>GEO</MenuItem>
-                    <MenuItem value={'IMG'}>IMG</MenuItem>
-                    <MenuItem value={'NAIF'}>NAIF</MenuItem>
-                    <MenuItem value={'PPI'}>PPI</MenuItem>
-                    <MenuItem value={'RMS'}>RMS</MenuItem>
-                    <MenuItem value={'SBN'}>SBN</MenuItem>
-                    <MenuItem value={'SBN-PSI'}>SBN-PSI</MenuItem>
-                  </Select>
-                </FormControl>
-              </form>
-            </div>
-
-            <br/>
-
-            <div>
+              <ReleaseAlert force={force} text={status === 'registered' ? 'Update' : 'Release'}></ReleaseAlert>
+      
               <FormControlLabel
-                  control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}
-                  label="Ignore warnings"
+                control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}
+                label="Ignore warnings"
               />
-
-              <br/>
-
-              <Button variant="outlined" color="primary" onClick={handleSaveClick}>
-                Save
-              </Button>
-
-              <br/>
-
-              <ReleaseAlert force={force}></ReleaseAlert>
-            </div>
-          </div>
-        }
-      </div>
+            </>
+          }
+        </div>
+      </>
     }
-  </div>;
+  </div>
 };
  
 export default Release;

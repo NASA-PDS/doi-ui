@@ -5,6 +5,13 @@ const setIsSelecting = (payload) => dispatch => {
     });
 }
 
+const setIsCreating = (payload) => dispatch => {
+    dispatch({
+        type: 'SET_IS_CREATING',
+        payload
+    });
+}
+
 const setIsReleasing = (payload) => dispatch => {
     dispatch({
         type: 'SET_IS_RELEASING',
@@ -12,20 +19,26 @@ const setIsReleasing = (payload) => dispatch => {
     });
 }
 
-const setIsReserving = (payload) => dispatch => {
+// const setIsReserving = (payload) => dispatch => {
+//     dispatch({
+//         type: 'SET_IS_RESERVING',
+//         payload
+//     });
+// }
+
+const setIsSearching = (payload) => dispatch => {
     dispatch({
-        type: 'SET_IS_RESERVING',
+        type: 'SET_IS_SEARCHING',
         payload
     });
 }
 
-const setIsViewing = (payload) => dispatch => {
+const setIsFaq = (payload) => dispatch => {
     dispatch({
-        type: 'SET_IS_VIEWING',
+        type: 'SET_IS_FAQ',
         payload
     });
 }
-
 const updateReserveExcel = (payload) => dispatch => {
     dispatch({
         type: 'UPDATE_RESERVE_EXCEL',
@@ -40,37 +53,9 @@ const sendReserveRequest = (payload) => dispatch => {
     });
 }
 
-const setReserveSubmitter = (payload) => dispatch => {
-    dispatch({
-        type: 'SET_RESERVE_SUBMITTER',
-        payload
-    });
-}
-
-const setReserveNode = (payload) => dispatch => {
-    dispatch({
-        type: 'SET_RESERVE_NODE',
-        payload
-    });
-}
-
 const retryReserve = () => dispatch => {
     dispatch({
         type: 'RETRY_RESERVE'
-    })
-}
-
-const setReleaseSubmitter = (payload) => dispatch => {
-    dispatch({
-        type: 'SET_RELEASE_SUBMITTER',
-        payload
-    })
-}
-
-const setReleaseNode = (payload) => dispatch => {
-    dispatch({
-        type: 'SET_RELEASE_NODE',
-        payload
     })
 }
 
@@ -135,12 +120,6 @@ const updateReleaseKeywords = (payload) => dispatch => {
     })
 }
 
-const setSearchClear = (payload) => dispatch => {
-    dispatch({
-        type: 'SET_SEARCH_CLEAR',
-        payload
-    });
-}
 
 const sendSearchRequest = (payload) => dispatch => {
     dispatch({
@@ -149,19 +128,45 @@ const sendSearchRequest = (payload) => dispatch => {
     })
 }
 
+const resetSearch = (payload) => dispatch => {
+    dispatch({
+        type: 'RESET_SEARCH',
+        payload
+    });
+}
+
+const setSubmitter = (payload) => dispatch => {
+    dispatch({
+        type: 'SET_SUBMITTER',
+        payload
+    })
+}
+
+const setNode = (payload) => dispatch => {
+    dispatch({
+        type: 'SET_NODE',
+        payload
+    })
+}
+
+const resetStoredData = (payload) => dispatch => {
+    dispatch({
+        type: 'RESET_STORED_DATA',
+        payload
+    })
+}
+
 export default{
     setIsSelecting,
+    setIsCreating,
     setIsReleasing,
-    setIsReserving,
-    setIsViewing,
+    // setIsReserving,
+    setIsSearching,
+    setIsFaq,
     updateReserveExcel,
     sendReserveRequest,
-    setReserveSubmitter,
-    setReserveNode,
     retryReserve,
     retryRelease,
-    setReleaseSubmitter,
-    setReleaseNode,
     sendLidvidSearchRequest,
     sendDoiSearchRequest,
     sendPds4LabelSearchRequest,
@@ -170,7 +175,10 @@ export default{
     resetRelease,
     updateReleaseXml,
     updateReleaseKeywords,
-    setSearchClear,
-    sendSearchRequest
+    sendSearchRequest,
+    resetSearch,
+    setSubmitter,
+    setNode,
+    resetStoredData
 }
 

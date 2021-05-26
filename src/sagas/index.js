@@ -129,14 +129,15 @@ function* sendDoiSearchRequest(){
 }
 
 function* sendPds4LabelUrlSearch(action){
-    const labelUrl = action.payload;
+    const {labelUrl, submitter, node, forceUrl} = action.payload;
 
     let endpoint = Config.api.getDoiByPds4LabelUrl;
     endpoint += '?action=draft';
-    endpoint += '&submitter=';
-    endpoint += '&node=atm';
+    submitter ? endpoint += '&submitter=' + submitter : endpoint += '&submitter=';
+    endpoint += '&node=' + node;
     endpoint += '&url=' + encodeURI(labelUrl);
-
+    if (forceUrl) endpoint += '&force=' + forceUrl;
+    
     const response = yield fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -149,7 +150,11 @@ function* sendPds4LabelUrlSearch(action){
 
     if(!data.errors){
         if(data.length < 1){
-            data = {data: doiNotFound};
+            data = {
+                data: doiNotFound,
+                submitter: submitter,
+                node: node
+            };
         }
         else{
             data = data[0];
@@ -162,7 +167,9 @@ function* sendPds4LabelUrlSearch(action){
     }
     else{
         data = {
-            data: data
+            data: data,
+            submitter: submitter,
+            node: node
         }
     }
 
@@ -174,10 +181,18 @@ function* sendPdsLabelUrlSearchRequest(){
 }
 
 function* sendRelease(action){
-    const {submitter, node, lidvid, force } = action.payload;
+    const {submitter, node, lidvid, status, force} = action.payload;
 
-    let endpoint = Config.api.reserveUrl;
-    endpoint += '?action=draft';
+    let endpoint = Config.api.reserveUrl, statusAction;
+    
+    if (status === 'reserved' || status === 'draft') {
+        statusAction = 'release';
+    } else if (status === 'registered') {
+        statusAction = 'update';
+    } else {
+        statusAction = 'draft';
+    }
+    endpoint += '?action=' + statusAction;
 
     if(submitter){
         endpoint += '&submitter=' + submitter;
@@ -228,10 +243,10 @@ function* sendReleaseRequest(){
 }
 
 function* sendSaveRelease(action){
-    const {submitter, node, force} = action.payload;
+    const {submitter, node, status, force} = action.payload;
 
     let endpoint = Config.api.reserveUrl;
-    endpoint += '?action=draft';
+    endpoint += '?action=' + status;
 
     if(submitter){
         endpoint += '&submitter=' + submitter;
@@ -264,7 +279,7 @@ function* sendSaveReleaseRequest(){
 }
 
 function* sendSearch(action){
-    const identifier = action.payload;
+    const identifier = action.payload ? action.payload : '*';
     let endpoint = Config.api.baseUrl;
     
     if (identifier.startsWith('10.')) {
@@ -285,6 +300,7 @@ function* sendSearch(action){
     }
 
     yield put({type: 'RENDER_SEARCH_RESULTS', payload: {identifier, data}});
+    // yield put({type: 'RENDER_SEARCH_RESULTS', payload: data});
 }
 
 function* sendSearchRequest(){

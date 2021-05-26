@@ -3,68 +3,102 @@ import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Toolbar from '@material-ui/core/Toolbar';
-import { makeStyles } from '@material-ui/core/styles';
-import { useSelector, useDispatch } from 'react-redux';
+import {makeStyles} from '@material-ui/core/styles';
+import {useDispatch, useSelector} from 'react-redux';
+import Divider from '@material-ui/core/Divider';
 import rootActions from '../actions/rootActions';
 
 const useStyles = makeStyles((theme) => ({
-  title: {
+  doiAppBar: {
+    backgroundColor: '#143264'
+  },
+  mainNav: {
     flexGrow: 1,
-    display: "flex",
-    '&:hover': {
-      cursor: "pointer",
-   },
+    display: 'flex'
+  },
+  title: {
+    paddingRight: '12px',
+   '&:hover': {
+     cursor: 'pointer',
+    }
+  },
+  verticalDivider: {
+    backgroundColor: 'rgba(255,255,255,0.75)'
+  },
+  bold: {
+    fontWeight: 'bold'
   }
 }));
 
 const DoiAppBar = () => {
-  const isReleasing = useSelector(state => 
-    state.appReducer.isReleasing
+  const isSelecting = useSelector(state =>
+    state.appReducer.isSelecting
   )
-  const isReserving = useSelector(state => 
-    state.appReducer.isReserving
+  const isSearching = useSelector(state =>
+    state.appReducer.isSearching
   )
-  
+  const isFaq = useSelector(state =>
+      state.appReducer.isFaq
+  )
   const dispatch = useDispatch();
   
-  const handleReserveClick = event => {
-    dispatch(rootActions.appAction.setIsReserving(true));
+  const handleHomeClick = event => {
+    dispatch(rootActions.appAction.resetSearch());
+    dispatch(rootActions.appAction.resetStoredData());
+    dispatch(rootActions.appAction.setIsSelecting(true));
   }
   
-  const handleReleaseClick = event => {
-    dispatch(rootActions.appAction.setIsReleasing({"page": true, "identifier": null}));
+  const handleSearchClick = event => {
+    dispatch(rootActions.appAction.resetSearch());
+    dispatch(rootActions.appAction.resetStoredData());
+    dispatch(rootActions.appAction.setIsSearching(true));
   }
-
-  const handleTitleClick = event => {
-    dispatch(rootActions.appAction.setIsViewing(true));
+  
+  const handleFaqClick = event => {
+    dispatch(rootActions.appAction.resetSearch());
+    dispatch(rootActions.appAction.resetStoredData());
+    dispatch(rootActions.appAction.setIsFaq(true));
   }
-
+  
   const classes = useStyles();
 
-  return <AppBar position="static">
+  return <AppBar position="static" className={classes.doiAppBar}>
       <Toolbar>
+        <div className={classes.mainNav}>
           <Typography
-            variant="h6"
+            variant="h5"
             className={classes.title}
-            onClick={handleTitleClick}
+            onClick={handleHomeClick}
           >
-            DOI Reserve And Release
+            PDS DOI Management
           </Typography>
-
+          <Divider
+            orientation="vertical"
+            flexItem
+            className={classes.verticalDivider}
+          />
           <Button
-            variant={isReserving? "outlined": ""}
             color="inherit"
-            onClick={handleReserveClick}
+            className={isSelecting && classes.bold}
+            onClick={handleHomeClick}
           >
-            Reserve
+            Home
           </Button>
 
           <Button
-            variant={isReleasing? "outlined": ""}
             color="inherit"
-            onClick={handleReleaseClick} 
+            className={isSearching && classes.bold}
+            onClick={handleSearchClick}
           >
-            Release
+            Search
+          </Button>
+        </div>
+          <Button
+            color="inherit"
+            className={isFaq && classes.bold}
+            onClick={handleFaqClick}
+          >
+            FAQ
           </Button>
       </Toolbar>
     </AppBar>;

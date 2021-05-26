@@ -1,25 +1,23 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Paper from "@material-ui/core/Paper";
 import InputBase from "@material-ui/core/InputBase";
 import IconButton from "@material-ui/core/IconButton";
 import ClearIcon from "@material-ui/icons/Clear";
 import SearchIcon from "@material-ui/icons/Search";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import rootActions from "../actions/rootActions";
 
 
 const useStyles = makeStyles((theme) => ({
-  center: {
-    alignSelf: 'center',
-  },
-  search: {
+  searchBar: {
     padding: '2px 4px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     width: 500,
-    marginTop: '25px'
+    marginTop: '1em',
+    marginBottom: '2em'
   },
   input: {
     marginLeft: theme.spacing(1),
@@ -30,13 +28,17 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const SearchIdentifier = () => {
+const SearchBar = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [searchIdentifier, setSearchIdentifier] = useState('');
+  const [identifier, setIdentifier] = useState('');
+  
+  const searchIdentifier =  useSelector(state => {
+    return state.appReducer.searchIdentifier;
+  });
 
-  const handleInputChange = (event) => {
-    setSearchIdentifier(event.target.value.trim());
+  const handleInputChange = (event) => {// console.log(event.target.value.trim());
+    setIdentifier(event.target.value.trim());
 
     // doesn't need immediate listener unless real-time filter on user type
     // dispatch(rootActions.appAction.setSearchIdentifier(event.target.value.trim()));
@@ -50,22 +52,26 @@ const SearchIdentifier = () => {
   };
   
   const handleSearch = () => {
-    dispatch(rootActions.appAction.sendSearchRequest(searchIdentifier));
+    dispatch(rootActions.appAction.setIsSearching(true));
+    dispatch(rootActions.appAction.sendSearchRequest(identifier));
   };
 
   const handleClear = () => {
-    setSearchIdentifier('');
-    dispatch(rootActions.appAction.setSearchClear());
+    dispatch(rootActions.appAction.resetSearch());
   };
 
+  useEffect(() => {
+    setIdentifier(searchIdentifier);
+  }, [searchIdentifier]);
+  
   return (
-      <div className={classes.center}>
-        <Paper component="form" className={classes.search}>
+      <>
+        <Paper component="form" className={classes.searchBar}>
           <InputBase
-              placeholder='Search by DOI or other PDS Identifier'
+              placeholder='Search by DOI, LID, LIDVID, or PDS3 Data Set ID'
               className={classes.input}
-              value={searchIdentifier}
-              inputProps={{ 'aria-label': 'search searchIdentifier' }}
+              value={identifier ? identifier : ''}
+              inputProps={{ 'aria-label': 'Search identifier' }}
               onChange={handleInputChange}
               onKeyPress={handleKeyPress}
           />
@@ -84,8 +90,8 @@ const SearchIdentifier = () => {
             <ClearIcon />
           </IconButton>
         </Paper>
-      </div>
+      </>
   )
 };
 
-export default SearchIdentifier;
+export default SearchBar;
