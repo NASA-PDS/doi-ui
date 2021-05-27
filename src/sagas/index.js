@@ -181,18 +181,10 @@ function* sendPdsLabelUrlSearchRequest(){
 }
 
 function* sendRelease(action){
-    const {submitter, node, lidvid, status, force} = action.payload;
+    const {submitter, node, lidvid, force} = action.payload;
 
-    let endpoint = Config.api.reserveUrl, statusAction;
-    
-    if (status === 'reserved' || status === 'draft') {
-        statusAction = 'release';
-    } else if (status === 'registered') {
-        statusAction = 'update';
-    } else {
-        statusAction = 'draft';
-    }
-    endpoint += '?action=' + statusAction;
+    let endpoint = Config.api.reserveUrl;
+    endpoint += '?action=draft';
 
     if(submitter){
         endpoint += '&submitter=' + submitter;

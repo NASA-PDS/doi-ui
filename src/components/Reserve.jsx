@@ -100,7 +100,9 @@ const Reserve = () => {
         <div>
           <Alert icon={false} severity="success" className={classes.alert}>
             <AlertTitle>Submission Successful!</AlertTitle>
-            An email will be sent to you when your submission has been reserved.
+            Your DOI for {reserveResponse[0].lidvid} is <b>{reserveResponse[0].doi}</b>
+            <br/><br/>
+            <b>Once your data is online and registered, <a href="">release your DOI here</a>.</b>
           </Alert>
         </div>
       :

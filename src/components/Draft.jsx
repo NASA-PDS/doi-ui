@@ -225,7 +225,7 @@ const Draft = () => {
           </>
           :
           <>
-            <ReleaseAlert force={force} text={'Submit for Review'}></ReleaseAlert>
+            <ReleaseAlert force={force}></ReleaseAlert>
           
             <FormControlLabel
             control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}

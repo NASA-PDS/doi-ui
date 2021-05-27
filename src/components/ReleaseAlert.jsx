@@ -77,7 +77,7 @@ const ReleaseAlert = (props) => {
           disabled={!releaseXml}
           className={classes.submitButton}
       >
-        {props.text}
+        Submit for Review
       </Button>
 
       <Dialog
@@ -86,10 +86,10 @@ const ReleaseAlert = (props) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{props.text}</DialogTitle>
+        {/*<DialogTitle id="alert-dialog-title">Submit for Review</DialogTitle>*/}
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to {props.text.toLowerCase()}?
+            Are you sure you want to submit for review?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -97,7 +97,7 @@ const ReleaseAlert = (props) => {
             Cancel
           </Button>
           <Button onClick={handleRelease} color="primary" autoFocus>
-            {props.text}
+            Submit
           </Button>
         </DialogActions>
       </Dialog>

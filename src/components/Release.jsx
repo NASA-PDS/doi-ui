@@ -108,7 +108,7 @@ const Release = () => {
   };
 
   const handleSaveClick = event => {
-    const {doi, lidvid, status} = doiSearchResults;
+    const {doi, lidvid} = doiSearchResults;
 
     const releaseData = {
       doi,
@@ -208,7 +208,7 @@ const Release = () => {
               </>
             :
             <>
-              <ReleaseAlert force={force} text={status === 'registered' ? 'Update' : 'Release'}></ReleaseAlert>
+              <ReleaseAlert force={force}></ReleaseAlert>
       
               <FormControlLabel
                 control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}
