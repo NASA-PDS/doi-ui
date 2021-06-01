@@ -4,7 +4,7 @@ import configureStore from './store';
 import Banner from './components/Banner';
 import DoiAppBar from './components/DoiAppBar';
 import AppBody from './components/AppBody';
-import 'fontsource-roboto';
+import '@fontsource/roboto';
 import './App.css';
 
 
