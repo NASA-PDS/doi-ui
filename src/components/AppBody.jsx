@@ -1,87 +1,40 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import {useSelector} from 'react-redux';
+import Home from './Home';
+import Create from './Create';
+import Search from './Search';
 import Release from './Release';
-import Reserve from './Reserve';
-import ViewData from './ViewData';
-import Button from '@material-ui/core/Button';
-import rootActions from '../actions/rootActions';
+import FAQ from './FAQ';
 import Container from '@material-ui/core/Container';
 
-const AppBody = () => {
 
+const AppBody = () => {
   const isSelecting = useSelector(state =>
     state.appReducer.isSelecting
-  );
+  )
+  
+  const isCreating = useSelector(state =>
+      state.appReducer.isCreating
+  )
   
   const isReleasing = useSelector(state => 
     state.appReducer.isReleasing
   )
 
-  const isReserving = useSelector(state => 
-    state.appReducer.isReserving
+  const isSearching = useSelector(state =>
+      state.appReducer.isSearching
   )
-
-  const isViewing = useSelector(state =>
-      state.appReducer.isViewing
-  );
-
-  const dispatch = useDispatch();
-
-  const handleReserveClick = event => {
-    dispatch(rootActions.appAction.setIsReserving(true));
-  }
-
-  const handleReleaseClick = event => {
-    dispatch(rootActions.appAction.setIsReleasing({"page": true, "identifier": null}));
-  }
-
+  
+  const isFaq = useSelector(state =>
+      state.appReducer.isFaq
+  )
+  
   return <Container>
-    {isSelecting?
-      <div>
-        <br/>
-        <br/>
-        <br/>
-
-        <p>Would you like to reserve or release?</p>
-
-        <Button 
-          variant="outlined"
-          onClick={handleReserveClick}
-        >
-          Reserve
-        </Button>
-        &nbsp;
-        <Button
-          variant="outlined" 
-          onClick={handleReleaseClick}
-        >
-          Release
-        </Button>
-      </div>
-      :
-      ''
-    }
-
-    {
-      isReleasing?
-        <Release/>
-        :
-        ''
-    }
-
-    {
-      isReserving?
-      <Reserve/>  
-      :
-      ''
-    }
-
-    {
-      isViewing?
-        <ViewData/>
-        :
-        ''
-    }
+    {isSelecting && <Home/>}
+    {isCreating && <Create/>}
+    {isSearching && <Search/>}
+    {isReleasing && <Release/>}
+    {isFaq && <FAQ/>}
   </Container>;
 };
 

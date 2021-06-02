@@ -13,7 +13,9 @@ import { unprettify } from '../utils/xmlUtil';
 import rootActions from '../actions/rootActions';
 
 const useStyles = makeStyles((theme) => ({
- 
+  submitButton: {
+    marginTop: '15px'
+  }
 }));
 
 const ReleaseAlert = (props) => {
@@ -67,12 +69,16 @@ const ReleaseAlert = (props) => {
     dispatch(rootActions.appAction.sendReleaseRequest(releaseData));
   }
 
-  return <div>
-      <p>
-        <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-          Release
-        </Button>
-      </p>
+  return <>
+      <Button
+          variant="contained"
+          color="primary"
+          onClick={handleClickOpen}
+          disabled={!releaseXml}
+          className={classes.submitButton}
+      >
+        Submit for Review
+      </Button>
 
       <Dialog
         open={open}
@@ -80,10 +86,10 @@ const ReleaseAlert = (props) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Release"}</DialogTitle>
+        {/*<DialogTitle id="alert-dialog-title">Submit for Review</DialogTitle>*/}
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to release?
+            Are you sure you want to submit for review?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -91,11 +97,11 @@ const ReleaseAlert = (props) => {
             Cancel
           </Button>
           <Button onClick={handleRelease} color="primary" autoFocus>
-            Release
+            Submit
           </Button>
         </DialogActions>
       </Dialog>
-  </div>;
+  </>;
 };
  
 export default ReleaseAlert;
