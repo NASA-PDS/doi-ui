@@ -29,10 +29,22 @@ The config file is located at: `src/Config.js` It contains a list of necessary H
 Runs the app in development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-### Run `npm build`
+### Run `npm run build`
 
 Builds the app into deployable files in the `/build` directory.
 These files can be put into any server to run the app.
+
+#### Create a release
+
+    git tag <version>
+    git push --tags
+    npm run build
+    mv build pds-doi-ui
+    zip -r pds-doi-ui.zip pds-doi-ui
+
+Upload the zip file in the release of the tag in github
+
+    
 
 ## For Administrator
 
@@ -45,13 +57,22 @@ git clone https://github.com/NASA-PDS/pds-doi-ui.git
 git checkout <TAG VERSION>
 ```
 
-#### Run Serve
+#### Run from build archive
+
+From the github release page https://github.com/NASA-PDS/pds-doi-ui/releases/
+
+Select the latest version and dowload the zip file in assets `pds-doi-ui.zip`
+
+Unzip and start the server
 
 ```
-cd pds-doi-ui
+unzip pds-doi-ui.zip
 npm install -g serve
-serve -s build
+serve -s pds-doi-ui
 ```
+
+Troobleshooting: a serve command is also available in anaconda, be careful not to use it instead of the npm serve.
+
 
 
 
