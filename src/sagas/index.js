@@ -1,7 +1,6 @@
-import { useScrollTrigger } from '@material-ui/core';
 import { all, call, put, takeLatest } from 'redux-saga/effects';
 import Config from '../Config';
-import { printXML, findXmlTag } from '../utils/xmlUtil';
+import {findXmlTag, printXML} from '../utils/xmlUtil';
 import { doiNotFound, recordNotFound } from '../sagas/error';
 
 function* sendReserveContent(action){
@@ -272,7 +271,7 @@ function* sendSaveReleaseRequest(){
 
 function* sendSearch(action){
     const identifier = action.payload ? action.payload : '*';
-    let endpoint = Config.api.baseUrl;
+    let endpoint = Config.api.searchUrl;
     
     if (identifier.startsWith('10.')) {
         endpoint += '?doi=' + encodeURIComponent(identifier);
@@ -292,7 +291,6 @@ function* sendSearch(action){
     }
 
     yield put({type: 'RENDER_SEARCH_RESULTS', payload: {identifier, data}});
-    // yield put({type: 'RENDER_SEARCH_RESULTS', payload: data});
 }
 
 function* sendSearchRequest(){

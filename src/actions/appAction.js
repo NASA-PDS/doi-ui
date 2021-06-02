@@ -19,13 +19,6 @@ const setIsReleasing = (payload) => dispatch => {
     });
 }
 
-// const setIsReserving = (payload) => dispatch => {
-//     dispatch({
-//         type: 'SET_IS_RESERVING',
-//         payload
-//     });
-// }
-
 const setIsSearching = (payload) => dispatch => {
     dispatch({
         type: 'SET_IS_SEARCHING',
@@ -160,7 +153,6 @@ export default{
     setIsSelecting,
     setIsCreating,
     setIsReleasing,
-    // setIsReserving,
     setIsSearching,
     setIsFaq,
     updateReserveExcel,

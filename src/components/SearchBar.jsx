@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Paper from "@material-ui/core/Paper";
 import InputBase from "@material-ui/core/InputBase";
@@ -37,11 +37,8 @@ const SearchBar = () => {
     return state.appReducer.searchIdentifier;
   });
 
-  const handleInputChange = (event) => {// console.log(event.target.value.trim());
+  const handleInputChange = (event) => {
     setIdentifier(event.target.value.trim());
-
-    // doesn't need immediate listener unless real-time filter on user type
-    // dispatch(rootActions.appAction.setSearchIdentifier(event.target.value.trim()));
   };
   
   const handleKeyPress = (event) => {

@@ -1,18 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Typography } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import InputBase from '@material-ui/core/InputBase';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import DirectionsIcon from '@material-ui/icons/Directions';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 import { useDispatch, useSelector } from 'react-redux';
 import rootActions from '../actions/rootActions';
 import TextField from '@material-ui/core/TextField';
@@ -26,39 +14,25 @@ import Submitter from './Submitter';
 import PageHeader from "./PageHeader";
  
 const useStyles = makeStyles((theme) => ({
-  inputBar: {
-    padding: '2px 4px',
-    display: 'flex',
-    alignItems: 'center',
-    width: 400,
-    marginBottom: '1em'
-  },
-  input: {
-    marginLeft: theme.spacing(1),
-    flex: 1,
-  },
-  iconButton: {
-    padding: 10,
-  },
-  divider: {
-    height: 28,
-    margin: 4,
-  },
-  center: {
-    display: "flex",
-    justifyContent: "center"
-  },
   xmlTextBox: {
     width: "100%"
-  },
-  disabled: {
-    color: theme.palette.text.disabled,
   },
   alert: {
     '& .MuiAlert-message':{
       marginLeft: "auto",
       marginRight: "auto"
     }
+  },
+  root: {
+    marginTop: '25px',
+    marginBottom: '50px'
+  },
+  flexColumn: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  alignCenter: {
+    alignItems: 'center'
   }
 }));
 
@@ -133,7 +107,7 @@ const Release = () => {
     }
   }, []);
 
-  return <div className="mtc-root-child">
+  return <div className={classes.root}>
     <PageHeader header={'Release DOI'}/>
     <br/><br/>
     {releaseXml &&
@@ -155,7 +129,7 @@ const Release = () => {
   
         <Submitter/>
   
-        <div className="flex-column align-center">
+        <div className={`${classes.flexColumn} ${classes.alignCenter}`}>
           {saveResponse && saveResponse.errors &&
             <>
               <Alert icon={false} severity="error" className={classes.alert}>

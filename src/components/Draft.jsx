@@ -33,6 +33,13 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: "auto",
       marginRight: "auto"
     }
+  },
+  flexColumn: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  alignCenter: {
+    alignItems: 'center'
   }
 }));
 
@@ -120,7 +127,7 @@ const Draft = () => {
   }
 
   return <>
-      <div className="flex-column align-center">
+      <div className={`${classes.flexColumn} ${classes.alignCenter}`}>
         <Paper component="form" className={classes.inputBar}>
           <InputBase
               placeholder='PDS4 Label URL'
@@ -181,14 +188,11 @@ const Draft = () => {
       
         <br/>
       
-        <div className="flex-column align-center">
           <Button
             variant="contained"
             onClick={handleSaveClick}>
             Save
           </Button>
-        </div>
-    
     
         {releaseResponse &&
           <FormControlLabel

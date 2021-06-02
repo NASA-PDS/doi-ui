@@ -2,7 +2,6 @@ const initialState = {
   isSelecting: true,
   isCreating: false,
   isReleasing: false,
-  // isReserving: false,
   isSearching: false,
   isFaq: false,
   reserveExcel: null,

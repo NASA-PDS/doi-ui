@@ -8,8 +8,20 @@ import PageHeader from './PageHeader';
 import Submitter from './Submitter';
 import Draft from './Draft';
 import Reserve from './Reserve';
+import {makeStyles} from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    marginTop: '25px',
+    marginBottom: '50px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  }
+}));
 
 const Create = () => {
+  const classes = useStyles();
   const [isRegistered, setIsRegistered] = React.useState(null);
 
   const handleRadio = (event) => {
@@ -17,7 +29,7 @@ const Create = () => {
   };
 
   return (
-      <div className="mtc-root-child flex-column align-center">
+      <div className={classes.root}>
         <PageHeader header={'Create DOI'}/>
         
         <Submitter/>
