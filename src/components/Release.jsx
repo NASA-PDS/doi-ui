@@ -12,6 +12,7 @@ import { findXmlTag, unprettify } from '../utils/xmlUtil';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import Submitter from './Submitter';
 import PageHeader from "./PageHeader";
+import SaveButton from "./SaveButton";
  
 const useStyles = makeStyles((theme) => ({
   xmlTextBox: {
@@ -69,6 +70,7 @@ const Release = () => {
   );
 
   const handleReleaseXmlChange = (event) => {
+    dispatch(rootActions.appAction.retrySave());
     dispatch(rootActions.appAction.updateReleaseXml(event.target.value));
     dispatch(rootActions.appAction.updateReleaseKeywords(findXmlTag(event.target.value, "keywords")));
   }
@@ -80,22 +82,6 @@ const Release = () => {
   const handleForceChange = (event) => {
     setForce(event.target.checked);
   };
-
-  const handleSaveClick = event => {
-    const {doi, lidvid} = doiSearchResults;
-
-    const releaseData = {
-      doi,
-      lidvid,
-      node,
-      status,
-      submitter,
-      force,
-      record: unprettify(releaseXml)
-    };
-    
-    dispatch(rootActions.appAction.sendSaveReleaseRequest(releaseData));
-  }
 
   const releaseIdentifier =  useSelector(state => {
     return state.appReducer.releaseIdentifier;
@@ -129,68 +115,124 @@ const Release = () => {
   
         <Submitter/>
   
-        <div className={`${classes.flexColumn} ${classes.alignCenter}`}>
-          {saveResponse && saveResponse.errors &&
-            <>
-              <Alert icon={false} severity="error" className={classes.alert}>
-                <AlertTitle>Error: {String(saveResponse.errors[0].name)}</AlertTitle>
-                <b>Description:</b> {String(saveResponse.errors[0].message)}
-              </Alert>
-              <br/>
-            </>
+        <div>
+          {saveResponse ?
+              saveResponse.errors ?
+                  <SaveButton state={'retry'}/>
+                  :
+                  <SaveButton state={'disabled'}/>
+              :
+              <SaveButton state={'default'} force={force}/>
           }
-          <Button
-            variant="contained"
-            onClick={handleSaveClick}
-          >
-            Save
+          {releaseResponse ?
+              releaseResponse.errors ?
+                  <Button variant="outlined" color="primary" onClick={handleRetryRelease}>
+                    Retry Submission
           </Button>
-          
-          {releaseResponse &&
+                  :
+                  <ReleaseAlert force={force} disabled={true}></ReleaseAlert>
+              :
+              <ReleaseAlert force={force}></ReleaseAlert>
+          }
+        </div>
             <FormControlLabel
                 control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}
                 label="Ignore warnings"
             />
-          }
           
+        {saveResponse ?
+            saveResponse.errors ?
+                <Alert icon={false} severity="error" className={classes.alert}>
+                  <AlertTitle>Save Error: {String(saveResponse.errors[0].name)}</AlertTitle>
+                  <b>Description:</b> {String(saveResponse.errors[0].message)}
+                  <p>Please address the error then try again.</p>
+                </Alert>
+                :
+                <Alert icon={false} severity="success" className={classes.alert}>
+                  <AlertTitle>Save Successful!</AlertTitle>
+                </Alert>
+            :
+            null
+        }
+        <br/>
           {releaseResponse?
             releaseResponse.errors?
-              <>
-                <br/><br/>
                 <Alert icon={false} severity="error" className={classes.alert}>
-                  <AlertTitle>Error: {String(releaseResponse.errors[0].name)}</AlertTitle>
+                  <AlertTitle>Submission Error: {String(releaseResponse.errors[0].name)}</AlertTitle>
                     <b>Description:</b> {String(releaseResponse.errors[0].message)}
-                    <p>Please address the error then try releasing again.</p>
+                  <p>Please address the error then try again.</p>
                 </Alert>
-      
-                <p>
-                  <Button
-                    variant="outlined"
-                    onClick={handleRetryRelease}
-                  >
-                    Retry
-                  </Button>
-                </p>
-              </>
               :
-              <>
-                <br/><br/>
                 <Alert icon={false} severity="success" className={classes.alert}>
                   <AlertTitle>Release Submission Successful!</AlertTitle>
-                  Your DOI will be submitted to Engineering Node. You will be notified if the DOI can be released or if updates are required.
+                  Your DOI will be submitted to Engineering Node.
+                  You will be notified if the DOI can be released or if updates are required.
                 </Alert>
-              </>
             :
-            <>
-              <ReleaseAlert force={force}></ReleaseAlert>
-      
-              <FormControlLabel
-                control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}
-                label="Ignore warnings"
-              />
-            </>
+            null
           }
-        </div>
+        {/*<div className={`${classes.flexColumn} ${classes.alignCenter}`}>*/}
+        {/*  {saveResponse && saveResponse.errors &&*/}
+        {/*    <>*/}
+        {/*      <Alert icon={false} severity="error" className={classes.alert}>*/}
+        {/*        <AlertTitle>Error: {String(saveResponse.errors[0].name)}</AlertTitle>*/}
+        {/*        <b>Description:</b> {String(saveResponse.errors[0].message)}*/}
+        {/*      </Alert>*/}
+        {/*      <br/>*/}
+        {/*    </>*/}
+        {/*  }*/}
+        {/*  <Button*/}
+        {/*    variant="contained"*/}
+        {/*    onClick={handleSaveClick}*/}
+        {/*  >*/}
+        {/*    Save*/}
+        {/*  </Button>*/}
+        {/*  */}
+        {/*  {releaseResponse &&*/}
+        {/*    <FormControlLabel*/}
+        {/*        control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}*/}
+        {/*        label="Ignore warnings"*/}
+        {/*    />*/}
+        {/*  }*/}
+        {/*  */}
+        {/*  {releaseResponse?*/}
+        {/*    releaseResponse.errors?*/}
+        {/*      <>*/}
+        {/*        <br/><br/>*/}
+        {/*        <Alert icon={false} severity="error" className={classes.alert}>*/}
+        {/*          <AlertTitle>Error: {String(releaseResponse.errors[0].name)}</AlertTitle>*/}
+        {/*            <b>Description:</b> {String(releaseResponse.errors[0].message)}*/}
+        {/*            <p>Please address the error then try releasing again.</p>*/}
+        {/*        </Alert>*/}
+        
+        {/*        <p>*/}
+        {/*          <Button*/}
+        {/*            variant="outlined"*/}
+        {/*            onClick={handleRetryRelease}*/}
+        {/*          >*/}
+        {/*            Retry*/}
+        {/*          </Button>*/}
+        {/*        </p>*/}
+        {/*      </>*/}
+        {/*      :*/}
+        {/*      <>*/}
+        {/*        <br/><br/>*/}
+        {/*        <Alert icon={false} severity="success" className={classes.alert}>*/}
+        {/*          <AlertTitle>Release Submission Successful!</AlertTitle>*/}
+        {/*          Your DOI will be submitted to Engineering Node. You will be notified if the DOI can be released or if updates are required.*/}
+        {/*        </Alert>*/}
+        {/*      </>*/}
+        {/*    :*/}
+        {/*    <>*/}
+        {/*      <ReleaseAlert force={force}></ReleaseAlert>*/}
+        
+        {/*      <FormControlLabel*/}
+        {/*        control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}*/}
+        {/*        label="Ignore warnings"*/}
+        {/*      />*/}
+        {/*    </>*/}
+        {/*  }*/}
+        {/*</div>*/}
       </>
     }
   </div>

@@ -80,6 +80,12 @@ const sendSaveReleaseRequest = (payload) => dispatch => {
     });
 }
 
+const retrySave = () => dispatch => {
+    dispatch({
+        type: 'RETRY_SAVE'
+    })
+}
+
 const sendReleaseRequest = (payload) => dispatch => {
     dispatch({
         type: "SEND_RELEASE_REQUEST",
@@ -159,6 +165,7 @@ export default{
     sendReserveRequest,
     retryReserve,
     retryRelease,
+    retrySave,
     sendLidvidSearchRequest,
     sendDoiSearchRequest,
     sendPds4LabelSearchRequest,

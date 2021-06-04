@@ -32,10 +32,12 @@ const Submitter = () => {
   );
   
   const handleSubmitterChange = event => {
+    dispatch(rootActions.appAction.retrySave());
     dispatch(rootActions.appAction.setSubmitter(event.target.value));
   }
   
   const handleNodesSelect = event => {
+    dispatch(rootActions.appAction.retrySave());
     dispatch(rootActions.appAction.setNode(event.target.value));
   };
   
@@ -58,7 +60,7 @@ const Submitter = () => {
         <br/>
         <br/>
         <FormControl variant="outlined" className={classes.nodesDropdown}>
-          <InputLabel id="select-nodes-label">Nodes</InputLabel>
+          <InputLabel id="select-nodes-label">Node</InputLabel>
           <Select
               labelId="select-nodes-label"
               id="select-nodes"

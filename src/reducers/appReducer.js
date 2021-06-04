@@ -87,6 +87,11 @@ export default (state = initialState, action) => {
         ...state,
         releaseResponse: null
       }
+    case 'RETRY_SAVE':
+      return {
+        ...state,
+        saveResponse: null
+      }
     case 'RENDER_DOI_SEARCH_RESULTS':
       return {
         ...state,

@@ -6,6 +6,7 @@ import InputBase from '@material-ui/core/InputBase';
 import {useDispatch, useSelector} from 'react-redux';
 import rootActions from '../actions/rootActions';
 import TextField from '@material-ui/core/TextField';
+import SaveButton from './SaveButton';
 import ReleaseAlert from './ReleaseAlert';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     width: 400,
-    marginBottom: '1em'
+    marginRight: '1em'
   },
   input: {
     marginLeft: theme.spacing(1),
@@ -40,6 +41,11 @@ const useStyles = makeStyles((theme) => ({
   },
   alignCenter: {
     alignItems: 'center'
+  },
+  flexRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
   }
 }));
 
@@ -55,6 +61,10 @@ const Draft = () => {
     return state.appReducer.doiSearchResponse;
   });
 
+  const saveResponse = useSelector(state => {
+    return state.appReducer.saveResponse;
+  });
+  
   const releaseResponse = useSelector(state => {
     return state.appReducer.releaseResponse;
   });
@@ -98,6 +108,7 @@ const Draft = () => {
   };
 
   const handleReleaseXmlChange = (event) => {
+    dispatch(rootActions.appAction.retrySave());
     dispatch(rootActions.appAction.updateReleaseXml(event.target.value));
     dispatch(rootActions.appAction.updateReleaseKeywords(findXmlTag(event.target.value, "keywords")));
   }
@@ -110,24 +121,9 @@ const Draft = () => {
     setForce(event.target.checked);
   };
 
-  const handleSaveClick = event => {
-    const {doi, lidvid, status} = doiSearchResults;
-
-    const releaseData = {
-      doi,
-      lidvid,
-      node,
-      status,
-      submitter,
-      force,
-      record: unprettify(releaseXml)
-    };
-    
-    dispatch(rootActions.appAction.sendSaveReleaseRequest(releaseData));
-  }
-
-  return <>
-      <div className={`${classes.flexColumn} ${classes.alignCenter}`}>
+  return (
+      <>
+        <div className={classes.flexRow}>
         <Paper component="form" className={classes.inputBar}>
           <InputBase
               placeholder='PDS4 Label URL'
@@ -144,15 +140,13 @@ const Draft = () => {
             disabled={!(node && labelUrl)}
             onClick={handleLabelUrlSearch}
         >
-          Get URL
+            Upload Label
         </Button>
-        
+        </div>
         <FormControlLabel
             control={<Checkbox checked={forceUrl} onChange={handleForceUrlChange} name="forceUrl" color="secondary" />}
             label="Ignore warnings"
         />
-      </div>
-  
       <br/>
       
       {doiSearchResults ?
@@ -188,58 +182,66 @@ const Draft = () => {
       
         <br/>
       
-          <Button
-            variant="contained"
-            onClick={handleSaveClick}>
-            Save
+            <div>
+              {saveResponse ?
+                saveResponse.errors ?
+                  <SaveButton state={'retry'}/>
+                  :
+                  <SaveButton state={'disabled'}/>
+                :
+                <SaveButton state={'default'} force={force}/>
+              }
+              {releaseResponse ?
+                  releaseResponse.errors ?
+                    <Button variant="outlined" color="primary" onClick={handleRetryRelease}>
+                      Retry Submission
           </Button>
-    
-        {releaseResponse &&
+                    :
+                    <ReleaseAlert force={force} disabled={true}></ReleaseAlert>
+                :
+                <ReleaseAlert force={force}></ReleaseAlert>
+              }
+            </div>
           <FormControlLabel
           control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}
           label="Ignore warnings"
           />
-        }
       
+            {saveResponse ?
+              saveResponse.errors ?
+                <Alert icon={false} severity="error" className={classes.alert}>
+                  <AlertTitle>Save Error: {String(saveResponse.errors[0].name)}</AlertTitle>
+                  <b>Description:</b> {String(saveResponse.errors[0].message)}
+                  <p>Please address the error then try again.</p>
+                </Alert>
+                :
+                <Alert icon={false} severity="success" className={classes.alert}>
+                  <AlertTitle>Save Successful!</AlertTitle>
+                </Alert>
+              :
+              null
+            }
+            <br/>
         {releaseResponse?
           releaseResponse.errors?
-          <>
             <Alert icon={false} severity="error" className={classes.alert}>
-              <AlertTitle>Error: {String(releaseResponse.errors[0].name)}</AlertTitle>
+                  <AlertTitle>Submission Error: {String(releaseResponse.errors[0].name)}</AlertTitle>
               <b>Description:</b> {String(releaseResponse.errors[0].message)}
               <p>Please address the error then try again.</p>
             </Alert>
-        
-            <p>
-              <Button
-                variant="outlined"
-                onClick={handleRetryRelease}
-              >
-              Retry
-              </Button>
-            </p>
-          </>
           :
-          <>
             <Alert icon={false} severity="success" className={classes.alert}>
             <AlertTitle>Release Submission Successful!</AlertTitle>
               Your DOI will be submitted to Engineering Node.
               You will be notified if the DOI can be released or if updates are required.
             </Alert>
-          </>
           :
-          <>
-            <ReleaseAlert force={force}></ReleaseAlert>
-          
-            <FormControlLabel
-            control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}
-            label="Ignore warnings"
-            />
-          </>
+              null
         }
       </>
     }
   </>
+    )
 };
  
 export default Draft;

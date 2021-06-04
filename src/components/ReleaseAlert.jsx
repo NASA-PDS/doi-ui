@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -10,14 +9,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { unprettify } from '../utils/xmlUtil';
 import rootActions from '../actions/rootActions';
 
-const useStyles = makeStyles((theme) => ({
-  submitButton: {
-    marginTop: '15px'
-  }
-}));
 
 const ReleaseAlert = (props) => {
-  const classes = useStyles();
   const dispatch = useDispatch();
 
   const [open, setOpen] = React.useState(false);
@@ -31,11 +24,11 @@ const ReleaseAlert = (props) => {
   );
 
   const submitter = useSelector(state =>
-    state.appReducer.releaseSubmitter
+    state.appReducer.submitter
   );
 
   const node = useSelector(state =>
-    state.appReducer.releaseNode
+    state.appReducer.node
   );
 
   const handleClickOpen = () => {
@@ -68,8 +61,7 @@ const ReleaseAlert = (props) => {
           variant="contained"
           color="primary"
           onClick={handleClickOpen}
-          disabled={!releaseXml}
-          className={classes.submitButton}
+          disabled={props.disabled}
       >
         Submit for Review
       </Button>
