@@ -24,6 +24,7 @@ import { findXmlTag, unprettify } from '../utils/xmlUtil';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import Submitter from './Submitter';
 import PageHeader from "./PageHeader";
+import { useParams } from 'react-router-dom'
  
 const useStyles = makeStyles((theme) => ({
   inputBar: {
@@ -64,6 +65,8 @@ const useStyles = makeStyles((theme) => ({
 
 const Release = () => {
   const classes = useStyles();
+
+  let { searchLidvid } = useParams();
 
   const dispatch = useDispatch();
   const [force, setForce] = useState(false);
@@ -128,8 +131,13 @@ const Release = () => {
   });
   
   useEffect(() => {
-    if (releaseIdentifier !== null) {
-      dispatch(rootActions.appAction.sendLidvidSearchRequest(releaseIdentifier));
+    if(searchLidvid){
+      dispatch(rootActions.appAction.sendLidvidSearchRequest(searchLidvid));
+    }
+    else{
+      if (releaseIdentifier !== null) {
+        dispatch(rootActions.appAction.sendLidvidSearchRequest(releaseIdentifier));
+      }
     }
   }, []);
 

@@ -15,6 +15,7 @@ import CreateNewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
 import AddIcon from '@material-ui/icons/Add';
 import Divider from "@material-ui/core/Divider";
+import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   ctaContainer: {
@@ -32,14 +33,6 @@ const useStyles = makeStyles((theme) => ({
 const Home = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-
-  const handleCreateClick = event => {
-    dispatch(rootActions.appAction.setIsCreating(true));
-  }
-  
-  const handleFaqClick = event => {
-    dispatch(rootActions.appAction.setIsFaq(true));
-  }
   
   return (
       <div className="mtc-root-child flex-column align-center">
@@ -91,7 +84,8 @@ const Home = () => {
               variant="contained"
               startIcon={<AddIcon />}
               className={classes.ctaButton}
-              onClick={handleCreateClick}
+              component={Link}
+              to="/create"
           >
             Create DOI
           </Button>
@@ -112,7 +106,8 @@ const Home = () => {
             <Button
                 variant="contained"
                 className={classes.ctaButton}
-                onClick={handleFaqClick}
+                component={Link}
+                to="/faq"
             >
               Frequently Asked Questions
             </Button>

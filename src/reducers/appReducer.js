@@ -1,10 +1,6 @@
 const initialState = {
-  isSelecting: true,
-  isCreating: false,
   isReleasing: false,
   // isReserving: false,
-  isSearching: false,
-  isFaq: false,
   reserveExcel: null,
   reserveResponse: null,
   doiSearchResponse: null,
@@ -22,24 +18,6 @@ const initialState = {
   
 export default (state = initialState, action) => {
   switch (action.type) {
-    case 'SET_IS_SELECTING':
-      return {
-        ...state,
-        isSelecting: action.payload,
-        isCreating: false,
-        isReleasing: false,
-        isSearching: false,
-        isFaq: false
-      }
-    case 'SET_IS_CREATING':
-      return {
-        ...state,
-        isSelecting: false,
-        isCreating: action.payload,
-        isReleasing: false,
-        isSearching: false,
-        isFaq: false
-      }
     case 'SET_IS_RELEASING':
       return {
         ...state,
@@ -49,24 +27,6 @@ export default (state = initialState, action) => {
         isSearching: false,
         isFaq: false,
         releaseIdentifier: action.payload.identifier
-      }
-    case 'SET_IS_SEARCHING':
-      return {
-        ...state,
-        isSelecting: false,
-        isCreating: false,
-        isReleasing: false,
-        isSearching: action.payload,
-        isFaq: false
-      }
-    case 'SET_IS_FAQ':
-      return {
-        ...state,
-        isSelecting: false,
-        isCreating: false,
-        isReleasing: false,
-        isSearching: false,
-        isFaq: action.payload
       }
     case 'UPDATE_RESERVE_EXCEL':
       return {
