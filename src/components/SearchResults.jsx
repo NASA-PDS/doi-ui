@@ -50,7 +50,8 @@ const SearchResults = () => {
 	
 	const handleReleaseClick = (event, lidvid) => {
 		dispatch(rootActions.appAction.resetSearch());
-		dispatch(rootActions.appAction.setIsReleasing({"page": true, "identifier": lidvid}));
+		dispatch(rootActions.appAction.setIsReleasing(true));
+		dispatch(rootActions.appAction.sendLidvidSearchRequest(lidvid));
 	};
 
 	const massageStatus = (string) => {

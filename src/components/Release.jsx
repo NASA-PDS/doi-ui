@@ -8,11 +8,16 @@ import ReleaseAlert from './ReleaseAlert';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import UatKeyWordAutoComplete from './UatKeyWordAutoComplete';
-import { findXmlTag, unprettify } from '../utils/xmlUtil';
+import { findXmlTag } from '../utils/xmlUtil';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import Submitter from './Submitter';
 import PageHeader from "./PageHeader";
 import SaveButton from "./SaveButton";
+import Typography from "@material-ui/core/Typography";
+import FormControl from "@material-ui/core/FormControl";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import Radio from "@material-ui/core/Radio";
+import Pds4LabelUrlBar from "./Pds4LabelUrlBar";
  
 const useStyles = makeStyles((theme) => ({
   xmlTextBox: {
@@ -20,31 +25,34 @@ const useStyles = makeStyles((theme) => ({
   },
   alert: {
     '& .MuiAlert-message':{
-      marginLeft: "auto",
-      marginRight: "auto"
-    }
+      marginLeft: 'auto',
+      marginRight: 'auto'
+    },
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    width: 'fit-content'
   },
   root: {
     marginTop: '25px',
     marginBottom: '50px'
   },
-  flexColumn: {
-    display: 'flex',
-    flexDirection: 'column'
-  },
   alignCenter: {
-    alignItems: 'center'
+    '& .MuiInputBase-input': {
+      textAlign: 'center'
+    }
   }
 }));
 
 const Release = () => {
   const classes = useStyles();
-
   const dispatch = useDispatch();
-  const [force, setForce] = useState(false);
   
-  const doiSearchResults = useSelector(state => {
-    return state.appReducer.doiSearchResponse;
+  const [force, setForce] = useState(false);
+  const [isRegistered, setIsRegistered] = React.useState(null);
+  const [urlSearchResponseError, setUrlSearchResponseError] = React.useState(null);
+  
+  let urlSearchResponse = useSelector(state => {
+    return state.appReducer.urlSearchResponse;
   });
 
   const saveResponse = useSelector(state => {
@@ -57,16 +65,6 @@ const Release = () => {
 
   const releaseXml = useSelector(state =>
     state.appReducer.releaseXml
-  );
-
-  const status = doiSearchResults ? doiSearchResults.status : '';
-  
-  const submitter = useSelector(state =>
-    state.appReducer.submitter
-  );
-
-  const node = useSelector(state =>
-    state.appReducer.node
   );
 
   const handleReleaseXmlChange = (event) => {
@@ -83,19 +81,82 @@ const Release = () => {
     setForce(event.target.checked);
   };
 
-  const releaseIdentifier =  useSelector(state => {
-    return state.appReducer.releaseIdentifier;
+  const handleRadio = (event) => {
+    setIsRegistered(event.target.value);
+  };
+  
+  const doi = useSelector(state => {
+    return state.appReducer.doi;
   });
   
   useEffect(() => {
-    if (releaseIdentifier !== null) {
-      dispatch(rootActions.appAction.sendLidvidSearchRequest(releaseIdentifier));
+    if (urlSearchResponse !== null) {
+      let error = {
+        message: null,
+        name: null
+      };
+      if (urlSearchResponse.errors) {
+        error.message = urlSearchResponse.errors[0].message;
+        error.name = urlSearchResponse.errors[0].name;
+      } else if (!urlSearchResponse.doi || urlSearchResponse.doi !== doi) {
+        error.message = "The DOI for this PDS4 label does not match the given DOI or does not exist.";
+        error.name =  "Mismatched DOI to PDS4 Label";
+      }
+      setUrlSearchResponseError(error);
     }
-  }, []);
+  }, [urlSearchResponse]);
 
   return <div className={classes.root}>
     <PageHeader header={'Release DOI'}/>
+  
+    <TextField className={classes.alignCenter}
+        label="DOI"
+        variant="outlined"
+        InputProps={{readOnly: true}}
+        InputLabelProps={{shrink: true}}
+        value={doi}
+        margin="dense"
+    />
+    
+    <Submitter/>
+  
+    <Typography>
+      Has the data been registered and made publicly available?
+    </Typography>
+    <FormControl component="fieldset">
+      <RadioGroup row aria-label="registered" name="registered" value={isRegistered} onChange={handleRadio}>
+        <FormControlLabel value="yes" control={<Radio />} label="Yes" />
+        <FormControlLabel value="no" control={<Radio />} label="No" />
+      </RadioGroup>
+    </FormControl>
     <br/><br/>
+    
+    {isRegistered === 'no' &&
+      <Alert icon={false} severity="error" className={classes.alert}>
+        The data must registered with PDS Engineering Node and made publicly available prior to the release of the DOI.
+        <br/>See <a href="">FAQs</a> for more information.
+      </Alert>
+    }
+    
+    {isRegistered === 'yes' &&
+      <>
+        <br/>
+        <div>
+          <Typography>
+            Input a URL to the online PDS4 label to automatically generate the DOI metadata.
+          </Typography>
+          
+          <Pds4LabelUrlBar />
+
+          {urlSearchResponseError && (
+            <Alert icon={false} severity="error" className={classes.alert}>
+              <AlertTitle>Error: {String(urlSearchResponseError.name)}</AlertTitle>
+              <b>Description:</b> {String(urlSearchResponseError.message)}
+            </Alert>
+          )}
+        </div>
+        <br/>
+        
     {releaseXml &&
       <>
         <p>
@@ -112,8 +173,6 @@ const Release = () => {
         <UatKeyWordAutoComplete></UatKeyWordAutoComplete>
     
         <br/>
-  
-        <Submitter/>
   
         <div>
           {saveResponse ?
@@ -171,68 +230,8 @@ const Release = () => {
             :
             null
           }
-        {/*<div className={`${classes.flexColumn} ${classes.alignCenter}`}>*/}
-        {/*  {saveResponse && saveResponse.errors &&*/}
-        {/*    <>*/}
-        {/*      <Alert icon={false} severity="error" className={classes.alert}>*/}
-        {/*        <AlertTitle>Error: {String(saveResponse.errors[0].name)}</AlertTitle>*/}
-        {/*        <b>Description:</b> {String(saveResponse.errors[0].message)}*/}
-        {/*      </Alert>*/}
-        {/*      <br/>*/}
-        {/*    </>*/}
-        {/*  }*/}
-        {/*  <Button*/}
-        {/*    variant="contained"*/}
-        {/*    onClick={handleSaveClick}*/}
-        {/*  >*/}
-        {/*    Save*/}
-        {/*  </Button>*/}
-        {/*  */}
-        {/*  {releaseResponse &&*/}
-        {/*    <FormControlLabel*/}
-        {/*        control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}*/}
-        {/*        label="Ignore warnings"*/}
-        {/*    />*/}
-        {/*  }*/}
-        {/*  */}
-        {/*  {releaseResponse?*/}
-        {/*    releaseResponse.errors?*/}
-        {/*      <>*/}
-        {/*        <br/><br/>*/}
-        {/*        <Alert icon={false} severity="error" className={classes.alert}>*/}
-        {/*          <AlertTitle>Error: {String(releaseResponse.errors[0].name)}</AlertTitle>*/}
-        {/*            <b>Description:</b> {String(releaseResponse.errors[0].message)}*/}
-        {/*            <p>Please address the error then try releasing again.</p>*/}
-        {/*        </Alert>*/}
-        
-        {/*        <p>*/}
-        {/*          <Button*/}
-        {/*            variant="outlined"*/}
-        {/*            onClick={handleRetryRelease}*/}
-        {/*          >*/}
-        {/*            Retry*/}
-        {/*          </Button>*/}
-        {/*        </p>*/}
-        {/*      </>*/}
-        {/*      :*/}
-        {/*      <>*/}
-        {/*        <br/><br/>*/}
-        {/*        <Alert icon={false} severity="success" className={classes.alert}>*/}
-        {/*          <AlertTitle>Release Submission Successful!</AlertTitle>*/}
-        {/*          Your DOI will be submitted to Engineering Node. You will be notified if the DOI can be released or if updates are required.*/}
-        {/*        </Alert>*/}
-        {/*      </>*/}
-        {/*    :*/}
-        {/*    <>*/}
-        {/*      <ReleaseAlert force={force}></ReleaseAlert>*/}
-        
-        {/*      <FormControlLabel*/}
-        {/*        control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}*/}
-        {/*        label="Ignore warnings"*/}
-        {/*      />*/}
-        {/*    </>*/}
-        {/*  }*/}
-        {/*</div>*/}
+          </>
+        }
       </>
     }
   </div>

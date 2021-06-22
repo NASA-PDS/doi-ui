@@ -128,14 +128,14 @@ function* sendDoiSearchRequest(){
 }
 
 function* sendPds4LabelUrlSearch(action){
-    const {labelUrl, submitter, node, forceUrl} = action.payload;
+    const {labelUrl, submitter, node, force} = action.payload;
 
     let endpoint = Config.api.getDoiByPds4LabelUrl;
     endpoint += '?action=draft';
-    submitter ? endpoint += '&submitter=' + submitter : endpoint += '&submitter=';
+    endpoint += '&submitter=' + submitter;
     endpoint += '&node=' + node;
     endpoint += '&url=' + encodeURI(labelUrl);
-    if (forceUrl) endpoint += '&force=' + forceUrl;
+    if (force) endpoint += '&force=' + force;
     
     const response = yield fetch(endpoint, {
         method: 'POST',
@@ -150,9 +150,7 @@ function* sendPds4LabelUrlSearch(action){
     if(!data.errors){
         if(data.length < 1){
             data = {
-                data: doiNotFound,
-                submitter: submitter,
-                node: node
+                data: doiNotFound
             };
         }
         else{
@@ -166,13 +164,11 @@ function* sendPds4LabelUrlSearch(action){
     }
     else{
         data = {
-            data: data,
-            submitter: submitter,
-            node: node
+            data
         }
     }
 
-    yield put({ type: 'RENDER_DOI_SEARCH_RESULTS', payload: data});
+    yield put({ type: 'RENDER_URL_SEARCH_RESULTS', payload: data});
 }
 
 function* sendPdsLabelUrlSearchRequest(){

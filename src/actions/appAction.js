@@ -69,7 +69,10 @@ const sendDoiSearchRequest = (payload) => dispatch => {
 const sendPds4LabelSearchRequest = (payload) => dispatch => {
     dispatch({
         type: "SEND_PDS4_LABEL_SEARCH_REQUEST",
-        payload
+        payload: {
+            ...payload,
+            
+        }
     })
 }
 

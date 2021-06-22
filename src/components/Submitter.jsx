@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
   submitterForm: {
     margin: '1em 0'
   },
-  nodesDropdown: {
+  nodeDropdown: {
     minWidth: 120,
   }
 }));
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 const Submitter = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [nodesOpen, setNodesOpen] = useState(false);
+  const [nodeOpen, setNodeOpen] = useState(false);
   
   const submitter = useSelector(state =>
       state.appReducer.submitter
@@ -36,17 +36,17 @@ const Submitter = () => {
     dispatch(rootActions.appAction.setSubmitter(event.target.value));
   }
   
-  const handleNodesSelect = event => {
+  const handleNodeSelect = event => {
     dispatch(rootActions.appAction.retrySave());
     dispatch(rootActions.appAction.setNode(event.target.value));
   };
   
-  const handleNodesOpen = () => {
-    setNodesOpen(true);
+  const handleNodeOpen = () => {
+    setNodeOpen(true);
   };
   
-  const handleNodesClose = () => {
-    setNodesOpen(false);
+  const handleNodeClose = () => {
+    setNodeOpen(false);
   };
 
   return (
@@ -54,22 +54,23 @@ const Submitter = () => {
         <TextField
             label="Submitter Email"
             variant="outlined"
+            InputLabelProps={{shrink: submitter ? true : false}}
             value={submitter}
             onChange={handleSubmitterChange}
         />
         <br/>
         <br/>
-        <FormControl variant="outlined" className={classes.nodesDropdown}>
-          <InputLabel id="select-nodes-label">Node</InputLabel>
+        <FormControl variant="outlined" className={classes.nodeDropdown}>
+          <InputLabel id="select-node-label">Node</InputLabel>
           <Select
-              labelId="select-nodes-label"
-              id="select-nodes"
+              labelId="select-node-label"
+              id="select-node"
               value={node ? node.toUpperCase() : ''}
-              open={nodesOpen}
-              onOpen={handleNodesOpen}
-              onClose={handleNodesClose}
-              onChange={handleNodesSelect}
-              label="Nodes"
+              open={nodeOpen}
+              onOpen={handleNodeOpen}
+              onClose={handleNodeClose}
+              onChange={handleNodeSelect}
+              label="Node"
           >
             <MenuItem value=''><em>None</em></MenuItem>
             <MenuItem value={'ATM'}>ATM</MenuItem>
