@@ -8,6 +8,7 @@ import PageHeader from './PageHeader';
 import Submitter from './Submitter';
 import Draft from './Draft';
 import Reserve from './Reserve';
+import HelpInfo from './HelpInfo';
 import {makeStyles} from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -16,6 +17,11 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '50px',
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center'
+  },
+  flexRow: {
+    display: 'flex',
+    flexDirection: 'row',
     alignItems: 'center'
   }
 }));
@@ -34,9 +40,12 @@ const Create = () => {
         
         <Submitter/>
         
+        <div className={classes.flexRow}>
         <Typography>
           Has the data been registered and made publicly available?
         </Typography>
+          <HelpInfo type={'general'}/>
+        </div>
         <FormControl component="fieldset">
           <RadioGroup row aria-label="registered" name="registered" value={isRegistered} onChange={handleRadio}>
             <FormControlLabel value="yes" control={<Radio />} label="Yes" />

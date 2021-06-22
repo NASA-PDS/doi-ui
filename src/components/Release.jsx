@@ -18,6 +18,7 @@ import FormControl from "@material-ui/core/FormControl";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import Radio from "@material-ui/core/Radio";
 import Pds4LabelUrlBar from "./Pds4LabelUrlBar";
+import HelpInfo from "./HelpInfo";
  
 const useStyles = makeStyles((theme) => ({
   xmlTextBox: {
@@ -39,7 +40,13 @@ const useStyles = makeStyles((theme) => ({
   alignCenter: {
     '& .MuiInputBase-input': {
       textAlign: 'center'
-    }
+    },
+    justifyContent: 'center'
+  },
+  flexRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
   }
 }));
 
@@ -109,7 +116,9 @@ const Release = () => {
   return <div className={classes.root}>
     <PageHeader header={'Release DOI'}/>
   
-    <TextField className={classes.alignCenter}
+    <TextField
+        className={classes.alignCenter}
+        disabled
         label="DOI"
         variant="outlined"
         InputProps={{readOnly: true}}
@@ -120,9 +129,12 @@ const Release = () => {
     
     <Submitter/>
   
+    <div className={`${classes.flexRow} ${classes.alignCenter}`}>
     <Typography>
       Has the data been registered and made publicly available?
     </Typography>
+      <HelpInfo type={'general'}/>
+    </div>
     <FormControl component="fieldset">
       <RadioGroup row aria-label="registered" name="registered" value={isRegistered} onChange={handleRadio}>
         <FormControlLabel value="yes" control={<Radio />} label="Yes" />
@@ -150,7 +162,7 @@ const Release = () => {
 
           {urlSearchResponseError && (
             <Alert icon={false} severity="error" className={classes.alert}>
-              <AlertTitle>Error: {String(urlSearchResponseError.name)}</AlertTitle>
+              <AlertTitle>{String(urlSearchResponseError.name)}</AlertTitle>
               <b>Description:</b> {String(urlSearchResponseError.message)}
             </Alert>
           )}
