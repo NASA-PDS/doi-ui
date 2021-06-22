@@ -73,6 +73,8 @@ serve -s pds-doi-ui
 
 Troobleshooting: a serve command is also available in anaconda, be careful not to use it instead of the npm serve.
 
+### SSH Tunnel to DOI Service
 
-
-
+```
+ssh -L 8085:localhost:8080 <machine>
+```
