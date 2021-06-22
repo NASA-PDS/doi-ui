@@ -7,7 +7,6 @@ import AppBody from './components/AppBody';
 import '@fontsource/roboto';
 import './App.css';
 
-
 function App() {
   return (
     <Provider store={configureStore()}>
