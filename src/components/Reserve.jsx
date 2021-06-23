@@ -67,6 +67,11 @@ const Reserve = () => {
     dispatch(rootActions.appAction.retryReserve());
   }
 
+  const handleResetReserve = event => {
+    dispatch(rootActions.appAction.resetReserve());
+      setForce(false);
+  }
+
   return <div className="mtc-root-child flex-column align-center">
     <Typography>
       Download and complete <a href="/src/assets/DOI_reserve_template.xlsx">this Excel file</a>. Once completed, upload it using the field below:
@@ -103,6 +108,19 @@ const Reserve = () => {
             Your DOI for {reserveResponse[0].lidvid} is <b>{reserveResponse[0].doi}</b>
             <br/><br/>
             <b>Once your data is online and registered, <a href="">release your DOI here</a>.</b>
+            <br/><br/>
+            <b>Or</b>
+            <br/><br/>
+            <Button
+              variant="outlined"
+              onClick={handleResetReserve}
+            >
+              Reserve A New DOI
+            </Button>
+            <br/>
+              
+            <br/>
+            
           </Alert>
         </div>
       :

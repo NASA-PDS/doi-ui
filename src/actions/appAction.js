@@ -39,6 +39,14 @@ const setIsFaq = (payload) => dispatch => {
         payload
     });
 }
+
+const setIsRegistered = (payload) => dispatch => {
+    dispatch({
+        type: 'SET_IS_REGISTERED',
+        payload
+    });
+}
+
 const updateReserveExcel = (payload) => dispatch => {
     dispatch({
         type: 'UPDATE_RESERVE_EXCEL',
@@ -56,6 +64,12 @@ const sendReserveRequest = (payload) => dispatch => {
 const retryReserve = () => dispatch => {
     dispatch({
         type: 'RETRY_RESERVE'
+    })
+}
+
+const resetReserve = () => dispatch => {
+    dispatch({
+        type: 'RESET_RESERVE'
     })
 }
 
@@ -163,9 +177,11 @@ export default{
     // setIsReserving,
     setIsSearching,
     setIsFaq,
+    setIsRegistered,
     updateReserveExcel,
     sendReserveRequest,
     retryReserve,
+    resetReserve,
     retryRelease,
     sendLidvidSearchRequest,
     sendDoiSearchRequest,

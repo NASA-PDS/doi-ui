@@ -1,4 +1,6 @@
 import React from 'react';
+import {useDispatch, useSelector} from "react-redux";
+import rootActions from '../actions/rootActions';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
@@ -10,10 +12,14 @@ import Draft from './Draft';
 import Reserve from './Reserve';
 
 const Create = () => {
-  const [isRegistered, setIsRegistered] = React.useState(null);
+  const dispatch = useDispatch();
+
+  const isRegistered = useSelector(state =>
+    state.appReducer.isRegistered
+  );
 
   const handleRadio = (event) => {
-    setIsRegistered(event.target.value);
+    dispatch(rootActions.appAction.setIsRegistered(event.target.value));
   };
 
   return (
