@@ -12,6 +12,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import rootActions from "../actions/rootActions";
 import {Alert} from "@material-ui/lab";
 import Typography from '@material-ui/core/Typography';
+import { useHistory } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
 	alert: {
@@ -41,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SearchResults = () => {
+	const history = useHistory();
 	const classes = useStyles();
 	const dispatch = useDispatch();
 
@@ -48,9 +50,10 @@ const SearchResults = () => {
 		return state.appReducer.searchResponse;
 	});
 	
-	const handleReleaseClick = (event, lidvid) => {
+	const handleReleaseClick = (lidvid) => {
+		history.push("/release/" + lidvid);
+		dispatch(rootActions.appAction.setIsReleasing({"page": true, "identifier": lidvid}));
 		dispatch(rootActions.appAction.resetSearch());
-		dispatch(rootActions.appAction.setIsReleasing(true));
 		dispatch(rootActions.appAction.sendLidvidSearchRequest(lidvid));
 	};
 
@@ -78,7 +81,8 @@ const SearchResults = () => {
 	};
 
 	return (
-			<>
+		<div>
+			results
 			{data ?
 				data.errors ?
 					<Alert icon={false} severity="error" className={classes.alert}>
@@ -178,9 +182,104 @@ const SearchResults = () => {
 							)}
 						</>
 					:
-					""
+					<div>
+						{data.length === 1 ?
+							<Typography className="align-left">1 result found</Typography>
+							:
+							<Typography className="align-left">{data.length} results found</Typography>
+						}
+						<TableContainer className={classes.tableContainer}>
+							<Table size="small" aria-label="a dense, sticky, paginated table" stickyHeader>
+								<TableHead className={classes.tableHeader}>
+									<TableRow>
+										<TableCell>DOI</TableCell>
+										<TableCell>Identifier</TableCell>
+										<TableCell>Title</TableCell>
+										<TableCell>Status</TableCell>
+										<TableCell>Action</TableCell>
+										{/*<TableCell>Last Updated</TableCell>*/}
+									</TableRow>
+								</TableHead>
+								<TableBody>
+									{
+										(rowsPerPage > 0 ?
+											data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+											:
+											data
+										).map((dataItem) => {
+											return (
+												<TableRow hover key={dataItem.lidvid}>
+													<TableCell className={classes.columnDoi}>
+														{
+															dataItem.doi ?
+																dataItem.status.toLowerCase() === 'registered' ?
+																	<a href="https://doi.org/" target="_blank">{dataItem.doi}</a>
+																	:
+																	dataItem.doi
+															:
+															'-'
+														}
+													</TableCell>
+													<TableCell className={classes.columnLidvid}>{dataItem.lidvid}</TableCell>
+													<TableCell>{dataItem.title}</TableCell>
+													<TableCell className={classes.columnStatus}>{massageStatus(dataItem.status.toLowerCase())}</TableCell>
+													<TableCell>{(() => {
+														switch (dataItem.status.toLowerCase()) {
+															case 'draft':
+															case 'reserved':
+																return (
+																		<Button color="primary"
+																			variant="contained"
+																			onClick={(event) => handleReleaseClick(dataItem.lidvid)}
+																		>
+																			Release
+																		</Button>
+																);
+															case 'registered':
+																return (
+																		<Button color="primary"
+																			variant="contained"
+																			onClick={(event) => handleReleaseClick(dataItem.lidvid)}
+																		>
+																			Update
+																		</Button>
+																);
+															case 'review':
+																return (
+																		<Button disabled
+																			variant="contained"
+																		>
+																			Pending
+																		</Button>
+																);
+															default:
+																return '-';
+														}
+													})()}</TableCell>
+													{/*<TableCell>{formatDate(dataItem.update_date)}</TableCell>*/}
+												</TableRow>
+											);
+										})
+									}
+								</TableBody>
+							</Table>
+						</TableContainer>
+						{data.length > rowsPerPage && (
+							<TablePagination className={classes.tablePagination}
+								rowsPerPageOptions={[10, 20, 50, {label: 'All', value: -1}]}
+								component="div"
+								count={data.length}
+								rowsPerPage={rowsPerPage}
+								page={page}
+								onChangePage={handleChangePage}
+								onChangeRowsPerPage={handleChangeRowsPerPage}
+							/>
+						)}
+					</div>
+				:
+				""
 			}
-		</>
+		</div>
 	)
 };
 

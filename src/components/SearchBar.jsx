@@ -7,7 +7,7 @@ import ClearIcon from "@material-ui/icons/Clear";
 import SearchIcon from "@material-ui/icons/Search";
 import {useDispatch, useSelector} from "react-redux";
 import rootActions from "../actions/rootActions";
-
+import { useHistory, useParams } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   searchBar: {
@@ -29,6 +29,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SearchBar = () => {
+  let { searchText } = useParams();
+  const history = useHistory();
   const classes = useStyles();
   const dispatch = useDispatch();
   const [identifier, setIdentifier] = useState('');
@@ -49,18 +51,22 @@ const SearchBar = () => {
   };
   
   const handleSearch = () => {
-    dispatch(rootActions.appAction.setIsSearching(true));
+    history.push("/search/" + identifier);
     dispatch(rootActions.appAction.sendSearchRequest(identifier));
   };
 
   const handleClear = () => {
-    dispatch(rootActions.appAction.resetSearch());
+    setIdentifier('');
   };
 
   useEffect(() => {
-    setIdentifier(searchIdentifier);
+    if(searchText){
+      setIdentifier(searchText);
+    }
+    
+    dispatch(rootActions.appAction.sendSearchRequest(identifier));
   }, [searchIdentifier]);
-  
+
   return (
       <>
         <Paper component="form" className={classes.searchBar}>

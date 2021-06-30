@@ -19,6 +19,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import Radio from "@material-ui/core/Radio";
 import Pds4LabelUrlBar from "./Pds4LabelUrlBar";
 import HelpInfo from "./HelpInfo";
+import { useParams } from 'react-router-dom'
  
 const useStyles = makeStyles((theme) => ({
   xmlTextBox: {
@@ -52,6 +53,8 @@ const useStyles = makeStyles((theme) => ({
 
 const Release = () => {
   const classes = useStyles();
+
+  let { searchLidvid } = useParams();
   const dispatch = useDispatch();
   
   const [force, setForce] = useState(false);
@@ -97,6 +100,16 @@ const Release = () => {
   });
   
   useEffect(() => {
+    if(searchLidvid){
+      dispatch(rootActions.appAction.sendLidvidSearchRequest(searchLidvid));
+    }
+    else{
+      if (releaseIdentifier !== null) {
+        dispatch(rootActions.appAction.sendLidvidSearchRequest(releaseIdentifier));
+      }
+
+    }
+  
     if (urlSearchResponse !== null) {
       let error = {
         message: null,

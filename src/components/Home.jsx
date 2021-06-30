@@ -10,6 +10,7 @@ import CreateNewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
 import AddIcon from '@material-ui/icons/Add';
 import Divider from "@material-ui/core/Divider";
+import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,14 +43,6 @@ const useStyles = makeStyles((theme) => ({
 const Home = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-
-  const handleCreateClick = event => {
-    dispatch(rootActions.appAction.setIsCreating(true));
-  }
-  
-  const handleFaqClick = event => {
-    dispatch(rootActions.appAction.setIsFaq(true));
-  }
   
   return (
       <div className={classes.root}>
@@ -73,7 +66,9 @@ const Home = () => {
           <Button
               variant="contained"
               startIcon={<AddIcon />}
-              onClick={handleCreateClick}
+              className={classes.ctaButton}
+              component={Link}
+              to="/create"
           >
             Create DOI
           </Button>
@@ -93,7 +88,9 @@ const Home = () => {
             </Typography>
             <Button
                 variant="contained"
-                onClick={handleFaqClick}
+                className={classes.ctaButton}
+                component={Link}
+                to="/faq"
             >
               Frequently Asked Questions
             </Button>

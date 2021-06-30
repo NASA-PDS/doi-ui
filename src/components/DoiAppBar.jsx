@@ -7,6 +7,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import {useDispatch, useSelector} from 'react-redux';
 import Divider from '@material-ui/core/Divider';
 import rootActions from '../actions/rootActions';
+import { Link, NavLink } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   doiAppBar: {
@@ -25,39 +26,34 @@ const useStyles = makeStyles((theme) => ({
   verticalDivider: {
     backgroundColor: 'rgba(255,255,255,0.75)'
   },
-  bold: {
-    fontWeight: 'bold'
+  activeLink: {
+    fontWeight: 'bolder'
+  },
+  link: {
+    color:'inherit',
+    textDecoration: 'none',
+    '&:focus, &:hover, &:visited, &:link, &:active': {
+        textDecoration: 'none'
+    }
   }
 }));
 
 const DoiAppBar = () => {
-  const isSelecting = useSelector(state =>
-    state.appReducer.isSelecting
-  )
-  const isSearching = useSelector(state =>
-    state.appReducer.isSearching
-  )
-  const isFaq = useSelector(state =>
-      state.appReducer.isFaq
-  )
   const dispatch = useDispatch();
   
   const handleHomeClick = event => {
     dispatch(rootActions.appAction.resetSearch());
     dispatch(rootActions.appAction.resetStoredData());
-    dispatch(rootActions.appAction.setIsSelecting(true));
   }
   
   const handleSearchClick = event => {
     dispatch(rootActions.appAction.resetSearch());
     dispatch(rootActions.appAction.resetStoredData());
-    dispatch(rootActions.appAction.setIsSearching(true));
   }
   
   const handleFaqClick = event => {
     dispatch(rootActions.appAction.resetSearch());
     dispatch(rootActions.appAction.resetStoredData());
-    dispatch(rootActions.appAction.setIsFaq(true));
   }
   
   const classes = useStyles();
@@ -65,41 +61,53 @@ const DoiAppBar = () => {
   return <AppBar position="static" className={classes.doiAppBar}>
       <Toolbar>
         <div className={classes.mainNav}>
-          <Typography
-            variant="h5"
-            className={classes.title}
-            onClick={handleHomeClick}
-          >
-            PDS DOI Management
-          </Typography>
+          <Link to="/home" className={classes.link}>
+            <Typography
+              variant="h5"
+              className={classes.title}
+              onClick={handleHomeClick}
+            >
+              PDS DOI Management
+            </Typography>
+          </Link>
           <Divider
             orientation="vertical"
             flexItem
             className={classes.verticalDivider}
           />
+
           <Button
             color="inherit"
-            className={isSelecting && classes.bold}
             onClick={handleHomeClick}
+            component={NavLink}
+            activeClassName={classes.activeLink}
+            to="/home"
           >
             Home
           </Button>
 
+
           <Button
             color="inherit"
-            className={isSearching && classes.bold}
             onClick={handleSearchClick}
+            component={NavLink}
+            activeClassName={classes.activeLink}
+            to="/search"
           >
             Search
           </Button>
         </div>
-          <Button
-            color="inherit"
-            className={isFaq && classes.bold}
-            onClick={handleFaqClick}
-          >
-            FAQ
-          </Button>
+
+        <Button
+          color="inherit"
+          onClick={handleFaqClick}
+          component={NavLink}
+          activeClassName={classes.activeLink}
+          to="/faq"
+        >
+          FAQ
+        </Button>
+
       </Toolbar>
     </AppBar>;
 };

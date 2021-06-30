@@ -1,41 +1,6 @@
-const setIsSelecting = (payload) => dispatch => {
-    dispatch({
-        type: 'SET_IS_SELECTING',
-        payload
-    });
-}
-
-const setIsCreating = (payload) => dispatch => {
-    dispatch({
-        type: 'SET_IS_CREATING',
-        payload
-    });
-}
-
 const setIsReleasing = (payload) => dispatch => {
     dispatch({
         type: 'SET_IS_RELEASING',
-        payload
-    });
-}
-
-const setIsSearching = (payload) => dispatch => {
-    dispatch({
-        type: 'SET_IS_SEARCHING',
-        payload
-    });
-}
-
-const setIsFaq = (payload) => dispatch => {
-    dispatch({
-        type: 'SET_IS_FAQ',
-        payload
-    });
-}
-
-const setIsRegistered = (payload) => dispatch => {
-    dispatch({
-        type: 'SET_IS_REGISTERED',
         payload
     });
 }
@@ -173,12 +138,7 @@ const resetStoredData = (payload) => dispatch => {
 }
 
 export default{
-    setIsSelecting,
-    setIsCreating,
     setIsReleasing,
-    setIsSearching,
-    setIsFaq,
-    setIsRegistered,
     updateReserveExcel,
     sendReserveRequest,
     retryReserve,
