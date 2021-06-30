@@ -2,17 +2,17 @@ const initialState = {
   isSelecting: true,
   isCreating: false,
   isReleasing: false,
-  // isReserving: false,
   isSearching: false,
   isFaq: false,
   reserveExcel: null,
   reserveResponse: null,
   doiSearchResponse: null,
+  urlSearchResponse: null,
   saveResponse: null,
+  doi: null,
   releaseXml: null,
   releaseKeywords: null,
   releaseResponse: null,
-  releaseIdentifier: null,  // always lidvid
   searchClear: true,
   searchIdentifier: null,   // doi, lidvid, or partial
   searchResponse: null,
@@ -45,10 +45,9 @@ export default (state = initialState, action) => {
         ...state,
         isSelecting: false,
         isCreating: false,
-        isReleasing: action.payload.page,
+        isReleasing: action.payload,
         isSearching: false,
-        isFaq: false,
-        releaseIdentifier: action.payload.identifier
+        isFaq: false
       }
     case 'SET_IS_SEARCHING':
       return {
@@ -88,14 +87,34 @@ export default (state = initialState, action) => {
         ...state,
         releaseResponse: null
       }
+    case 'RETRY_SAVE':
+      return {
+        ...state,
+        saveResponse: null
+      }
     case 'RENDER_DOI_SEARCH_RESULTS':
       return {
         ...state,
         doiSearchResponse: action.payload.data,
+        doi: action.payload.data.doi,
         releaseKeywords: action.payload.keywords,
         releaseXml: action.payload.xml,
-        submitter: action.payload.data.submitter ? action.payload.data.submitter : action.payload.submitter,
-        node: action.payload.data.node ? action.payload.data.node : action.payload.node
+        submitter: action.payload.data.submitter,
+        node: action.payload.data.node
+      }
+    case 'RENDER_URL_SEARCH_RESULTS':
+      if (action.payload.xml) {
+        return {
+          ...state,
+          urlSearchResponse: action.payload.data,
+          releaseKeywords: action.payload.keywords,
+          releaseXml: action.payload.xml
+        }
+      } else {
+        return {
+          ...state,
+          urlSearchResponse: action.payload.data
+        }
       }
     case 'RESET_RELEASE':
       return {
@@ -150,10 +169,11 @@ export default (state = initialState, action) => {
         ...state,
         reserveResponse: null,
         doiSearchResponse: null,
+        urlSearchResponse: null,
         releaseResponse: null,
+        doi: null,
         releaseXml: null,
         releaseKeywords: null,
-        releaseIdentifier: null,
         submitter: null,
         node: null
       }

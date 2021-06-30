@@ -16,9 +16,16 @@ const useStyles = makeStyles((theme) => ({
       marginRight: "auto"
     }
   },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
+  root: {
+    marginTop: '25px',
+    marginBottom: '50px'
+  },
+  flexColumn: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  alignCenter: {
+    alignItems: 'center'
   }
 }));
 
@@ -67,7 +74,7 @@ const Reserve = () => {
     dispatch(rootActions.appAction.retryReserve());
   }
 
-  return <div className="mtc-root-child flex-column align-center">
+  return <div className={`${classes.root} ${classes.flexColumn} ${classes.alignCenter}`}>
     <Typography>
       Download and complete <a href="/src/assets/DOI_reserve_template.xlsx">this Excel file</a>. Once completed, upload it using the field below:
     </Typography>
@@ -83,7 +90,7 @@ const Reserve = () => {
       reserveResponse.errors?
         <div>
           <Alert icon={false} severity="error" className={classes.alert}>
-            <p><b>Error:</b> {String(reserveResponse.errors[0].name)}</p>
+            <p>{String(reserveResponse.errors[0].name)}</p>
             <p><b>Description:</b> {String(reserveResponse.errors[0].message)}</p>
           </Alert>
   
@@ -106,7 +113,7 @@ const Reserve = () => {
           </Alert>
         </div>
       :
-      <div className="flex-column align-center">
+      <div className={`${classes.flexColumn} ${classes.alignCenter}`}>
         <Button
             variant="contained"
             color="primary"

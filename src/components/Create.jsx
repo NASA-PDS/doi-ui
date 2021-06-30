@@ -8,8 +8,26 @@ import PageHeader from './PageHeader';
 import Submitter from './Submitter';
 import Draft from './Draft';
 import Reserve from './Reserve';
+import HelpInfo from './HelpInfo';
+import {makeStyles} from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    marginTop: '25px',
+    marginBottom: '50px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  flexRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
+  }
+}));
 
 const Create = () => {
+  const classes = useStyles();
   const [isRegistered, setIsRegistered] = React.useState(null);
 
   const handleRadio = (event) => {
@@ -17,14 +35,17 @@ const Create = () => {
   };
 
   return (
-      <div className="mtc-root-child flex-column align-center">
+      <div className={classes.root}>
         <PageHeader header={'Create DOI'}/>
         
         <Submitter/>
         
+        <div className={classes.flexRow}>
         <Typography>
           Has the data been registered and made publicly available?
         </Typography>
+          <HelpInfo type={'general'}/>
+        </div>
         <FormControl component="fieldset">
           <RadioGroup row aria-label="registered" name="registered" value={isRegistered} onChange={handleRadio}>
             <FormControlLabel value="yes" control={<Radio />} label="Yes" />

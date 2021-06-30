@@ -7,9 +7,18 @@ import TextField from '@material-ui/core/TextField';
 import { useDispatch, useSelector } from 'react-redux';
 import rootActions from '../actions/rootActions';
 import { replaceXmlTagValue } from '../utils/xmlUtil';
+import HelpInfo from "./HelpInfo";
+
+const useStyles = makeStyles((theme) => ({
+  keywords: {
+    position: 'relative',
+    bottom: 35
+  }
+}));
 
 export default function Tags() {
   const dispatch = useDispatch();
+  const classes = useStyles();
 
   const releaseKeywords = useSelector(state => {
       let keywordList = state.appReducer.releaseKeywords.replace(' ', '').split(";");
@@ -42,7 +51,8 @@ export default function Tags() {
   }
 
   return (
-    <div>
+    <div className={classes.keywords}>
+      <HelpInfo type={'keyword'}/>
       <Autocomplete
         multiple
         freeSolo

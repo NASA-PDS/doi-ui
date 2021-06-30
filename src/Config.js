@@ -5,7 +5,7 @@ const Config = {
         getDoiByDoiUrl: 'http://localhost:8085/PDS_APIs/pds_doi_api/0.1/dois',
         getDoiByPds4LabelUrl: 'http://localhost:8085/PDS_APIs/pds_doi_api/0.1/dois',
         releaseDoiUrl: 'http://localhost:8085/PDS_APIs/pds_doi_api/0.1/dois/',
-        baseUrl: 'http://localhost:8085/PDS_APIs/pds_doi_api/0.1/dois/'
+        searchUrl: 'http://localhost:8085/PDS_APIs/pds_doi_api/0.1/dois'
     } 
 }
 

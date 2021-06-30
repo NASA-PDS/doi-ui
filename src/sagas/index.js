@@ -1,7 +1,6 @@
-import { useScrollTrigger } from '@material-ui/core';
 import { all, call, put, takeLatest } from 'redux-saga/effects';
 import Config from '../Config';
-import { printXML, findXmlTag } from '../utils/xmlUtil';
+import {findXmlTag, printXML} from '../utils/xmlUtil';
 import { doiNotFound, recordNotFound } from '../sagas/error';
 
 function* sendReserveContent(action){
@@ -129,14 +128,14 @@ function* sendDoiSearchRequest(){
 }
 
 function* sendPds4LabelUrlSearch(action){
-    const {labelUrl, submitter, node, forceUrl} = action.payload;
+    const {labelUrl, submitter, node, force} = action.payload;
 
     let endpoint = Config.api.getDoiByPds4LabelUrl;
     endpoint += '?action=draft';
-    submitter ? endpoint += '&submitter=' + submitter : endpoint += '&submitter=';
+    endpoint += '&submitter=' + submitter;
     endpoint += '&node=' + node;
     endpoint += '&url=' + encodeURI(labelUrl);
-    if (forceUrl) endpoint += '&force=' + forceUrl;
+    if (force) endpoint += '&force=' + force;
     
     const response = yield fetch(endpoint, {
         method: 'POST',
@@ -151,9 +150,7 @@ function* sendPds4LabelUrlSearch(action){
     if(!data.errors){
         if(data.length < 1){
             data = {
-                data: doiNotFound,
-                submitter: submitter,
-                node: node
+                data: doiNotFound
             };
         }
         else{
@@ -167,13 +164,11 @@ function* sendPds4LabelUrlSearch(action){
     }
     else{
         data = {
-            data: data,
-            submitter: submitter,
-            node: node
+            data
         }
     }
 
-    yield put({ type: 'RENDER_DOI_SEARCH_RESULTS', payload: data});
+    yield put({ type: 'RENDER_URL_SEARCH_RESULTS', payload: data});
 }
 
 function* sendPdsLabelUrlSearchRequest(){
@@ -272,7 +267,7 @@ function* sendSaveReleaseRequest(){
 
 function* sendSearch(action){
     const identifier = action.payload ? action.payload : '*';
-    let endpoint = Config.api.baseUrl;
+    let endpoint = Config.api.searchUrl;
     
     if (identifier.startsWith('10.')) {
         endpoint += '?doi=' + encodeURIComponent(identifier);
@@ -292,7 +287,6 @@ function* sendSearch(action){
     }
 
     yield put({type: 'RENDER_SEARCH_RESULTS', payload: {identifier, data}});
-    // yield put({type: 'RENDER_SEARCH_RESULTS', payload: data});
 }
 
 function* sendSearchRequest(){

@@ -1,25 +1,16 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import { useDispatch, useSelector } from 'react-redux';
 import { unprettify } from '../utils/xmlUtil';
 import rootActions from '../actions/rootActions';
 
-const useStyles = makeStyles((theme) => ({
-  submitButton: {
-    marginTop: '15px'
-  }
-}));
 
 const ReleaseAlert = (props) => {
-  const classes = useStyles();
   const dispatch = useDispatch();
 
   const [open, setOpen] = React.useState(false);
@@ -33,15 +24,11 @@ const ReleaseAlert = (props) => {
   );
 
   const submitter = useSelector(state =>
-    state.appReducer.releaseSubmitter
+    state.appReducer.submitter
   );
 
   const node = useSelector(state =>
-    state.appReducer.releaseNode
-  );
-
-  const appReducer = useSelector(state =>
-    state.appReducer
+    state.appReducer.node
   );
 
   const handleClickOpen = () => {
@@ -74,8 +61,7 @@ const ReleaseAlert = (props) => {
           variant="contained"
           color="primary"
           onClick={handleClickOpen}
-          disabled={!releaseXml}
-          className={classes.submitButton}
+          disabled={props.disabled}
       >
         Submit for Review
       </Button>
@@ -86,7 +72,7 @@ const ReleaseAlert = (props) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        {/*<DialogTitle id="alert-dialog-title">Submit for Review</DialogTitle>*/}
+        <DialogTitle id="alert-dialog-title">Submit for Review</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Are you sure you want to submit for review?

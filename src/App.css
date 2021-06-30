@@ -1,6 +1,5 @@
 .App {
   text-align: center;
-  /*background: linear-gradient(180deg, rgba(180,220,255,1) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,1) 100%);*/
 }
 
 .App-logo {
@@ -36,28 +35,4 @@
   to {
     transform: rotate(360deg);
   }
-}
-
-.mtc-root-child {
-  margin-top: 25px;
-  margin-bottom: 50px;
-}
-
-.flex-column {
-  display: flex;
-  flex-direction: column;
-}
-
-.flex-row {
-  display: flex;
-  flex-direction: row;
-}
-
-.align-left {
-  text-align: left;
-  align-self: flex-start;
-}
-
-.align-center {
-  align-items: center;
 }

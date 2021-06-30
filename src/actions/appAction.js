@@ -19,13 +19,6 @@ const setIsReleasing = (payload) => dispatch => {
     });
 }
 
-// const setIsReserving = (payload) => dispatch => {
-//     dispatch({
-//         type: 'SET_IS_RESERVING',
-//         payload
-//     });
-// }
-
 const setIsSearching = (payload) => dispatch => {
     dispatch({
         type: 'SET_IS_SEARCHING',
@@ -76,7 +69,10 @@ const sendDoiSearchRequest = (payload) => dispatch => {
 const sendPds4LabelSearchRequest = (payload) => dispatch => {
     dispatch({
         type: "SEND_PDS4_LABEL_SEARCH_REQUEST",
-        payload
+        payload: {
+            ...payload,
+            
+        }
     })
 }
 
@@ -85,6 +81,12 @@ const sendSaveReleaseRequest = (payload) => dispatch => {
         type: "SEND_SAVE_RELEASE_REQUEST",
         payload
     });
+}
+
+const retrySave = () => dispatch => {
+    dispatch({
+        type: 'RETRY_SAVE'
+    })
 }
 
 const sendReleaseRequest = (payload) => dispatch => {
@@ -160,13 +162,13 @@ export default{
     setIsSelecting,
     setIsCreating,
     setIsReleasing,
-    // setIsReserving,
     setIsSearching,
     setIsFaq,
     updateReserveExcel,
     sendReserveRequest,
     retryReserve,
     retryRelease,
+    retrySave,
     sendLidvidSearchRequest,
     sendDoiSearchRequest,
     sendPds4LabelSearchRequest,
