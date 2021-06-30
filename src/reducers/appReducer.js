@@ -4,6 +4,7 @@ const initialState = {
   isReleasing: false,
   isSearching: false,
   isFaq: false,
+  isRegistered: null,
   reserveExcel: null,
   reserveResponse: null,
   doiSearchResponse: null,
@@ -16,8 +17,8 @@ const initialState = {
   searchClear: true,
   searchIdentifier: null,   // doi, lidvid, or partial
   searchResponse: null,
-  submitter: null,
-  node: null,
+  submitter: "",
+  node: null
 }
   
 export default (state = initialState, action) => {
@@ -67,6 +68,11 @@ export default (state = initialState, action) => {
         isSearching: false,
         isFaq: action.payload
       }
+    case 'SET_IS_REGISTERED':
+      return {
+        ...state,
+        isRegistered: action.payload
+      }
     case 'UPDATE_RESERVE_EXCEL':
       return {
         ...state,
@@ -81,6 +87,15 @@ export default (state = initialState, action) => {
       return {
         ...state,
         reserveResponse: null
+      }
+    case 'RESET_RESERVE':
+      return {
+        ...state,
+        reserveResponse: null,
+        reserveExcel: null,
+        submitter: "",
+        node: null,
+        isRegistered: null
       }
     case 'RETRY_RELEASE':
       return {
@@ -174,7 +189,8 @@ export default (state = initialState, action) => {
         doi: null,
         releaseXml: null,
         releaseKeywords: null,
-        submitter: null,
+        releaseIdentifier: null,
+        submitter: "",
         node: null
       }
     default:
