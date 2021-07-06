@@ -73,7 +73,7 @@ unzip pds-doi-ui.zip
 serve -s pds-doi-ui
 ```
 
-Troobleshooting: a serve command is also available in anaconda, be careful not to use it instead of the npm serve.
+**Troobleshooting:** a serve command is also available in anaconda, be careful not to use it instead of the npm serve.
 
 ### SSH Tunnel to DOI Service
 
