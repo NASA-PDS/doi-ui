@@ -54,7 +54,10 @@ Upload the zip file in the release of the tag in github
 
 ```
 git clone https://github.com/NASA-PDS/pds-doi-ui.git
+cd pds-doi-ui
 git checkout <TAG VERSION>
+npm install -g serve
+serve -s build
 ```
 
 #### Run from build archive
@@ -67,7 +70,6 @@ Unzip and start the server
 
 ```
 unzip pds-doi-ui.zip
-npm install -g serve
 serve -s pds-doi-ui
 ```
 
