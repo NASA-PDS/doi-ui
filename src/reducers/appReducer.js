@@ -6,6 +6,7 @@ const initialState = {
   urlSearchResponse: null,
   saveResponse: null,
   doi: null,
+  isRegistered: null,
   releaseXml: null,
   releaseKeywords: null,
   releaseResponse: null,
@@ -132,6 +133,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         node: action.payload
+      }
+    case 'SET_IS_REGISTERED':
+      return {
+        ...state,
+        isRegistered: action.payload
       }
     case 'RESET_STORED_DATA':
       return {

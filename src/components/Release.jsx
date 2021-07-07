@@ -103,12 +103,6 @@ const Release = () => {
     if(searchLidvid){
       dispatch(rootActions.appAction.sendLidvidSearchRequest(searchLidvid));
     }
-    else{
-      if (releaseIdentifier !== null) {
-        dispatch(rootActions.appAction.sendLidvidSearchRequest(releaseIdentifier));
-      }
-
-    }
   
     if (urlSearchResponse !== null) {
       let error = {

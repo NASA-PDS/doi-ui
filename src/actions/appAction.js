@@ -5,6 +5,13 @@ const setIsReleasing = (payload) => dispatch => {
     });
 }
 
+const setIsRegistered = (payload) => dispatch => {
+    dispatch({
+        type: 'SET_IS_REGISTERED',
+        payload
+    });
+}
+
 const updateReserveExcel = (payload) => dispatch => {
     dispatch({
         type: 'UPDATE_RESERVE_EXCEL',
@@ -139,6 +146,7 @@ const resetStoredData = (payload) => dispatch => {
 
 export default{
     setIsReleasing,
+    setIsRegistered,
     updateReserveExcel,
     sendReserveRequest,
     retryReserve,

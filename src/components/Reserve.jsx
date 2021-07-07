@@ -8,6 +8,8 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import excel from '../assets/DOI_reserve_template.xlsx';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   alert: {
@@ -80,7 +82,7 @@ const Reserve = () => {
 
   return <div className="mtc-root-child flex-column align-center">
     <Typography>
-      Download and complete <a href="/src/assets/DOI_reserve_template.xlsx">this Excel file</a>. Once completed, upload it using the field below:
+      Download and complete <a href = {excel} target = "_blank">this Excel file</a>. Once completed, upload it using the field below:
     </Typography>
     <br/>
   
@@ -113,7 +115,7 @@ const Reserve = () => {
             <AlertTitle>Submission Successful!</AlertTitle>
             Your DOI for {reserveResponse[0].lidvid} is <b>{reserveResponse[0].doi}</b>
             <br/><br/>
-            <b>Once your data is online and registered, <a href="">release your DOI here</a>.</b>
+            <b>Once your data is online and registered, <Link to={'/release/' + reserveResponse[0].lidvid}> release your DOI here</Link>.</b>
             <br/><br/>
             <b>Or</b>
             <br/><br/>

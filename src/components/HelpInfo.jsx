@@ -5,6 +5,7 @@ import IconButton from "@material-ui/core/IconButton";
 import InfoIcon from '@material-ui/icons/Info';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import Tooltip from "@material-ui/core/Tooltip";
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   helpText: {
@@ -70,8 +71,8 @@ const HelpInfo = (props) => {
                       title={
                         <React.Fragment>
                           <Typography className={classes.helpText}>
-                            Questions about process or information requested?
-                            <br/>See <a href="" className={classes.helpLink}>FAQs</a><OpenInNewIcon fontSize={'small'}/> or contact the <a href="mailto:pds-operator@jpl.nasa.gov">PDS Operator</a> for assistance.
+                            Questions about the process or information requested?
+                            <br/>See <Link to="/faq">FAQs <OpenInNewIcon fontSize={'small'}/></Link>  or contact the <a href="mailto:pds-operator@jpl.nasa.gov">PDS Operator</a> for assistance.
                           </Typography>
                         </React.Fragment>
                       }
