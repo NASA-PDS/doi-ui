@@ -19,7 +19,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import Radio from "@material-ui/core/Radio";
 import Pds4LabelUrlBar from "./Pds4LabelUrlBar";
 import HelpInfo from "./HelpInfo";
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom';
  
 const useStyles = makeStyles((theme) => ({
   xmlTextBox: {
@@ -153,7 +153,7 @@ const Release = () => {
     {isRegistered === 'no' &&
       <Alert icon={false} severity="error" className={classes.alert}>
         The data must registered with PDS Engineering Node and made publicly available prior to the release of the DOI.
-        <br/>See <a href="">FAQs</a> for more information.
+        <br/>See <Link to="/faq">FAQs</Link> for more information.
       </Alert>
     }
     
