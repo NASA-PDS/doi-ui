@@ -7,7 +7,7 @@ import { BrowserRouter, Route } from 'react-router-dom'
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter basename="/">
+    <BrowserRouter basename="/dois">
         <Route path="/" component={App}/>
     </BrowserRouter>
   </React.StrictMode>,
