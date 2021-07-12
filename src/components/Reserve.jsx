@@ -123,7 +123,7 @@ const Reserve = () => {
               variant="outlined"
               onClick={handleResetReserve}
             >
-              Reserve A New DOI
+              Create A New DOI
             </Button>
             <br/>
               
