@@ -6,35 +6,37 @@ import Search from './Search';
 import Release from './Release';
 import FAQ from './FAQ';
 import Container from '@material-ui/core/Container';
+import { Redirect, Route, Switch} from 'react-router-dom';
 
 
 const AppBody = () => {
-  const isSelecting = useSelector(state =>
-    state.appReducer.isSelecting
-  )
-  
-  const isCreating = useSelector(state =>
-      state.appReducer.isCreating
-  )
-  
-  const isReleasing = useSelector(state => 
-    state.appReducer.isReleasing
-  )
-
-  const isSearching = useSelector(state =>
-      state.appReducer.isSearching
-  )
-  
-  const isFaq = useSelector(state =>
-      state.appReducer.isFaq
-  )
-  
   return <Container>
-    {isSelecting && <Home/>}
-    {isCreating && <Create/>}
-    {isSearching && <Search/>}
-    {isReleasing && <Release/>}
-    {isFaq && <FAQ/>}
+    <Switch>
+      <Route path="/home">
+        <Home/>
+      </Route>
+      <Route path="/create">
+        <Create/>
+      </Route>
+      <Route path="/search/:searchText+">
+        <Search/>
+      </Route>
+      <Route path="/search/">
+        <Search/>
+      </Route>
+      <Route path="/release/:searchLidvid+">
+        <Release/>
+      </Route>
+      <Route path="/release">
+        <Release/>
+      </Route>
+      <Route path="/faq">
+        <FAQ/>
+      </Route>
+      <Route path="/">
+        <Redirect to="/home"/>
+      </Route>
+    </Switch>
   </Container>;
 };
 

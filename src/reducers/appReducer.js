@@ -1,72 +1,32 @@
 const initialState = {
-  isSelecting: true,
-  isCreating: false,
   isReleasing: false,
-  // isReserving: false,
-  isSearching: false,
-  isFaq: false,
   reserveExcel: null,
   reserveResponse: null,
   doiSearchResponse: null,
+  urlSearchResponse: null,
   saveResponse: null,
+  doi: null,
+  isRegistered: null,
   releaseXml: null,
   releaseKeywords: null,
   releaseResponse: null,
-  releaseIdentifier: null,  // always lidvid
   searchClear: true,
   searchIdentifier: null,   // doi, lidvid, or partial
   searchResponse: null,
-  submitter: null,
-  node: null,
+  submitter: "",
+  node: null
 }
   
 export default (state = initialState, action) => {
   switch (action.type) {
-    case 'SET_IS_SELECTING':
-      return {
-        ...state,
-        isSelecting: action.payload,
-        isCreating: false,
-        isReleasing: false,
-        isSearching: false,
-        isFaq: false
-      }
-    case 'SET_IS_CREATING':
-      return {
-        ...state,
-        isSelecting: false,
-        isCreating: action.payload,
-        isReleasing: false,
-        isSearching: false,
-        isFaq: false
-      }
     case 'SET_IS_RELEASING':
       return {
         ...state,
         isSelecting: false,
         isCreating: false,
-        isReleasing: action.payload.page,
+        isReleasing: action.payload,
         isSearching: false,
-        isFaq: false,
-        releaseIdentifier: action.payload.identifier
-      }
-    case 'SET_IS_SEARCHING':
-      return {
-        ...state,
-        isSelecting: false,
-        isCreating: false,
-        isReleasing: false,
-        isSearching: action.payload,
         isFaq: false
-      }
-    case 'SET_IS_FAQ':
-      return {
-        ...state,
-        isSelecting: false,
-        isCreating: false,
-        isReleasing: false,
-        isSearching: false,
-        isFaq: action.payload
       }
     case 'UPDATE_RESERVE_EXCEL':
       return {
@@ -83,19 +43,48 @@ export default (state = initialState, action) => {
         ...state,
         reserveResponse: null
       }
+    case 'RESET_RESERVE':
+      return {
+        ...state,
+        reserveResponse: null,
+        reserveExcel: null,
+        submitter: "",
+        node: null,
+        isRegistered: null
+      }
     case 'RETRY_RELEASE':
       return {
         ...state,
         releaseResponse: null
       }
+    case 'RETRY_SAVE':
+      return {
+        ...state,
+        saveResponse: null
+      }
     case 'RENDER_DOI_SEARCH_RESULTS':
       return {
         ...state,
         doiSearchResponse: action.payload.data,
+        doi: action.payload.data.doi,
         releaseKeywords: action.payload.keywords,
         releaseXml: action.payload.xml,
-        submitter: action.payload.data.submitter ? action.payload.data.submitter : action.payload.submitter,
-        node: action.payload.data.node ? action.payload.data.node : action.payload.node
+        submitter: action.payload.data.submitter,
+        node: action.payload.data.node
+      }
+    case 'RENDER_URL_SEARCH_RESULTS':
+      if (action.payload.xml) {
+        return {
+          ...state,
+          urlSearchResponse: action.payload.data,
+          releaseKeywords: action.payload.keywords,
+          releaseXml: action.payload.xml
+        }
+      } else {
+        return {
+          ...state,
+          urlSearchResponse: action.payload.data
+        }
       }
     case 'RESET_RELEASE':
       return {
@@ -145,16 +134,23 @@ export default (state = initialState, action) => {
         ...state,
         node: action.payload
       }
+    case 'SET_IS_REGISTERED':
+      return {
+        ...state,
+        isRegistered: action.payload
+      }
     case 'RESET_STORED_DATA':
       return {
         ...state,
         reserveResponse: null,
         doiSearchResponse: null,
+        urlSearchResponse: null,
         releaseResponse: null,
+        doi: null,
         releaseXml: null,
         releaseKeywords: null,
         releaseIdentifier: null,
-        submitter: null,
+        submitter: "",
         node: null
       }
     default:

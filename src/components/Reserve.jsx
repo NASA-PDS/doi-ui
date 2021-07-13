@@ -8,6 +8,8 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import excel from '../assets/DOI_reserve_template.xlsx';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   alert: {
@@ -16,9 +18,16 @@ const useStyles = makeStyles((theme) => ({
       marginRight: "auto"
     }
   },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
+  root: {
+    marginTop: '25px',
+    marginBottom: '50px'
+  },
+  flexColumn: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  alignCenter: {
+    alignItems: 'center'
   }
 }));
 
@@ -66,10 +75,14 @@ const Reserve = () => {
   const handleRetryReserve = event => {
     dispatch(rootActions.appAction.retryReserve());
   }
+  const handleResetReserve = event => {
+    dispatch(rootActions.appAction.resetReserve());
+      setForce(false);
+  }
 
   return <div className="mtc-root-child flex-column align-center">
     <Typography>
-      Download and complete <a href="/src/assets/DOI_reserve_template.xlsx">this Excel file</a>. Once completed, upload it using the field below:
+      Download and complete <a href = {excel} target = "_blank">this Excel file</a>. Once completed, upload it using the field below:
     </Typography>
     <br/>
   
@@ -83,7 +96,7 @@ const Reserve = () => {
       reserveResponse.errors?
         <div>
           <Alert icon={false} severity="error" className={classes.alert}>
-            <p><b>Error:</b> {String(reserveResponse.errors[0].name)}</p>
+            <p>{String(reserveResponse.errors[0].name)}</p>
             <p><b>Description:</b> {String(reserveResponse.errors[0].message)}</p>
           </Alert>
   
@@ -102,11 +115,24 @@ const Reserve = () => {
             <AlertTitle>Submission Successful!</AlertTitle>
             Your DOI for {reserveResponse[0].lidvid} is <b>{reserveResponse[0].doi}</b>
             <br/><br/>
-            <b>Once your data is online and registered, <a href="">release your DOI here</a>.</b>
+            <b>Once your data is online and registered, <Link to={'/release/' + reserveResponse[0].lidvid}> release your DOI here</Link>.</b>
+            <br/><br/>
+            <b>Or</b>
+            <br/><br/>
+            <Button
+              variant="outlined"
+              onClick={handleResetReserve}
+            >
+              Create A New DOI
+            </Button>
+            <br/>
+              
+            <br/>
+            
           </Alert>
         </div>
       :
-      <div className="flex-column align-center">
+      <div className={`${classes.flexColumn} ${classes.alignCenter}`}>
         <Button
             variant="contained"
             color="primary"

@@ -1,17 +1,3 @@
-const setIsSelecting = (payload) => dispatch => {
-    dispatch({
-        type: 'SET_IS_SELECTING',
-        payload
-    });
-}
-
-const setIsCreating = (payload) => dispatch => {
-    dispatch({
-        type: 'SET_IS_CREATING',
-        payload
-    });
-}
-
 const setIsReleasing = (payload) => dispatch => {
     dispatch({
         type: 'SET_IS_RELEASING',
@@ -19,26 +5,13 @@ const setIsReleasing = (payload) => dispatch => {
     });
 }
 
-// const setIsReserving = (payload) => dispatch => {
-//     dispatch({
-//         type: 'SET_IS_RESERVING',
-//         payload
-//     });
-// }
-
-const setIsSearching = (payload) => dispatch => {
+const setIsRegistered = (payload) => dispatch => {
     dispatch({
-        type: 'SET_IS_SEARCHING',
+        type: 'SET_IS_REGISTERED',
         payload
     });
 }
 
-const setIsFaq = (payload) => dispatch => {
-    dispatch({
-        type: 'SET_IS_FAQ',
-        payload
-    });
-}
 const updateReserveExcel = (payload) => dispatch => {
     dispatch({
         type: 'UPDATE_RESERVE_EXCEL',
@@ -59,6 +32,12 @@ const retryReserve = () => dispatch => {
     })
 }
 
+const resetReserve = () => dispatch => {
+    dispatch({
+        type: 'RESET_RESERVE'
+    })
+}
+
 const sendLidvidSearchRequest = (payload) => dispatch => {
     dispatch({
         type: "SEND_LIDVID_SEARCH_REQUEST",
@@ -76,7 +55,10 @@ const sendDoiSearchRequest = (payload) => dispatch => {
 const sendPds4LabelSearchRequest = (payload) => dispatch => {
     dispatch({
         type: "SEND_PDS4_LABEL_SEARCH_REQUEST",
-        payload
+        payload: {
+            ...payload,
+            
+        }
     })
 }
 
@@ -85,6 +67,12 @@ const sendSaveReleaseRequest = (payload) => dispatch => {
         type: "SEND_SAVE_RELEASE_REQUEST",
         payload
     });
+}
+
+const retrySave = () => dispatch => {
+    dispatch({
+        type: 'RETRY_SAVE'
+    })
 }
 
 const sendReleaseRequest = (payload) => dispatch => {
@@ -157,16 +145,14 @@ const resetStoredData = (payload) => dispatch => {
 }
 
 export default{
-    setIsSelecting,
-    setIsCreating,
     setIsReleasing,
-    // setIsReserving,
-    setIsSearching,
-    setIsFaq,
+    setIsRegistered,
     updateReserveExcel,
     sendReserveRequest,
     retryReserve,
+    resetReserve,
     retryRelease,
+    retrySave,
     sendLidvidSearchRequest,
     sendDoiSearchRequest,
     sendPds4LabelSearchRequest,
