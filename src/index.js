@@ -5,9 +5,11 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter, Route } from 'react-router-dom'
 
+const getBasename = path => path.substr(0, path.lastIndexOf('/'));
+
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter basename="/dois">
+    <BrowserRouter basename={getBasename(window.location.pathname)}>
         <Route path="/" component={App}/>
     </BrowserRouter>
   </React.StrictMode>,
