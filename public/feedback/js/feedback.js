@@ -34,270 +34,237 @@ document.addEventListener("DOMContentLoaded", function(){
 	if ( window.Feedback !== undefined ) {
 		return;
 	}
-
-	// log proxy function
-	var log = function( msg ) {
-		window.console.log( msg );
-	},
+	
 	// function to remove elements, input as arrays
-	removeElements = function( remove ) {
-		for (var i = 0, len = remove.length; i < len; i++ ) {
-			var item = Array.prototype.pop.call( remove );
-			if ( item !== undefined ) {
-				if (item.parentNode !== null ) { // check that the item was actually added to DOM
-					item.parentNode.removeChild( item );
-				}
-			}
-		}
-	},
-	loader = function() {
-		var div = document.createElement("div"), i = 3;
-		div.className = "feedback-loader";
-
-		while (i--) { div.appendChild( document.createElement( "span" )); }
-		return div;
-	},
-	getBounds = function( el ) {
-		return el.getBoundingClientRect();
-	},
-	emptyElements = function( el ) {
-		var item;
-		while( (( item = el.firstChild ) !== null ? el.removeChild( item ) : false) ) {}
-	},
-	element = function( name, text ) {
-		var el = document.createElement( name );
-		el.appendChild( document.createTextNode( text ) );
-		return el;
-	},
-	// script onload function to provide support for IE as well
-	scriptLoader = function( script, func ){
-		if (script.onload === undefined) {
-			// IE lack of support for script onload
-
-			if( script.onreadystatechange !== undefined ) {
-
-				var intervalFunc = function() {
-					if (script.readyState !== "loaded" && script.readyState !== "complete") {
-						window.setTimeout( intervalFunc, 250 );
-					} else {
-						// it is loaded
-						func();
+	var removeElements = function( remove ) {
+				for (var i = 0, len = remove.length; i < len; i++ ) {
+					var item = Array.prototype.pop.call( remove );
+					if ( item !== undefined ) {
+						if (item.parentNode !== null ) { // check that the item was actually added to DOM
+							item.parentNode.removeChild( item );
+						}
 					}
-				};
-
-				window.setTimeout( intervalFunc, 250 );
-
-			} else {
-				log("ERROR: We can't track when script is loaded");
-			}
-
-		} else {
-			return func;
-		}
-
-	},
-	sendButton,
-	captchaUrl = "/feedback/recaptcha-v3-verify.php",
-	feedbackUrl = "/email-service/SubmitFeedback",
-	modal = document.createElement("div"),
-	modalBody = document.createElement("div"),
-	modalHeader = document.createElement("div"),
-	modalFooter = document.createElement("div"),
-	captchaScore = 0;
-
+				}
+			},
+			loader = function() {
+				var div = document.createElement("div"), i = 3;
+				div.className = "feedback-loader";
+				
+				while (i--) { div.appendChild( document.createElement( "span" )); }
+				return div;
+			},
+			emptyElements = function( el ) {
+				var item;
+				while( (( item = el.firstChild ) !== null ? el.removeChild( item ) : false) ) {}
+			},
+			element = function( name, text ) {
+				var el = document.createElement( name );
+				el.appendChild( document.createTextNode( text ) );
+				return el;
+			},
+			sendButton,
+			captchaUrl = "/feedback/recaptcha-v3-verify.php",
+			feedbackUrl = "/email-service/SubmitFeedback",
+			modal = document.createElement("div"),
+			modalBody = document.createElement("div"),
+			modalHeader = document.createElement("div"),
+			modalFooter = document.createElement("div"),
+			captchaScore = 0;
+	
 	window.captchaCallback = function( response ) {};
 	
 	window.Feedback = function( options ) {
-
+		
 		options = options || {};
-
+		
 		// default properties
 		options.host = options.host || "";
 		options.feedback.header = options.feedback.header || "Help Desk";
 		options.page = options.page || new window.Feedback.Form();
-
+		
 		var glass = document.createElement("div"),
-			returnMethods = {
-
-			// open send feedback modal window
-			open: function() {
-				options.page.render();
-				document.body.appendChild( glass );
-				button.disabled = true;
-
-				// modal close button
-				var a = element("a", "x");
-				a.className =  "feedback-close";
-				a.onclick = returnMethods.close;
-				a.href = "#";
-
-				// build header element
-				modalHeader.appendChild( a );
-				modalHeader.appendChild( element("h3", options.feedback.header ) );
-				modalHeader.className =  "feedback-header";
-
-				modalBody.className = "feedback-body";
-
-				emptyElements( modalBody );
-				modalBody.appendChild( element("p", "How can we help you? Send us your question or feedback and we will get back to you within 1 business day.") );
-				modalBody.appendChild( options.page.dom );
-				var links = options.feedback.additionalLinks;
-				if ( links !== "" ) {
-					var additionalHelp = element("p", "In the meantime, you may find the following links helpful:"),
-						additionalLinks = document.createElement("ul");
-					additionalHelp.className = "additionalHelp";
-					for (var i = 0; i < links.length; i++) {
-						additionalLinks.insertAdjacentHTML('beforeend', '<li><a href="' + links[i].url + '">' + links[i].title + '</a></li>');
-					}
-					additionalHelp.insertAdjacentElement("beforeend", additionalLinks);
-					modalBody.insertAdjacentElement("beforeend", additionalHelp);
-					window.additionalHelp = additionalHelp;
-				}
-                                
-				// Send button
-				sendButton = document.createElement("input");
-				sendButton.type = "submit";
-				sendButton.value = "Send Feedback";
-				sendButton.setAttribute("class", "feedback-btn g-recaptcha");
-				sendButton.setAttribute("data-callback", "captchaCallback");
-				sendButton.setAttribute("id", "recaptcha");
-
-				modalFooter.className = "feedback-footer";
-				modalFooter.appendChild( sendButton );
-
-				modal.setAttribute("id", "feedback-form");
-				modal.className = "feedback-modal";
-
-				modal.appendChild( modalHeader );
-				modal.appendChild( modalBody );
-				modal.appendChild( modalFooter );
-
-				document.body.appendChild( modal );
-
-				window.grecaptcha.render("recaptcha", {sitekey: "6LfLCIgUAAAAAI3xLW5PQijxDyZcaUUlTyPDfYlZ"});
-			},
-
-			setupClose: function() {
-				emptyElements( modalBody );
-				sendButton.disabled = false;
-
-				sendButton.value = "Close";
-
-				sendButton.onclick = function() {
-					returnMethods.close();
-					return false;
-				};
-			},
-
-			// close modal window
-			close: function() {
-
-				button.disabled = false;
-
-				window.grecaptcha.reset();
-
-				// remove feedback elements
-				emptyElements( modalHeader );
-				emptyElements( modalFooter );
-				removeElements( [ modal, glass ] );
-
-				return false;
-			},
-
-			// send data
-			send: function( adapter ) {
-
-				// make sure send adapter is of right prototype
-				if ( !(adapter instanceof window.Feedback.Send) ) {
-					throw new Error( "Adapter is not an instance of Feedback.Send" );
-				}
-
-				data = options.page.data();
-				emptyElements( modalBody );
-				modalBody.appendChild( loader() );
-
-				// send data to adapter for processing
-				adapter.send( data, function( success ) {
-
-					returnMethods.setupClose();
-
-					modalBody.setAttribute("class", "feedback-body confirmation");
-					var message = document.createElement("p");
-					if ( success === true ) {
-						message.innerHTML = 'Thank you for making the PDS a better site.<br/>If you provided an email address, a PDS representative will get back to you as soon as possible.';
-					} else {
-						message.innerHTML = 'There was an error sending your feedback.<br/>If the problem persists, please email <a href="mailto:pds_operator@jpl.nasa.gov">pds_operator@jpl.nasa.gov</a>.';
-					}
-					modalBody.appendChild( message );
-
-					if ( window.additionalHelp ) {
-						modalBody.appendChild( window.additionalHelp );    
-					}
-				});
-
-			},
-
-			onloadCallback: function() {
-				if ( new URLSearchParams(window.location.search).get("feedback") === "true" ) {
-					returnMethods.open();
-				}
-			},
-
-			captchaCallback: function( response ) {
-				if ( document.getElementById("feedback-comment").reportValidity() ) {
-					$.ajax({
-						type: "POST",
-						url: captchaUrl,
-						data: {response: response},
-						success: function (data) {
-							//console.log(data);
-							captchaScore = parseFloat(data.substring(data.indexOf("float") + 6, data.indexOf("float") + 9));
-							if (captchaScore > 0.70) {
-								options.url = options.url || options.host + feedbackUrl;
-								options.adapter = options.adapter || new window.Feedback.XHR(options.url);
-								emptyElements(modalBody);
-								returnMethods.send(options.adapter);
-							} else {
-								modalBody.setAttribute("class", "feedback-body suspectedBot");
-								document.getElementById("recaptcha").disabled = true;
-								modalBody.insertAdjacentElement("afterbegin", element("p", "Are you a bot? Suspicious behavior detected."));
+				returnMethods = {
+					
+					// open send feedback modal window
+					open: function() {
+						options.page.render();
+						document.body.appendChild( glass );
+						button.disabled = true;
+						
+						// modal close button
+						var a = element("a", "x");
+						a.className =  "feedback-close";
+						a.onclick = returnMethods.close;
+						a.href = "#";
+						
+						// build header element
+						modalHeader.appendChild( a );
+						modalHeader.appendChild( element("h3", options.feedback.header ) );
+						modalHeader.className =  "feedback-header";
+						
+						modalBody.className = "feedback-body";
+						
+						emptyElements( modalBody );
+						modalBody.appendChild( element("p", "How can we help you? Send us your question or feedback and we will get back to you within 1 business day.") );
+						modalBody.appendChild( options.page.dom );
+						var links = options.feedback.additionalLinks;
+						if ( links !== "" ) {
+							var additionalHelp = element("p", "In the meantime, you may find the following links helpful:"),
+									additionalLinks = document.createElement("ul");
+							additionalHelp.className = "additionalHelp";
+							for (var i = 0; i < links.length; i++) {
+								additionalLinks.insertAdjacentHTML('beforeend', '<li><a href="' + links[i].url + '">' + links[i].title + '</a></li>');
 							}
-						},
-						error: function (XMLHttpRequest, textStatus, errorThrown) {
-							modalBody.setAttribute("class", "feedback-body captchaError");
+							additionalHelp.insertAdjacentElement("beforeend", additionalLinks);
+							modalBody.insertAdjacentElement("beforeend", additionalHelp);
+							window.additionalHelp = additionalHelp;
+						}
+						
+						// Send button
+						sendButton = document.createElement("input");
+						sendButton.type = "submit";
+						sendButton.value = "Send Feedback";
+						sendButton.setAttribute("class", "feedback-btn g-recaptcha");
+						sendButton.setAttribute("data-callback", "captchaCallback");
+						sendButton.setAttribute("id", "recaptcha");
+						
+						modalFooter.className = "feedback-footer";
+						modalFooter.appendChild( sendButton );
+						
+						modal.setAttribute("id", "feedback-form");
+						modal.className = "feedback-modal";
+						
+						modal.appendChild( modalHeader );
+						modal.appendChild( modalBody );
+						modal.appendChild( modalFooter );
+						
+						document.body.appendChild( modal );
+						
+						window.grecaptcha.render("recaptcha", {sitekey: "6LfLCIgUAAAAAI3xLW5PQijxDyZcaUUlTyPDfYlZ"});
+					},
+					
+					setupClose: function() {
+						emptyElements( modalBody );
+						sendButton.disabled = false;
+						
+						sendButton.value = "Close";
+						
+						sendButton.onclick = function() {
+							returnMethods.close();
+							return false;
+						};
+					},
+					
+					// close modal window
+					close: function() {
+						
+						button.disabled = false;
+						
+						window.grecaptcha.reset();
+						
+						// remove feedback elements
+						emptyElements( modalHeader );
+						emptyElements( modalFooter );
+						removeElements( [ modal, glass ] );
+						
+						return false;
+					},
+					
+					// send data
+					send: function( adapter ) {
+						
+						// make sure send adapter is of right prototype
+						if ( !(adapter instanceof window.Feedback.Send) ) {
+							throw new Error( "Adapter is not an instance of Feedback.Send" );
+						}
+						
+						data = options.page.data();
+						emptyElements( modalBody );
+						modalBody.appendChild( loader() );
+						
+						// send data to adapter for processing
+						adapter.send( data, function( success ) {
+							
 							returnMethods.setupClose();
+							
+							modalBody.setAttribute("class", "feedback-body confirmation");
 							var message = document.createElement("p");
-							message.innerHTML = '<b>Status: </b>' + textStatus + '; <b>Error: </b>' + errorThrown + '<br/>If the problem persists, please email <a href="mailto:pds_operator@jpl.nasa.gov">pds_operator@jpl.nasa.gov</a>.';
-							modalBody.insertAdjacentElement("afterbegin", message);
-
+							if ( success === true ) {
+								message.innerHTML = 'Thank you for making the PDS a better site.<br/>If you provided an email address, a PDS representative will get back to you as soon as possible.';
+							} else {
+								message.innerHTML = 'There was an error sending your feedback.<br/>If the problem persists, please email <a href="mailto:pds_operator@jpl.nasa.gov">pds_operator@jpl.nasa.gov</a>.';
+							}
+							modalBody.appendChild( message );
+							
 							if ( window.additionalHelp ) {
 								modalBody.appendChild( window.additionalHelp );
 							}
+						});
+						
+					},
+					
+					onloadCallback: function() {
+						if ( new URLSearchParams(window.location.search).get("feedback") === "true" ) {
+							returnMethods.open();
 						}
-					});
-				} else {
-					return false;
-				}
-				window.grecaptcha.reset();
-			}
-
-		};
-
+					},
+					
+					captchaCallback: function( response ) {
+						if ( document.getElementById("feedback-comment").reportValidity() ) {
+							$.ajax({
+								type: "POST",
+								url: captchaUrl,
+								data: {response: response},
+								success: function (data) {
+									//console.log(data);
+									captchaScore = parseFloat(data.substring(data.indexOf("float") + 6, data.indexOf("float") + 9));
+									if (captchaScore > 0.70) {
+										options.url = options.url || options.host + feedbackUrl;
+										options.adapter = options.adapter || new window.Feedback.XHR(options.url);
+										emptyElements(modalBody);
+										returnMethods.send(options.adapter);
+									} else {
+										modalBody.setAttribute("class", "feedback-body suspectedBot");
+										document.getElementById("recaptcha").disabled = true;
+										modalBody.insertAdjacentElement("afterbegin", element("p", "Are you a bot? Suspicious behavior detected."));
+									}
+								},
+								error: function (XMLHttpRequest, textStatus, errorThrown) {
+									modalBody.setAttribute("class", "feedback-body captchaError");
+									returnMethods.setupClose();
+									var message = document.createElement("p");
+									message.innerHTML = '<b>Status: </b>' + textStatus + '; <b>Error: </b>' + errorThrown + '<br/>If the problem persists, please email <a href="mailto:pds_operator@jpl.nasa.gov">pds_operator@jpl.nasa.gov</a>.';
+									modalBody.insertAdjacentElement("afterbegin", message);
+									
+									if ( window.additionalHelp ) {
+										modalBody.appendChild( window.additionalHelp );
+									}
+								}
+							});
+						} else {
+							return false;
+						}
+						window.grecaptcha.reset();
+					}
+					
+				};
+		
 		window.onloadCallback = returnMethods.onloadCallback;
 		window.captchaCallback = returnMethods.captchaCallback;
-
+		
 		glass.className = "feedback-glass";
-
+		
 		var button = document.createElement("button");
-
+		button.setAttribute("id", "feedback-tab");
+		
 		if ( Modernizr.touchevents && window.screen.width < 1025 ) {
 			var $window = $(window),
-				docHeight = $(document).height(),
-				rafId;
+					docHeight = $(document).height(),
+					rafId;
 			window.requestAnimationFrame = window.requestAnimationFrame
-				|| window.mozRequestAnimationFrame
-				|| window.webkitRequestAnimationFrame
-				|| window.msRequestAnimationFrame;
+					|| window.mozRequestAnimationFrame
+					|| window.webkitRequestAnimationFrame
+					|| window.msRequestAnimationFrame;
 			$window.on("scroll", function() {
 				if ( $window.scrollTop() + $window.height() > docHeight - 65 ) {
 					rafId = window.requestAnimationFrame(function() {
@@ -323,13 +290,13 @@ document.addEventListener("DOMContentLoaded", function(){
 			options.tab.size.height = options.tab.size.height || "60";
 			options.tab.placement.side = options.tab.placement.side || "right";
 			options.tab.placement.offset = options.tab.placement.offset || "50";
-
+			
 			var useConfig = {
 				setColors: function(el, color, bgColor) {
 					el.style.color = color;
 					el.style.backgroundColor = bgColor;
 				},
-
+				
 				setText: function(el, label, fontSize) {
 					var p = document.createElement("p");
 					p.append( document.createTextNode(label) );
@@ -343,7 +310,7 @@ document.addEventListener("DOMContentLoaded", function(){
 					}
 					el.appendChild(p);
 				},
-
+				
 				setDimensions: function(el, width, height) {
 					if ( !isNaN(width) && !isNaN(height) ) {
 						el.style.width = width + "px";
@@ -357,21 +324,21 @@ document.addEventListener("DOMContentLoaded", function(){
 						}
 					}
 				},
-
+				
 				calculateAdjustment: function(width, height) {
 					return -0.5 * ( Number(width) - Number(height) ) - 5;
 				},
-
+				
 				calculateMaxOffset: function(width, height) {
 					return [ window.innerHeight - 0.5 * ( Number(width) + Number(height) ), window.innerWidth - Number(width) ];
 				},
-
+				
 				setPlacement: function(el, side, offset, maxOffset, adjustment) {
 					if ( !isNaN(offset) ) {
 						if ( side === "right" || side === "left" ) {
 							var os = Number(offset) * window.innerHeight / 100,
-								minOffset = -1 * ( Number(adjustment) + 5 ),
-								adjust = ( adjustment !== undefined );
+									minOffset = -1 * ( Number(adjustment) + 5 ),
+									adjust = ( adjustment !== undefined );
 							if ( os < minOffset ) {
 								el.style.top = minOffset + "px";
 							} else if ( os > Number(maxOffset[0]) ) {
@@ -380,12 +347,11 @@ document.addEventListener("DOMContentLoaded", function(){
 								el.style.top = offset + "vh";
 							}
 							if ( side === "right" ) {
-								el.setAttribute("class", "feedbackTab");
 								if ( adjust ) {
 									el.style.right = adjustment + "px";
 								}
 							} else  {
-								el.setAttribute("class", "feedbackTab left");
+								el.setAttribute("class", "left");
 								if ( adjust ) {
 									el.style.left = adjustment + "px";
 								}
@@ -399,56 +365,53 @@ document.addEventListener("DOMContentLoaded", function(){
 								el.style.left = offset + "vw";
 							}
 							if ( side === "top" ) {
-								el.setAttribute("class", "feedbackTab top");
+								el.setAttribute("class", "top");
 							} else {
-								el.setAttribute("class", "feedbackTab bottom");
+								el.setAttribute("class", "bottom");
 							}
 						} else {
 							console.log("Invalid value for SIDE of screen to place the tab. The valid options " +
-								"are LEFT, RIGHT, TOP, or BOTTOM. Please check the configuration file.");
+									"are LEFT, RIGHT, TOP, or BOTTOM. Please check the configuration file.");
 						}
 					} else {
 						console.log("Invalid value for OFFSET of tab placement. Please check the configuration file.");
 					}
 				}
 			};
-
+			
 			useConfig.setColors(button, options.tab.fontColor, options.tab.color);
 			useConfig.setText(button, options.tab.label, options.tab.fontSize);
-
+			
 			var	adjustment,
-				width = Math.max( Number(options.tab.size.width), Number(options.tab.size.height) ),
-				height = Math.min( Number(options.tab.size.width), Number(options.tab.size.height) ),
-				defaultWidth = ( width === 150 ),
-				defaultHeight = ( height === 60 );
+					width = Math.max( Number(options.tab.size.width), Number(options.tab.size.height) ),
+					height = Math.min( Number(options.tab.size.width), Number(options.tab.size.height) ),
+					defaultWidth = ( width === 150 ),
+					defaultHeight = ( height === 60 );
 			if ( !defaultWidth || !defaultHeight ) {
 				useConfig.setDimensions(button, width, height);
 				adjustment = useConfig.calculateAdjustment(width, height);
 			}
-
+			
 			var side = options.tab.placement.side.toLowerCase(),
-				offset = options.tab.placement.offset,
-				maxOffset = useConfig.calculateMaxOffset(width, height);
+					offset = options.tab.placement.offset,
+					maxOffset = useConfig.calculateMaxOffset(width, height);
 			if ( offset !== "50" || side !== "right" || adjustment !== undefined ) {
 				useConfig.setPlacement(button, side, offset, maxOffset, adjustment);
 			}
 		}
-
-		if ( !button.classList.contains("feedbackTab") ) {
-			button.className = "feedbackTab";
-		}
+		
 		button.onclick = returnMethods.open;
-
+		
 		if ( options.appendTo !== null ) {
 			((options.appendTo !== undefined) ? options.appendTo : document.body).appendChild( button );
 		}
-
+		
 		return returnMethods;
 	};
-
+	
 	window.Feedback.Page = function() {};
 	window.Feedback.Page.prototype = {
-
+		
 		render: function( dom ) {
 			this.dom = dom;
 		},
@@ -459,17 +422,17 @@ document.addEventListener("DOMContentLoaded", function(){
 			return false;
 		},
 		end: function() { return true; }
-
+		
 	};
 	window.Feedback.Send = function() {};
 	window.Feedback.Send.prototype = {
-
+		
 		send: function() {}
-
+		
 	};
-
+	
 	window.Feedback.Form = function( elements ) {
-
+		
 		this.elements = elements || [
 			{
 				type: "input",
@@ -503,20 +466,20 @@ document.addEventListener("DOMContentLoaded", function(){
 		];
 		this.dom = document.createElement("div");
 		this.dom.className = "feedback-form-container";
-
+		
 	};
-
+	
 	window.Feedback.Form.prototype = new window.Feedback.Page();
-
+	
 	window.Feedback.Form.prototype.render = function() {
-
+		
 		var i = 0, len = this.elements.length, item;
 		emptyElements( this.dom );
 		for (; i < len; i++) {
 			item = this.elements[ i ];
 			var div = document.createElement("div");
 			div.classList.add("feedback-input");
-
+			
 			var formEl = document.createElement( item.type );
 			formEl.name = item.name;
 			formEl.id = item.id;
@@ -527,7 +490,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			} else {
 				div.appendChild( element("label", item.label + ":"));
 			}
-
+			
 			if (item.type === "select") {
 				var options = item.values.split(",");
 				for (j = 0; j < options.length; j++) {
@@ -536,21 +499,21 @@ document.addEventListener("DOMContentLoaded", function(){
 					formEl.appendChild(option);
 				}
 			}
-
+			
 			div.appendChild( (item.element = formEl) );
 			this.dom.appendChild(div);
 		}
-
+		
 		return this;
-
+		
 	};
-
+	
 	window.Feedback.Form.prototype.end = function() {
 		// form validation
 		var i = 0, len = this.elements.length, item;
 		for (; i < len; i++) {
 			item = this.elements[ i ];
-
+			
 			// check that all required fields are entered
 			if ( item.required === true && item.element.value.length === 0) {
 				item.element.className = "feedback-error";
@@ -559,56 +522,56 @@ document.addEventListener("DOMContentLoaded", function(){
 				item.element.className = "";
 			}
 		}
-
+		
 		return true;
-
+		
 	};
-
+	
 	window.Feedback.Form.prototype.data = function() {
 		var i = 0, len = this.elements.length, item, data = {};
-
+		
 		for (; i < len; i++) {
 			item = this.elements[ i ];
 			data[ item.name ] = item.element.value;
 		}
-
+		
 		// cache and return data
 		return ( this._data = data );
 	};
-
+	
 	window.Feedback.XHR = function( url ) {
-
+		
 		this.xhr = new XMLHttpRequest();
 		this.url = url;
-
+		
 	};
-
+	
 	window.Feedback.XHR.prototype = new window.Feedback.Send();
-
+	
 	window.Feedback.XHR.prototype.send = function( data, callback ) {
-
+		
 		var xhr = this.xhr;
-
+		
 		xhr.onreadystatechange = function() {
 			if( xhr.readyState == 4 ) {
 				callback( (xhr.status === 200) );
 			}
 		};
-
+		
 		var emailData = '';
 		emailData = 'subject=Feedback from ' + window.location.hostname;
 		emailData += '&content=';
-
+		
 		for (var key in data) {
 			emailData += key + ': ';
 			emailData += data[key] + '\n';
 		}
-
+		
 		emailData += '\nLocation: ' + window.location.href + '\n';
-
+		
 		xhr.open( "POST", this.url, true);
 		xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
 		xhr.send(emailData);
 	};
-
+	
 })( window, document );
