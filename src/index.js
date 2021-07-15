@@ -3,15 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { BrowserRouter, Route } from 'react-router-dom'
-
-const getBasename = path => path.substr(0, path.lastIndexOf('/'));
+import { HashRouter, Route } from 'react-router-dom'
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter basename={getBasename(window.location.pathname)}>
-        <Route path="/" component={App}/>
-    </BrowserRouter>
+    <HashRouter>
+      <Route path="/" component={App}/>
+    </HashRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );
