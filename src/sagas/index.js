@@ -272,7 +272,7 @@ function* sendSearch(action){
     if (identifier.startsWith('10.')) {
         endpoint += '?doi=' + encodeURIComponent(identifier);
     } else {
-        let searchIdentifier = identifier + '*';
+        let searchIdentifier = identifier.replace(/\//g, '-') + '*';
         if (!identifier.startsWith('urn:nasa:pds:')) {
             searchIdentifier = '*' + searchIdentifier;
         }
