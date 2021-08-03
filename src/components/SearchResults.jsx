@@ -69,6 +69,26 @@ const SearchResults = () => {
 		return string.charAt(0).toUpperCase() + string.slice(1);
 	};
 
+	const determineDoiLink = (status, doi, fieldValue) => {
+		if (typeof fieldValue == 'undefined') { // field is DOI
+			if (doi) return createTableCell(status, doi, doi);
+			else return <TableCell>-</TableCell>;
+		} else {	// field is LIDVID
+			return createTableCell(status, doi, fieldValue);
+		}
+	}
+	
+	const createTableCell = (status, doi, fieldValue) => {
+		if (status.toLowerCase() === 'registered')
+			return <TableCell>{createDoiLink(doi, fieldValue)}</TableCell>;
+		else
+			return <TableCell>{fieldValue}</TableCell>;
+	}
+	
+	const createDoiLink = (doi, fieldValue) => {
+		return <a href={`https://doi.org/${doi}`} target="_blank" rel="noopener noreferrer">{fieldValue}</a>
+	}
+	
 	const [page, setPage] = useState(0);
 	const [rowsPerPage, setRowsPerPage] = useState(20);
 	const handleChangePage = (event, newPage) => {
@@ -115,19 +135,9 @@ const SearchResults = () => {
 										).map((dataItem) => {
 											return (
 												<TableRow hover key={dataItem.lidvid}>
-												<TableCell>
-														{
-															dataItem.doi ?
-																dataItem.status.toLowerCase() === 'registered' ?
-																<a href="https://doi.org/" target="_blank" rel="noopener noreferrer">{dataItem.doi}</a>
-																	:
-																	dataItem.doi
-															:
-															'-'
-														}
-													</TableCell>
-												<TableCell>{dataItem.lidvid}</TableCell>
-													<TableCell>{dataItem.title}</TableCell>
+												<TableCell>{determineDoiLink(dataItem.status, dataItem.doi)}</TableCell>
+												<TableCell>{determineDoiLink(dataItem.status, dataItem.doi, dataItem.lidvid)}</TableCell>
+												<TableCell>{dataItem.title}</TableCell>
 												<TableCell>{massageStatus(dataItem.status.toLowerCase())}</TableCell>
 													<TableCell>{(() => {
 														switch (dataItem.status.toLowerCase()) {
