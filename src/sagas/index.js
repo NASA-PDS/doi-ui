@@ -45,8 +45,8 @@ function* sendReserveRequest(){
 function* sendLidvidSearch(action){
     const lidvid = action.payload;
 
-    let endpoint = Config.api.getDoiByLidvidUrl;
-    endpoint += encodeURIComponent(lidvid);
+    let endpoint = Config.api.getDoiByIdentifier;
+    endpoint += "?identifier=" + encodeURIComponent(lidvid);
 
     const response = yield call(fetch, endpoint);
     let data = yield response.json();
@@ -176,7 +176,7 @@ function* sendPdsLabelUrlSearchRequest(){
 }
 
 function* sendRelease(action){
-    const {submitter, node, lidvid, force} = action.payload;
+    const {submitter, node, identifier, force} = action.payload;
 
     let endpoint = Config.api.reserveUrl;
     endpoint += '?action=draft';
@@ -205,9 +205,9 @@ function* sendRelease(action){
     let data = yield saveResponse.json();
 
     if(!data.errors){
-        let endpoint = Config.api.releaseDoiUrl + encodeURI(lidvid) + "/submit";
+        let endpoint = Config.api.releaseDoiUrl + "submit?identifer=" + encodeURI(identifier);
         if(force){
-            endpoint += '?force=' + force;
+            endpoint += '&force=' + force;
         }
 
         const submitResponse = yield fetch(endpoint, {
@@ -266,21 +266,31 @@ function* sendSaveReleaseRequest(){
 }
 
 function* sendSearch(action){
-    const identifier = action.payload ? action.payload : '*';
+    let identifier = action.payload ? action.payload : '*';
     let endpoint = Config.api.searchUrl;
-    
+    let isSingleResult = false;
+
     if (identifier.startsWith('10.')) {
         endpoint += '?doi=' + encodeURIComponent(identifier);
-    } else {
-        let searchIdentifier = identifier.replace(/\//g, '-') + '*';
-        if (!identifier.startsWith('urn:nasa:pds:')) {
-            searchIdentifier = '*' + searchIdentifier;
-        }
-        endpoint += '?lid=' + encodeURIComponent(searchIdentifier);
     }
-    
+    else{
+        if(!identifier.startsWith('urn:nasa:pds:')) {
+            identifier = '*' + identifier;
+            endpoint += '?identifier=' + encodeURIComponent(identifier);
+        }
+        else{
+            isSingleResult = true;
+            endpoint = Config.api.getDoiByIdentifier;
+            endpoint += '?identifier=' + encodeURIComponent(identifier);
+        }
+    }
+
     const response = yield call(fetch, endpoint);
     let data = yield response.json();
+
+    if(isSingleResult){
+        data = [data];
+    }
     
     if (data.length === 0) {
         data = recordNotFound;
