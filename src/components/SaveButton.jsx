@@ -1,9 +1,9 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import { useDispatch, useSelector } from 'react-redux';
-import { unprettify } from '../utils/xmlUtil';
 import rootActions from '../actions/rootActions';
 import {makeStyles} from "@material-ui/core/styles";
+import { unprettify } from '../utils/xmlUtil';
 
 const useStyles = makeStyles((theme) => ({
   saveButton: {

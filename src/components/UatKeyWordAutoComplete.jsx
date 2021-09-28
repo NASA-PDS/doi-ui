@@ -21,7 +21,7 @@ export default function Tags() {
   const classes = useStyles();
 
   const releaseKeywords = useSelector(state => {
-      let keywordList = state.appReducer.releaseKeywords.replace(' ', '').split(";");
+      let keywordList = state.appReducer.releaseKeywords;
       let filteredKeywords = keywordList.filter((keyword) => 
         keyword.length > 0
       );
@@ -34,19 +34,9 @@ export default function Tags() {
   );
 
   const handleKeywordChange = (event, value) => {
-    let keywordString = '';
-    value.forEach((keyword, index) => {
-      if(index !== value.length - 1){
-        keywordString += keyword + "; ";
-      }
-      else{
-        keywordString += keyword + ";";
-      }
-    });
+    dispatch(rootActions.appAction.updateReleaseKeywords(value));
 
-    dispatch(rootActions.appAction.updateReleaseKeywords(keywordString));
-
-    let updatedXml = replaceXmlTagValue(releaseXml, "keywords", keywordString);
+    let updatedXml = replaceXmlTagValue(releaseXml, "subjects", value);
     dispatch(rootActions.appAction.updateReleaseXml(updatedXml));
   }
 

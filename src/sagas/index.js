@@ -2,6 +2,62 @@ import { all, call, put, takeLatest } from 'redux-saga/effects';
 import Config from '../Config';
 import {findXmlTag, printXML} from '../utils/xmlUtil';
 import { doiNotFound, recordNotFound } from '../sagas/error';
+var convert = require('xml-js');
+
+const removeJsonTextAttribute = function(value, parentElement) {
+    try {
+        const parentOfParent = parentElement._parent;
+        const pOpKeys = Object.keys(parentElement._parent);
+        const keyNo = pOpKeys.length;
+        const keyName = pOpKeys[keyNo - 1];
+        const arrOfKey = parentElement._parent[keyName];
+        const arrOfKeyLen = arrOfKey.length;
+        if (arrOfKeyLen > 0) {
+        const arr = arrOfKey;
+        const arrIndex = arrOfKey.length - 1;
+        arr[arrIndex] = value;
+        } else {
+        parentElement._parent[keyName] = value;
+        }
+    } catch (e) {}
+};
+
+const changeRecordSinglesToArrays = function(record) {
+    if(record && record.data){
+        if(record.data.attributes){
+            if(record.data.attributes.contributors){
+                record.data.attributes.contributors = convertToArray(record.data.attributes.contributors)
+            }
+            if(record.data.attributes.creators){
+                record.data.attributes.creators = convertToArray(record.data.attributes.creators)
+            }
+            if(record.data.attributes.identifiers){
+                record.data.attributes.identifiers = convertToArray(record.data.attributes.identifiers)
+            }
+            if(record.data.attributes.relatedIdentifiers){
+                record.data.attributes.relatedIdentifiers = convertToArray(record.data.attributes.relatedIdentifiers)
+            }
+            if(record.data.attributes.subjects){
+                record.data.attributes.subjects = convertToArray(record.data.attributes.subjects)
+            }
+            if(record.data.attributes.titles){
+                record.data.attributes.titles = convertToArray(record.data.attributes.titles)
+            }
+            if(record.data.attributes.publicationYear){
+                record.data.attributes.publicationYear = String(record.data.attributes.publicationYear._text);
+            }
+        }
+    }
+};
+
+const convertToArray = function(value){
+    if(value.constructor === Array){
+        return value;
+    }
+    else{
+        return [value];
+    }
+}
 
 function* sendReserveContent(action){
     const {submitter, node, force} = action.payload;
@@ -52,10 +108,17 @@ function* sendLidvidSearch(action){
     let data = yield response.json();
 
     if(!data.errors){
-        data = {
-            data,
-            xml: printXML(data.record),
-            keywords: findXmlTag(data.record, "keywords")
+        if(data.record){
+            let options = {compact: true, ignoreComment: true, spaces: 4};
+            let result = convert.json2xml(data.record, options);
+            
+            data.record = result;
+
+            data = {
+                data,
+                xml: printXML(data.record),
+                keywords: findXmlTag(data.record, "subjects")
+            }
         }
     }
     else{
@@ -110,7 +173,8 @@ function* sendDoiSearch(action){
             data = {
                 data: lidvidData,
                 xml: printXML(lidvidData.record),
-                keywords: findXmlTag(lidvidData.record, "keywords")
+                keywords: findXmlTag(lidvidData.record, "subjects"),
+                recordJson: lidvidData.record
             }
         }
         else{
@@ -158,7 +222,7 @@ function* sendPds4LabelUrlSearch(action){
             data = {
                 data: data,
                 xml: printXML(data.record),
-                keywords: findXmlTag(data.record, "keywords")
+                keywords: findXmlTag(data.record, "subjects")
             }
         }
     }
@@ -193,13 +257,36 @@ function* sendRelease(action){
 
     endpoint = encodeURI(endpoint);
 
+    let sendRecord = action.payload.record;
+
+    sendRecord = convert.xml2json(
+        sendRecord, 
+        {
+            compact: true,
+            trim: true,
+            nativeType: true,
+            ignoreDeclaration: true,
+            ignoreInstruction: true,
+            ignoreAttributes: true,
+            ignoreComment: true,
+            ignoreCdata: true,
+            ignoreDoctype: true,
+            textFn: removeJsonTextAttribute
+        }
+    );
+
+    sendRecord = JSON.parse(sendRecord);
+    changeRecordSinglesToArrays(sendRecord);
+    
+    sendRecord = JSON.stringify(sendRecord);
+
     const saveResponse = yield fetch(endpoint, {
         method: 'POST',
         headers: {
             "Accept": "application/json",
-            'Content-Type': 'application/xml'
+            'Content-Type': 'application/json'
         },
-        body: action.payload.record
+        body: sendRecord
     });
 
     let data = yield saveResponse.json();
@@ -214,7 +301,7 @@ function* sendRelease(action){
             method: 'POST',
             headers: {
                 "Accept": "application/json",
-                'Content-Type': 'application/xml'
+                'Content-Type': 'application/json'
             }
         });
     
@@ -246,14 +333,36 @@ function* sendSaveRelease(action){
     }
 
     endpoint = encodeURI(endpoint);
+    
+   let sendRecord = action.payload.record;
+
+   sendRecord = convert.xml2json(
+        sendRecord, 
+        {
+            compact: true,
+            trim: true,
+            nativeType: true,
+            ignoreDeclaration: true,
+            ignoreInstruction: true,
+            ignoreAttributes: true,
+            ignoreComment: true,
+            ignoreCdata: true,
+            ignoreDoctype: true,
+            textFn: removeJsonTextAttribute
+        }
+    );
+
+    sendRecord = JSON.parse(sendRecord);
+    changeRecordSinglesToArrays(sendRecord);
+    sendRecord = JSON.stringify(sendRecord);
 
     const response = yield fetch(endpoint, {
         method: 'POST',
         headers: {
             "Accept": "application/json",
-            'Content-Type': 'application/xml'
+            'Content-Type': 'application/json'
         },
-        body: action.payload.record
+        body: sendRecord
     });
 
     let data = yield response.json();
@@ -275,7 +384,8 @@ function* sendSearch(action){
     }
     else{
         if(!identifier.startsWith('urn:nasa:pds:')) {
-            identifier = '*' + identifier;
+            let searchIdentifier = identifier.replace(/\//g, '-') + '*';
+            identifier = '*' + searchIdentifier;
             endpoint += '?identifier=' + encodeURIComponent(identifier);
         }
         else{

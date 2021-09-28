@@ -50,7 +50,7 @@ const Draft = () => {
   const handleReleaseXmlChange = (event) => {
     dispatch(rootActions.appAction.retrySave());
     dispatch(rootActions.appAction.updateReleaseXml(event.target.value));
-    dispatch(rootActions.appAction.updateReleaseKeywords(findXmlTag(event.target.value, "keywords")));
+    dispatch(rootActions.appAction.updateReleaseKeywords(findXmlTag(event.target.value, "subjects")));
   }
 
   const handleRetryRelease = event => {
