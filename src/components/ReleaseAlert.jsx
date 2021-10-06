@@ -42,10 +42,10 @@ const ReleaseAlert = (props) => {
   const handleRelease = () => {
     setOpen(false);
 
-    const {doi, lidvid, status} = doiSearchResults;
+    const {doi, identifier, status} = doiSearchResults;
     const releaseData = {
       doi,
-      lidvid,
+      identifier,
       node,
       status,
       submitter,

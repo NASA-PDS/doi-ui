@@ -8,7 +8,7 @@ import ReleaseAlert from './ReleaseAlert';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import UatKeyWordAutoComplete from './UatKeyWordAutoComplete';
-import { findXmlTag } from '../utils/xmlUtil';
+import { printXML, findXmlTag } from '../utils/xmlUtil';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import Submitter from './Submitter';
 import PageHeader from "./PageHeader";
@@ -80,7 +80,7 @@ const Release = () => {
   const handleReleaseXmlChange = (event) => {
     dispatch(rootActions.appAction.retrySave());
     dispatch(rootActions.appAction.updateReleaseXml(event.target.value));
-    dispatch(rootActions.appAction.updateReleaseKeywords(findXmlTag(event.target.value, "keywords")));
+    dispatch(rootActions.appAction.updateReleaseKeywords(findXmlTag(event.target.value, "subjects")));
   }
 
   const handleRetryRelease = event => {
@@ -184,7 +184,7 @@ const Release = () => {
             label="Metadata"
             multiline
             variant="outlined"
-            value={releaseXml}
+            value={printXML(releaseXml)}
             onChange={handleReleaseXmlChange}
           />
         </p>

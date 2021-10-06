@@ -134,9 +134,9 @@ const SearchResults = () => {
 											data
 										).map((dataItem) => {
 											return (
-												<TableRow hover key={dataItem.lidvid}>
+												<TableRow hover key={dataItem.identifier}>
 												<TableCell>{determineDoiLink(dataItem.status, dataItem.doi)}</TableCell>
-												<TableCell>{determineDoiLink(dataItem.status, dataItem.doi, dataItem.lidvid)}</TableCell>
+												<TableCell>{determineDoiLink(dataItem.status, dataItem.doi, dataItem.identifier)}</TableCell>
 												<TableCell>{dataItem.title}</TableCell>
 												<TableCell>{massageStatus(dataItem.status.toLowerCase())}</TableCell>
 													<TableCell>{(() => {
@@ -146,7 +146,7 @@ const SearchResults = () => {
 																return (
 																		<Button color="primary"
 																						variant="contained"
-																						onClick={(event) => handleReleaseClick(dataItem.lidvid)}
+																						onClick={(event) => handleReleaseClick(dataItem.identifier)}
 																		>
 																			Release
 																		</Button>
@@ -155,7 +155,7 @@ const SearchResults = () => {
 																return (
 																		<Button color="primary"
 																						variant="contained"
-																						onClick={(event) => handleReleaseClick(dataItem.lidvid)}
+																						onClick={(event) => handleReleaseClick(dataItem.identifier)}
 																		>
 																			Update
 																		</Button>
