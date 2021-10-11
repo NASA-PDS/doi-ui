@@ -85,9 +85,9 @@ const SearchResults = () => {
 	
 	const createTableCell = (status, doi, fieldValue) => {
 		if (status.toLowerCase() === 'registered')
-			return <TableCell>{createDoiLink(doi, fieldValue)}</TableCell>;
+			return createDoiLink(doi, fieldValue);
 		else
-			return <TableCell>{fieldValue}</TableCell>;
+			return fieldValue;
 	}
 	
 	const createDoiLink = (doi, fieldValue) => {
