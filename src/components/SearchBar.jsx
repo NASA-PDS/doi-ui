@@ -34,7 +34,7 @@ const SearchBar = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [identifier, setIdentifier] = useState('');
-  const [prevIdentifier, setPrevIdentifier] = useState(searchText);
+  let [prevIdentifier, setPrevIdentifier] = useState(0);
   
   const searchIdentifier =  useSelector(state => {
     return state.appReducer.searchIdentifier;
@@ -52,13 +52,13 @@ const SearchBar = () => {
   };
 
   const handleSearch = () => {
-    setPrevIdentifier(identifier);
+    setPrevIdentifier(++prevIdentifier);
     history.push("/search/" + identifier);
   };
 
   const handleClear = () => {
     setIdentifier('');
-    setPrevIdentifier('');
+    setPrevIdentifier(++prevIdentifier);
     history.replace("/search/");
   };
 
