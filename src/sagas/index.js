@@ -201,6 +201,7 @@ function* sendPds4LabelUrlSearch(action){
     endpoint += '&url=' + encodeURI(labelUrl);
     if (force) endpoint += '&force=' + force;
     
+    
     const response = yield fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -219,6 +220,12 @@ function* sendPds4LabelUrlSearch(action){
         }
         else{
             data = data[0];
+
+            let options = {compact: true, ignoreComment: true, spaces: 4};
+            let result = convert.json2xml(data.record, options);
+            
+            data.record = result;
+
             data = {
                 data: data,
                 xml: printXML(data.record),
@@ -260,7 +267,7 @@ function* sendRelease(action){
     let sendRecord = action.payload.record;
 
     sendRecord = convert.xml2json(
-        sendRecord, 
+        sendRecord,
         {
             compact: true,
             trim: true,

@@ -9,7 +9,7 @@ import ReleaseAlert from './ReleaseAlert';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import UatKeyWordAutoComplete from './UatKeyWordAutoComplete';
-import {findXmlTag} from '../utils/xmlUtil';
+import { printXML, findXmlTag} from '../utils/xmlUtil';
 import {Alert, AlertTitle} from '@material-ui/lab';
 import Pds4LabelUrlBar from "./Pds4LabelUrlBar";
 
@@ -88,7 +88,7 @@ const Draft = () => {
                 label="Metadata"
                 multiline
                 variant="outlined"
-                value={releaseXml}
+                value={printXML(releaseXml)}
                 onChange={handleReleaseXmlChange}
             />
           </p>
@@ -111,7 +111,7 @@ const Draft = () => {
                   releaseResponse.errors ?
                     <Button variant="outlined" color="primary" onClick={handleRetryRelease}>
                       Retry Submission
-          </Button>
+                    </Button>
                     :
                     <ReleaseAlert force={force} disabled={true}></ReleaseAlert>
                 :

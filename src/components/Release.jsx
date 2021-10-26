@@ -206,7 +206,7 @@ const Release = () => {
               releaseResponse.errors ?
                   <Button variant="outlined" color="primary" onClick={handleRetryRelease}>
                     Retry Submission
-          </Button>
+                  </Button>
                   :
                   <ReleaseAlert force={force} disabled={true}></ReleaseAlert>
               :
