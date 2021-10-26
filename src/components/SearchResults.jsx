@@ -165,6 +165,15 @@ const SearchResults = () => {
 																			Update
 																		</Button>
 																);
+															case 'findable':
+																return (
+																		<Button color="primary"
+																						variant="contained"
+																						onClick={(event) => handleReleaseClick(dataItem.identifier)}
+																		>
+																			Update
+																		</Button>
+																);
 															case 'review':
 																return (
 																		<Button disabled
