@@ -43,8 +43,14 @@ const changeRecordSinglesToArrays = function(record) {
             if(record.data.attributes.titles){
                 record.data.attributes.titles = convertToArray(record.data.attributes.titles)
             }
+            if(record.data.attributes.descriptions){
+                record.data.attributes.descriptions = convertToArray(record.data.attributes.descriptions)
+            }
             if(record.data.attributes.publicationYear){
                 record.data.attributes.publicationYear = String(record.data.attributes.publicationYear._text);
+            }
+            if(record.data.attributes.prefix){
+                record.data.attributes.prefix = String(record.data.attributes.prefix._text);
             }
         }
     }

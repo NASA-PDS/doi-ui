@@ -195,13 +195,25 @@ const Release = () => {
   
         <div>
           {saveResponse ?
-              saveResponse.errors ?
+                saveResponse.errors ?
                   <SaveButton state={'retry'}/>
                   :
-                  <SaveButton state={'disabled'}/>
-              :
-              <SaveButton state={'default'} force={force}/>
-          }
+                  releaseResponse ?
+                    releaseResponse.errors ?
+                      <SaveButton state={'default'}/>
+                      :
+                      <SaveButton state={'disabled'}/>
+                    :
+                    <SaveButton state={'default'}/>
+                :
+                releaseResponse ?
+                    releaseResponse.errors ?
+                      <SaveButton state={'default'} force={force}/>
+                      :
+                      <SaveButton state={'disabled'} force={force}/>
+                    :   
+                    <SaveButton state={'default'} force={force}/>
+              }
           {releaseResponse ?
               releaseResponse.errors ?
                   <Button variant="outlined" color="primary" onClick={handleRetryRelease}>

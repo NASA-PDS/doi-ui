@@ -113,9 +113,9 @@ const Reserve = () => {
         <div>
           <Alert icon={false} severity="success" className={classes.alert}>
             <AlertTitle>Submission Successful!</AlertTitle>
-            Your DOI for {reserveResponse[0].lidvid} is <b>{reserveResponse[0].doi}</b>
+            Your DOI for {reserveResponse[0].title} is <b>{reserveResponse[0].doi}</b>
             <br/><br/>
-            <b>Once your data is online and registered, <Link to={'/release/' + reserveResponse[0].lidvid}> release your DOI here</Link>.</b>
+            <b>Once your data is online and registered, <Link to={'/release/' + reserveResponse[0].identifier}> release your DOI here</Link>.</b>
             <br/><br/>
             <b>Or</b>
             <br/><br/>

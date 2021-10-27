@@ -97,27 +97,40 @@ const Draft = () => {
         </div>
       
         <br/>
-      
-            <div>
-              {saveResponse ?
-                saveResponse.errors ?
-                  <SaveButton state={'retry'}/>
-                  :
-                  <SaveButton state={'disabled'}/>
+
+          <div>
+            {saveResponse ?
+              saveResponse.errors ?
+                <SaveButton state={'retry'}/>
                 :
-                <SaveButton state={'default'} force={force}/>
-              }
-              {releaseResponse ?
+                releaseResponse ?
                   releaseResponse.errors ?
-                    <Button variant="outlined" color="primary" onClick={handleRetryRelease}>
-                      Retry Submission
-                    </Button>
+                    <SaveButton state={'default'}/>
                     :
-                    <ReleaseAlert force={force} disabled={true}></ReleaseAlert>
-                :
-                <ReleaseAlert force={force}></ReleaseAlert>
-              }
-            </div>
+                    <SaveButton state={'disabled'}/>
+                  :
+                  <SaveButton state={'default'}/>
+              :
+              releaseResponse ?
+                  releaseResponse.errors ?
+                    <SaveButton state={'default'} force={force}/>
+                    :
+                    <SaveButton state={'disabled'} force={force}/>
+                  :   
+                  <SaveButton state={'default'} force={force}/>
+            }
+            {releaseResponse ?
+                releaseResponse.errors ?
+                  <Button variant="outlined" color="primary" onClick={handleRetryRelease}>
+                    Retry Submission
+                  </Button>
+                  :
+                  <ReleaseAlert force={force} disabled={true}></ReleaseAlert>
+              :
+              <ReleaseAlert force={force}></ReleaseAlert>
+            }
+          </div>
+          
           <FormControlLabel
           control={<Checkbox checked={force} onChange={handleForceChange} name="force" color="secondary" />}
           label="Ignore warnings"
