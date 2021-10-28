@@ -43,8 +43,14 @@ const changeRecordSinglesToArrays = function(record) {
             if(record.data.attributes.titles){
                 record.data.attributes.titles = convertToArray(record.data.attributes.titles)
             }
+            if(record.data.attributes.descriptions){
+                record.data.attributes.descriptions = convertToArray(record.data.attributes.descriptions)
+            }
             if(record.data.attributes.publicationYear){
                 record.data.attributes.publicationYear = String(record.data.attributes.publicationYear._text);
+            }
+            if(record.data.attributes.prefix){
+                record.data.attributes.prefix = String(record.data.attributes.prefix._text);
             }
         }
     }
@@ -201,6 +207,7 @@ function* sendPds4LabelUrlSearch(action){
     endpoint += '&url=' + encodeURI(labelUrl);
     if (force) endpoint += '&force=' + force;
     
+    
     const response = yield fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -219,6 +226,12 @@ function* sendPds4LabelUrlSearch(action){
         }
         else{
             data = data[0];
+
+            let options = {compact: true, ignoreComment: true, spaces: 4};
+            let result = convert.json2xml(data.record, options);
+            
+            data.record = result;
+
             data = {
                 data: data,
                 xml: printXML(data.record),
@@ -260,7 +273,7 @@ function* sendRelease(action){
     let sendRecord = action.payload.record;
 
     sendRecord = convert.xml2json(
-        sendRecord, 
+        sendRecord,
         {
             compact: true,
             trim: true,

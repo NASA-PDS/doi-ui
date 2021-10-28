@@ -77,8 +77,12 @@ export default (state = initialState, action) => {
         return {
           ...state,
           urlSearchResponse: action.payload.data,
+          doiSearchResponse: action.payload.data,
+          doi: action.payload.data.doi,
           releaseKeywords: action.payload.keywords,
-          releaseXml: action.payload.xml
+          releaseXml: action.payload.xml,
+          submitter: action.payload.data.submitter,
+          node: action.payload.data.node
         }
       } else {
         return {
