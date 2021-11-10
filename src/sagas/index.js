@@ -71,7 +71,7 @@ function* sendReserveContent(action){
     let json = action.payload.excelContent;
     json = JSON.stringify(json);
 
-    let endpoint = Config.api.reserveUrl;
+    let endpoint = Config.api + 'dois';
     endpoint += '?action=reserve';
 
     if(submitter){
@@ -89,7 +89,7 @@ function* sendReserveContent(action){
     const response = yield fetch(endpoint, {
         method: 'POST',
         headers: {
-            "Accept": "application/json",
+            'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
         body: json
@@ -107,8 +107,8 @@ function* sendReserveRequest(){
 function* sendLidvidSearch(action){
     const lidvid = action.payload;
 
-    let endpoint = Config.api.getDoiByIdentifier;
-    endpoint += "?identifier=" + encodeURIComponent(lidvid);
+    let endpoint = Config.api + 'doi';
+    endpoint += '?identifier=' + encodeURIComponent(lidvid);
 
     const response = yield call(fetch, endpoint);
     let data = yield response.json();
@@ -123,7 +123,7 @@ function* sendLidvidSearch(action){
             data = {
                 data,
                 xml: printXML(data.record),
-                keywords: findXmlTag(data.record, "subjects")
+                keywords: findXmlTag(data.record, 'subjects')
             }
         }
     }
@@ -140,67 +140,11 @@ function* sendLidvidSearchRequest(){
     yield takeLatest('SEND_LIDVID_SEARCH_REQUEST', sendLidvidSearch);
 }
 
-function* sendDoiSearch(action){
-    const doi = action.payload;
-    
-    let doiEndpoint = Config.api.getDoiByDoiUrl + '?doi=';
-    doiEndpoint += encodeURIComponent(doi);
-
-    const doiResponse = yield call(fetch, doiEndpoint);
-    let doiData = yield doiResponse.json();
-    let data;
-
-    let hasErrors = false;
-    let lidvid;
-    if(!doiData.errors){
-        if(doiData.length < 1){
-            hasErrors = true;
-            data = {data: doiNotFound};
-        }
-        else{
-            lidvid = doiData[0].lidvid;
-        }
-    }
-    else{
-        hasErrors = true;
-        data = {
-            doiData
-        }
-    }
-
-    if(!hasErrors){
-        let lidvidEndpoint = Config.api.getDoiByLidvidUrl;
-        lidvidEndpoint += encodeURIComponent(lidvid);
-
-        const responseLidvid = yield call(fetch, lidvidEndpoint);
-        let lidvidData = yield responseLidvid.json();
-
-        if(!lidvidData.errors){
-            data = {
-                data: lidvidData,
-                xml: printXML(lidvidData.record),
-                keywords: findXmlTag(lidvidData.record, "subjects"),
-                recordJson: lidvidData.record
-            }
-        }
-        else{
-            data = {
-                lidvidData
-            }
-        }
-    }
-
-    yield put({ type: 'RENDER_DOI_SEARCH_RESULTS', payload: data});
-}
-
-function* sendDoiSearchRequest(){
-    yield takeLatest('SEND_DOI_SEARCH_REQUEST', sendDoiSearch);
-}
 
 function* sendPds4LabelUrlSearch(action){
     const {labelUrl, submitter, node, force} = action.payload;
 
-    let endpoint = Config.api.getDoiByPds4LabelUrl;
+    let endpoint = Config.api + 'dois';
     endpoint += '?action=draft';
     endpoint += '&submitter=' + submitter;
     endpoint += '&node=' + node;
@@ -211,7 +155,7 @@ function* sendPds4LabelUrlSearch(action){
     const response = yield fetch(endpoint, {
         method: 'POST',
         headers: {
-            "Accept": "application/json",
+            'Accept': 'application/json',
             'Content-Type': 'application/json'
         }
     });
@@ -235,7 +179,7 @@ function* sendPds4LabelUrlSearch(action){
             data = {
                 data: data,
                 xml: printXML(data.record),
-                keywords: findXmlTag(data.record, "subjects")
+                keywords: findXmlTag(data.record, 'subjects')
             }
         }
     }
@@ -255,7 +199,7 @@ function* sendPdsLabelUrlSearchRequest(){
 function* sendRelease(action){
     const {submitter, node, identifier, force} = action.payload;
 
-    let endpoint = Config.api.reserveUrl;
+    let endpoint = Config.api + 'dois';
     endpoint += '?action=draft';
 
     if(submitter){
@@ -296,7 +240,7 @@ function* sendRelease(action){
     const saveResponse = yield fetch(endpoint, {
         method: 'POST',
         headers: {
-            "Accept": "application/json",
+            'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
         body: sendRecord
@@ -305,7 +249,7 @@ function* sendRelease(action){
     let data = yield saveResponse.json();
 
     if(!data.errors){
-        let endpoint = Config.api.releaseDoiUrl + "submit?identifer=" + encodeURI(identifier);
+        let endpoint = Config.api + 'doi/submit?identifer=' + encodeURI(identifier);
         if(force){
             endpoint += '&force=' + force;
         }
@@ -313,7 +257,7 @@ function* sendRelease(action){
         const submitResponse = yield fetch(endpoint, {
             method: 'POST',
             headers: {
-                "Accept": "application/json",
+                'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
         });
@@ -332,7 +276,7 @@ function* sendReleaseRequest(){
 function* sendSaveRelease(action){
     const {submitter, node, status, force} = action.payload;
 
-    let endpoint = Config.api.reserveUrl;
+    let endpoint = Config.api + 'dois';
     endpoint += '?action=' + status;
 
     if(submitter){
@@ -372,7 +316,7 @@ function* sendSaveRelease(action){
     const response = yield fetch(endpoint, {
         method: 'POST',
         headers: {
-            "Accept": "application/json",
+            'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
         body: sendRecord
@@ -389,7 +333,7 @@ function* sendSaveReleaseRequest(){
 
 function* sendSearch(action){
     let identifier = action.payload ? action.payload : '*';
-    let endpoint = Config.api.searchUrl;
+    let endpoint = Config.api + 'dois';
     let isSingleResult = false;
 
     if (identifier.startsWith('10.')) {
@@ -403,7 +347,7 @@ function* sendSearch(action){
         }
         else{
             isSingleResult = true;
-            endpoint = Config.api.getDoiByIdentifier;
+            endpoint = Config.api + 'doi';
             endpoint += '?identifier=' + encodeURIComponent(identifier);
         }
     }
@@ -430,7 +374,6 @@ export default function* rootSaga(){
     yield all([
         sendReserveRequest(),
         sendLidvidSearchRequest(),
-        sendDoiSearchRequest(),
         sendPdsLabelUrlSearchRequest(),
         sendReleaseRequest(),
         sendSaveReleaseRequest(),

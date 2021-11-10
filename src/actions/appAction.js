@@ -45,13 +45,6 @@ const sendLidvidSearchRequest = (payload) => dispatch => {
     })
 }
 
-const sendDoiSearchRequest = (payload) => dispatch => {
-    dispatch({
-        type: "SEND_DOI_SEARCH_REQUEST",
-        payload
-    })
-}
-
 const sendPds4LabelSearchRequest = (payload) => dispatch => {
     dispatch({
         type: "SEND_PDS4_LABEL_SEARCH_REQUEST",
@@ -154,7 +147,6 @@ export default{
     retryRelease,
     retrySave,
     sendLidvidSearchRequest,
-    sendDoiSearchRequest,
     sendPds4LabelSearchRequest,
     sendSaveReleaseRequest,
     sendReleaseRequest,
