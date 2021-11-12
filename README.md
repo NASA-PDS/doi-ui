@@ -22,7 +22,7 @@ This will install all necessary dependencies.
 
 ### Change API Locations In The Config File
 
-The config file is located at: `src/Config.js` It contains a list of necessary HTTP request URLs for the application to function correctly. These must be changed to point to your deployed backend server.
+The config file is located at: `public/config.js` It contains the necessary HTTP request URLs for the application to function correctly. These must be changed to point to your deployed backend server.
 
 ### Run `npm start`
 
