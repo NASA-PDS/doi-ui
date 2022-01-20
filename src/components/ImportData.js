@@ -2,9 +2,26 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import rootActions from '../actions/rootActions';
 import XLSX from 'xlsx';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+    input: {
+      color: 'rgba(0,0,0,0)'
+    },
+    inputParent: {
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    inputContent: {
+        textAlign: 'left'
+    }
+}));
 
 const ImportData = () => {
+    const classes = useStyles();
     const dispatch = useDispatch();
+
+    const [inputFileName, setInputFileName] = React.useState('');
 
     const excelToJson = (reader) => {
         let fileData = reader.result;
@@ -41,14 +58,31 @@ const ImportData = () => {
     
     const loadFileXLSX = (event) => {
         let input = event.target;
+        setInputFileName(input.files[0].name);
         let reader = new FileReader();
         reader.onload = excelToJson.bind(this, reader);
         reader.readAsBinaryString(input.files[0]);
     };
 
+    const removeInputTarget = (event) => {
+            event.target.value = '';
+    }
+
     return (
-        <div>
-            <input type="file" onChange={loadFileXLSX}/>
+        <div className={classes.inputParent}>
+            <div className={classes.inputContent}>
+                <div>
+                    <input
+                        type="file" 
+                        onChange={loadFileXLSX} 
+                        onClick={removeInputTarget}
+                        className={classes.input}
+                    />
+                </div>
+                <div>
+                    {inputFileName}
+                </div>
+            </div>
         </div>
     );
 }
