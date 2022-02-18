@@ -1,8 +1,6 @@
 import React from 'react';
-import PageHeader from "./PageHeader";
-import SearchBar from './SearchBar';
-import SearchResults from './SearchResults';
 import {makeStyles} from "@material-ui/core/styles";
+import {DoiSearch} from "@nasapds/pds-wds-react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -13,16 +11,14 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Search = () => {
+const Search = (props) => {
   const classes = useStyles();
   
   return (
-      <div className={classes.root}>
-        <PageHeader header={'Search'} text={'Update an existing DOI by first locating it within our database using the search box below. ' +
-        'Search by DOI, LID, LIDVID, or PDS3 Data Set ID.'}/>
-        <SearchBar />
-        <SearchResults/>
-      </div>
+    <div className={classes.root}>
+      <DoiSearch showActions={props.showActions} store={props.store}/>
+    </div>
+    
   )
 };
 

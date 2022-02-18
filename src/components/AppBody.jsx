@@ -8,8 +8,7 @@ import FAQ from './FAQ';
 import Container from '@material-ui/core/Container';
 import { Redirect, Route, Switch} from 'react-router-dom';
 
-
-const AppBody = () => {
+const AppBody = (props) => {
   return <Container>
     <Switch>
       <Route path="/home">
@@ -19,10 +18,10 @@ const AppBody = () => {
         <Create/>
       </Route>
       <Route path="/search/:searchText+">
-        <Search/>
+        <Search showActions={true} store={props.store}/>
       </Route>
       <Route path="/search/">
-        <Search/>
+        <Search showActions={true} store={props.store}/>
       </Route>
       <Route path="/release/:searchLidvid+">
         <Release/>
