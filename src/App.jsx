@@ -8,12 +8,14 @@ import '@fontsource/roboto';
 import './App.css';
 
 function App() {
+  const store = configureStore();
+
   return (
-    <Provider store={configureStore()}>
+    <Provider store={store}>
       <div className="App">
         <Banner/>
         <DoiAppBar/>
-        <AppBody/>
+        <AppBody store={store}/>
       </div>
     </Provider>
   );
