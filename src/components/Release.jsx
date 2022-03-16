@@ -28,7 +28,8 @@ const useStyles = makeStyles((theme) => ({
   alert: {
     '& .MuiAlert-message':{
       marginLeft: 'auto',
-      marginRight: 'auto'
+      marginRight: 'auto',
+      overflowWrap: 'anywhere'
     },
     marginLeft: 'auto',
     marginRight: 'auto',
