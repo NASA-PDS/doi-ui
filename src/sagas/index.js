@@ -250,7 +250,7 @@ function* sendRelease(action){
     let data = yield saveResponse.json();
 
     if(!data.errors){
-        let endpoint = Config.api + 'doi/submit?identifer=' + encodeURI(identifier);
+        let endpoint = Config.api + 'doi/submit?identifier=' + encodeURI(identifier);
         if(force){
             endpoint += '&force=' + force;
         }
