@@ -53,6 +53,15 @@ const changeRecordSinglesToArrays = function(record) {
             if(record.data.attributes.prefix){
                 record.data.attributes.prefix = String(record.data.attributes.prefix._text);
             }
+            if(record.data.attributes.identifiers){
+                if(record.data.attributes.identifiers[0]){
+                    if(record.data.attributes.identifiers[0].identifier){
+                        if(record.data.attributes.identifiers[0].identifier._text){
+                            record.data.attributes.identifiers[0].identifier = String(record.data.attributes.identifiers[0].identifier._text);
+                        }
+                    }
+                }
+            }
         }
     }
 };
