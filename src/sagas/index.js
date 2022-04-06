@@ -27,25 +27,25 @@ const changeRecordSinglesToArrays = function(record) {
     if(record && record.data){
         if(record.data.attributes){
             if(record.data.attributes.contributors){
-                record.data.attributes.contributors = convertToArray(record.data.attributes.contributors)
+                record.data.attributes.contributors = convertToArray(record.data.attributes.contributors);
             }
             if(record.data.attributes.creators){
-                record.data.attributes.creators = convertToArray(record.data.attributes.creators)
+                record.data.attributes.creators = convertToArray(record.data.attributes.creators);
             }
             if(record.data.attributes.identifiers){
-                record.data.attributes.identifiers = convertToArray(record.data.attributes.identifiers)
+                record.data.attributes.identifiers = convertToArray(record.data.attributes.identifiers);
             }
             if(record.data.attributes.relatedIdentifiers){
-                record.data.attributes.relatedIdentifiers = convertToArray(record.data.attributes.relatedIdentifiers)
+                record.data.attributes.relatedIdentifiers = convertToArray(record.data.attributes.relatedIdentifiers);
             }
             if(record.data.attributes.subjects){
-                record.data.attributes.subjects = convertToArray(record.data.attributes.subjects)
+                record.data.attributes.subjects = convertToArray(record.data.attributes.subjects);
             }
             if(record.data.attributes.titles){
-                record.data.attributes.titles = convertToArray(record.data.attributes.titles)
+                record.data.attributes.titles = convertToArray(record.data.attributes.titles);
             }
             if(record.data.attributes.descriptions){
-                record.data.attributes.descriptions = convertToArray(record.data.attributes.descriptions)
+                record.data.attributes.descriptions = convertToArray(record.data.attributes.descriptions);
             }
             if(record.data.attributes.publicationYear){
                 record.data.attributes.publicationYear = String(record.data.attributes.publicationYear._text);
@@ -55,11 +55,13 @@ const changeRecordSinglesToArrays = function(record) {
             }
             if(record.data.attributes.identifiers){
                 if(record.data.attributes.identifiers[0]){
-                    if(record.data.attributes.identifiers[0].identifier){
-                        if(record.data.attributes.identifiers[0].identifier._text){
-                            record.data.attributes.identifiers[0].identifier = String(record.data.attributes.identifiers[0].identifier._text);
+                    record.data.attributes.identifiers.forEach(identifier => {
+                        if(identifier.identifier){
+                            if(identifier.identifier._text){
+                                identifier.identifier = String(identifier.identifier._text)
+                            }
                         }
-                    }
+                    });
                 }
             }
         }
