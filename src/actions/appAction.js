@@ -116,6 +116,13 @@ const resetSearch = (payload) => dispatch => {
     });
 }
 
+const sendApiTest = (payload) => dispatch => {
+    dispatch({
+        type: 'SEND_API_TEST_REQUEST',
+        payload
+    })
+}
+
 const setSubmitter = (payload) => dispatch => {
     dispatch({
         type: 'SET_SUBMITTER',
@@ -155,6 +162,7 @@ export default{
     updateReleaseKeywords,
     sendSearchRequest,
     resetSearch,
+    sendApiTest,
     setSubmitter,
     setNode,
     resetStoredData
