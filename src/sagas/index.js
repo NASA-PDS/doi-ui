@@ -107,6 +107,7 @@ function* sendReserveContent(action){
         let data = yield response.json();
 
         yield put({type: 'RENDER_RESERVE_RESPONSE', payload: data});
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: true});
     }
     catch(error){
         yield put({type: 'RENDER_API_TEST_RESULT', payload: false});
@@ -148,6 +149,7 @@ function* sendLidvidSearch(action){
         }
 
         yield put({ type: 'RENDER_DOI_SEARCH_RESULTS', payload: data});
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: true});
     }
     catch(error){
         yield put({type: 'RENDER_API_TEST_RESULT', payload: false});
@@ -209,6 +211,7 @@ function* sendPds4LabelUrlSearch(action){
         }
 
         yield put({ type: 'RENDER_URL_SEARCH_RESULTS', payload: data});
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: true});
     }
     catch(error){
         yield put({type: 'RENDER_API_TEST_RESULT', payload: false});
@@ -291,6 +294,7 @@ function* sendRelease(action){
 
 
         yield put({type: 'RENDER_RELEASE_RESPONSE', payload: data});
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: true});
     }
     catch(error){
         yield put({type: 'RENDER_API_TEST_RESULT', payload: false});
@@ -354,6 +358,7 @@ function* sendSaveRelease(action){
         let data = yield response.json();
 
         yield put({type: 'RENDER_SAVE_RELEASE_RESPONSE', payload: data});
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: true});
     }
     catch(error){
         yield put({type: 'RENDER_API_TEST_RESULT', payload: false});
@@ -439,6 +444,7 @@ function* sendSearch(action){
         }
 
         yield put({type: 'RENDER_SEARCH_RESULTS', payload: {identifier, data, parentData}});
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: true});
     }
     catch(error){
         yield put({type: 'RENDER_API_TEST_RESULT', payload: false});
