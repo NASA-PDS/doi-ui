@@ -2,11 +2,11 @@ import React, { Component, useEffect } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import {useDispatch, useSelector} from "react-redux";
 import rootActions from "../actions/rootActions";
 
-const useStyles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
     pdsBanner: {
         background: '#FF0000',
         height: '32px'
@@ -17,11 +17,11 @@ const useStyles = (theme) => ({
         padding: '5px',
         fontSize: '14px',
         justifyContent: 'center'
-    },
-});
+    }
+}));
 
-const ConnectionCheck = (props) => {
-    const { classes } = props;
+const ConnectionCheck = () => {
+    const classes = useStyles();
     const dispatch = useDispatch();
 
     const apiTestResult = useSelector(state => {
@@ -35,7 +35,7 @@ const ConnectionCheck = (props) => {
     return (
         <div>
             {apiTestResult ? 
-                <></>
+                ""
                 :
                 <AppBar position='static' className={classes.pdsBanner}>
                     <Toolbar className={classes.pdsBannerText}>
@@ -51,4 +51,4 @@ const ConnectionCheck = (props) => {
     );
 }
 
-export default withStyles(useStyles)(ConnectionCheck);
+export default ConnectionCheck;
