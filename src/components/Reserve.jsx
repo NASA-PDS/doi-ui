@@ -83,7 +83,7 @@ const Reserve = () => {
 
   return <div className="mtc-root-child flex-column align-center">
     <Typography>
-      Download and complete <a href = {excel} target = "_blank">this Excel file</a>. Once completed, upload it using the field below:
+      Download and complete <a href = {excel} target = "_blank" rel="noopener">this Excel file</a>. Once completed, upload it using the field below:
     </Typography>
     <br/>
   
