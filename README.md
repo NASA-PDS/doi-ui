@@ -12,7 +12,7 @@ pip install pds-doi-service
 pds-doi-api
 ```
 
-See https://nasa-pds.github.io/pds-doi-service/ for details
+See https://nasa-pds.github.io/doi-service/ for details
 
 ## To Run And Build Locally
 
