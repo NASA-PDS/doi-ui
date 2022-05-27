@@ -94,18 +94,24 @@ function* sendReserveContent(action){
 
     endpoint = encodeURI(endpoint);
 
-    const response = yield fetch(endpoint, {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: json
-    });
+    try{
+        const response = yield fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: json
+        });
 
-    let data = yield response.json();
+        let data = yield response.json();
 
-    yield put({type: 'RENDER_RESERVE_RESPONSE', payload: data});
+        yield put({type: 'RENDER_RESERVE_RESPONSE', payload: data});
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: true});
+    }
+    catch(error){
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: false});
+    }
 }
 
 function* sendReserveRequest(){
@@ -118,30 +124,36 @@ function* sendLidvidSearch(action){
     let endpoint = Config.api + 'doi';
     endpoint += '?identifier=' + encodeURIComponent(lidvid);
 
-    const response = yield call(fetch, endpoint);
-    let data = yield response.json();
+    try{
+        const response = yield call(fetch, endpoint);
+        let data = yield response.json();
 
-    if(!data.errors){
-        if(data.record){
-            let options = {compact: true, ignoreComment: true, spaces: 4};
-            let result = convert.json2xml(data.record, options);
-            
-            data.record = result;
+        if(!data.errors){
+            if(data.record){
+                let options = {compact: true, ignoreComment: true, spaces: 4};
+                let result = convert.json2xml(data.record, options);
+                
+                data.record = result;
 
-            data = {
-                data,
-                xml: printXML(data.record),
-                keywords: findXmlTag(data.record, 'subjects')
+                data = {
+                    data,
+                    xml: printXML(data.record),
+                    keywords: findXmlTag(data.record, 'subjects')
+                }
             }
         }
-    }
-    else{
-        data = {
-            data
+        else{
+            data = {
+                data
+            }
         }
-    }
 
-    yield put({ type: 'RENDER_DOI_SEARCH_RESULTS', payload: data});
+        yield put({ type: 'RENDER_DOI_SEARCH_RESULTS', payload: data});
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: true});
+    }
+    catch(error){
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: false});
+    }
 }
 
 function* sendLidvidSearchRequest(){
@@ -160,44 +172,50 @@ function* sendPds4LabelUrlSearch(action){
     if (force) endpoint += '&force=' + force;
     
     
-    const response = yield fetch(endpoint, {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        }
-    });
+    try{
+        const response = yield fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
 
-    let data = yield response.json();
+        let data = yield response.json();
 
-    if(!data.errors){
-        if(data.length < 1){
-            data = {
-                data: doiNotFound
-            };
-        }
-        else{
-            data = data[0];
+        if(!data.errors){
+            if(data.length < 1){
+                data = {
+                    data: doiNotFound
+                };
+            }
+            else{
+                data = data[0];
 
-            let options = {compact: true, ignoreComment: true, spaces: 4};
-            let result = convert.json2xml(data.record, options);
-            
-            data.record = result;
+                let options = {compact: true, ignoreComment: true, spaces: 4};
+                let result = convert.json2xml(data.record, options);
+                
+                data.record = result;
 
-            data = {
-                data: data,
-                xml: printXML(data.record),
-                keywords: findXmlTag(data.record, 'subjects')
+                data = {
+                    data: data,
+                    xml: printXML(data.record),
+                    keywords: findXmlTag(data.record, 'subjects')
+                }
             }
         }
-    }
-    else{
-        data = {
-            data
+        else{
+            data = {
+                data
+            }
         }
-    }
 
-    yield put({ type: 'RENDER_URL_SEARCH_RESULTS', payload: data});
+        yield put({ type: 'RENDER_URL_SEARCH_RESULTS', payload: data});
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: true});
+    }
+    catch(error){
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: false});
+    }
 }
 
 function* sendPdsLabelUrlSearchRequest(){
@@ -245,36 +263,42 @@ function* sendRelease(action){
     
     sendRecord = JSON.stringify(sendRecord);
 
-    const saveResponse = yield fetch(endpoint, {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: sendRecord
-    });
-
-    let data = yield saveResponse.json();
-
-    if(!data.errors){
-        let endpoint = Config.api + 'doi/submit?identifier=' + encodeURI(identifier);
-        if(force){
-            endpoint += '&force=' + force;
-        }
-
-        const submitResponse = yield fetch(endpoint, {
+    try{
+        const saveResponse = yield fetch(endpoint, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
-            }
+            },
+            body: sendRecord
         });
-    
-        data = yield submitResponse.json();
+
+        let data = yield saveResponse.json();
+
+        if(!data.errors){
+            let endpoint = Config.api + 'doi/submit?identifier=' + encodeURI(identifier);
+            if(force){
+                endpoint += '&force=' + force;
+            }
+
+            const submitResponse = yield fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+        
+            data = yield submitResponse.json();
+        }
+
+
+        yield put({type: 'RENDER_RELEASE_RESPONSE', payload: data});
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: true});
     }
-
-
-    yield put({type: 'RENDER_RELEASE_RESPONSE', payload: data});
+    catch(error){
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: false});
+    }
 }
 
 function* sendReleaseRequest(){
@@ -321,18 +345,24 @@ function* sendSaveRelease(action){
     prepareJsonRecord(sendRecord);
     sendRecord = JSON.stringify(sendRecord);
 
-    const response = yield fetch(endpoint, {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: sendRecord
-    });
+    try{
+        const response = yield fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: sendRecord
+        });
 
-    let data = yield response.json();
+        let data = yield response.json();
 
-    yield put({type: 'RENDER_SAVE_RELEASE_RESPONSE', payload: data});
+        yield put({type: 'RENDER_SAVE_RELEASE_RESPONSE', payload: data});
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: true});
+    }
+    catch(error){
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: false});
+    }
 }
 
 function* sendSaveReleaseRequest(){
@@ -353,71 +383,95 @@ function* sendSearch(action){
         endpoint += '?ids=' + encodeURIComponent(identifier);
     }
 
-    const response = yield call(fetch, endpoint);
-    let data = yield response.json();
-    let parentData;
+    try{
+        const response = yield call(fetch, endpoint);
+        let data = yield response.json();
+        let parentData;
 
-    if(isSingleResult){
-        data = [data];
-    }
-    
-    if (data.length === 0) {
-        data = recordNotFound;
+        if(isSingleResult){
+            data = [data];
+        }
+        
+        if (data.length === 0) {
+            data = recordNotFound;
 
-        let parentIdentifier = action.payload;
-        if(LidvidUtil.isLidOrLidvid(parentIdentifier)){
-            if(LidvidUtil.isProductLidvid(parentIdentifier)){
-                let collectionLid = LidvidUtil.trimProductLidvidToCollectionLid(parentIdentifier);
+            let parentIdentifier = action.payload;
+            if(LidvidUtil.isLidOrLidvid(parentIdentifier)){
+                if(LidvidUtil.isProductLidvid(parentIdentifier)){
+                    let collectionLid = LidvidUtil.trimProductLidvidToCollectionLid(parentIdentifier);
 
-                let parentEndpoint = Config.api + 'dois';
+                    let parentEndpoint = Config.api + 'dois';
 
-                parentIdentifier = collectionLid.replace(/\//g, '-') + '*';
-                parentIdentifier = '*' + parentIdentifier;
-                parentEndpoint += '?ids=' + encodeURIComponent(parentIdentifier);
+                    parentIdentifier = collectionLid.replace(/\//g, '-') + '*';
+                    parentIdentifier = '*' + parentIdentifier;
+                    parentEndpoint += '?ids=' + encodeURIComponent(parentIdentifier);
 
-                const parentResponse = yield call(fetch, parentEndpoint);
+                    const parentResponse = yield call(fetch, parentEndpoint);
+                
+                    parentData = yield parentResponse.json();
+
+                    if(parentData.length === 0){
+                        parentIdentifier = LidvidUtil.removeDoubleColon(parentIdentifier);
+                        if(LidvidUtil.isCollectionLid(parentIdentifier)){
+                            let bundle = LidvidUtil.trimCollectionLidToBundle(parentIdentifier);
             
-                parentData = yield parentResponse.json();
-
-                if(parentData.length === 0){
-                    parentIdentifier = LidvidUtil.removeDoubleColon(parentIdentifier);
-                    if(LidvidUtil.isCollectionLid(parentIdentifier)){
-                        let bundle = LidvidUtil.trimCollectionLidToBundle(parentIdentifier);
-        
-                        let parentEndpoint = Config.api + 'dois';
-        
-                        parentIdentifier = bundle.replace(/\//g, '-') + '*';
-                        parentIdentifier = '*' + parentIdentifier;
-                        parentEndpoint += '?ids=' + encodeURIComponent(parentIdentifier);
-        
-                        const parentResponse = yield call(fetch, parentEndpoint);
-                    
-                        parentData = yield parentResponse.json();
+                            let parentEndpoint = Config.api + 'dois';
+            
+                            parentIdentifier = bundle.replace(/\//g, '-') + '*';
+                            parentIdentifier = '*' + parentIdentifier;
+                            parentEndpoint += '?ids=' + encodeURIComponent(parentIdentifier);
+            
+                            const parentResponse = yield call(fetch, parentEndpoint);
+                        
+                            parentData = yield parentResponse.json();
+                        }
                     }
                 }
-            }
-            else if(LidvidUtil.isCollectionLid(parentIdentifier)){
-                let bundle = LidvidUtil.trimCollectionLidToBundle(parentIdentifier);
+                else if(LidvidUtil.isCollectionLid(parentIdentifier)){
+                    let bundle = LidvidUtil.trimCollectionLidToBundle(parentIdentifier);
 
-                let parentEndpoint = Config.api + 'dois';
+                    let parentEndpoint = Config.api + 'dois';
 
-                parentIdentifier = bundle.replace(/\//g, '-') + '*';
-                parentIdentifier = '*' + parentIdentifier;
-                parentEndpoint += '?ids=' + encodeURIComponent(parentIdentifier);
+                    parentIdentifier = bundle.replace(/\//g, '-') + '*';
+                    parentIdentifier = '*' + parentIdentifier;
+                    parentEndpoint += '?ids=' + encodeURIComponent(parentIdentifier);
 
-                const parentResponse = yield call(fetch, parentEndpoint);
-            
-                parentData = yield parentResponse.json();
+                    const parentResponse = yield call(fetch, parentEndpoint);
+                
+                    parentData = yield parentResponse.json();
+                }
             }
         }
-    }
 
-    yield put({type: 'RENDER_SEARCH_RESULTS', payload: {identifier, data, parentData}});
+        yield put({type: 'RENDER_SEARCH_RESULTS', payload: {identifier, data, parentData}});
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: true});
+    }
+    catch(error){
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: false});
+    }
 }
 
 function* sendSearchRequest(){
     yield takeLatest('SEND_SEARCH_REQUEST', sendSearch);
 }
+
+function* sendApiTest(action){
+    let endpoint = Config.api + 'dois?ids=*';
+
+    try{
+        const response = yield call(fetch, endpoint);
+        let data = yield response.json();
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: true});
+    }
+    catch(error){
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: false});
+    }
+}
+
+function* sendApiTestRequest(){
+    yield takeLatest('SEND_API_TEST_REQUEST', sendApiTest);
+}
+
 
 export default function* rootSaga(){
     yield all([
@@ -426,6 +480,7 @@ export default function* rootSaga(){
         sendPdsLabelUrlSearchRequest(),
         sendReleaseRequest(),
         sendSaveReleaseRequest(),
-        sendSearchRequest()
+        sendSearchRequest(),
+        sendApiTestRequest()
     ])
 }

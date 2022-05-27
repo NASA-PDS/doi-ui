@@ -37,6 +37,16 @@ const useStyles = makeStyles((theme) => ({
   alignLeft: {
     textAlign: 'left',
     alignSelf: 'flex-start'
+  },
+  ctaButton: {
+    color: '#fff',
+    backgroundColor: '#286491',
+    borderRadius: 20,
+    marginTop: '.5em',
+    '&:hover': {
+      cursor: 'pointer',
+      backgroundColor: '#286491',
+     }
   }
 }));
 

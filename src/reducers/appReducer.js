@@ -14,7 +14,8 @@ const initialState = {
   searchIdentifier: null,   // doi, lidvid, or partial
   searchResponse: null,
   submitter: "",
-  node: null
+  node: null,
+  apiTest: true
 }
   
 export default (state = initialState, action) => {
@@ -103,6 +104,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         releaseKeywords: action.payload
+      }
+    case 'RENDER_API_TEST_RESULT':
+      return {
+        ...state,
+        apiTest: action.payload
       }
     case 'RENDER_RELEASE_RESPONSE':
       return {
