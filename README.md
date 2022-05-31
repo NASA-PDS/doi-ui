@@ -40,7 +40,7 @@ These files can be put into any server to run the app.
     git push --tags
     npm run build
     mv build pds-doi-ui-<version>
-    zip -r pds-doi-ui.zip pds-doi-ui
+    zip -r pds-doi-ui.zip pds-doi-ui-<version>
 
 Upload the zip file in the release of the tag in github
 
