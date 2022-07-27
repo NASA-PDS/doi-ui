@@ -171,7 +171,7 @@ const Release = () => {
           {urlSearchResponseError && (
             <Alert icon={false} severity="error" className={classes.alert}>
               <AlertTitle>{String(urlSearchResponseError.name)}</AlertTitle>
-              <b>Description:</b> {String(urlSearchResponseError.message)}
+              {String(urlSearchResponseError.message)}
             </Alert>
           )}
         </div>
@@ -234,8 +234,8 @@ const Release = () => {
         {saveResponse ?
             saveResponse.errors ?
                 <Alert icon={false} severity="error" className={classes.alert}>
-                  <AlertTitle>Save Error: {String(saveResponse.errors[0].name)}</AlertTitle>
-                  <b>Description:</b> {String(saveResponse.errors[0].message)}
+                  <AlertTitle>{String(saveResponse.errors[0].name)}</AlertTitle>
+                  {String(saveResponse.errors[0].message)}
                   <p>Please address the error then try again.</p>
                 </Alert>
                 :
@@ -249,8 +249,8 @@ const Release = () => {
           {releaseResponse?
             releaseResponse.errors?
                 <Alert icon={false} severity="error" className={classes.alert}>
-                  <AlertTitle>Submission Error: {String(releaseResponse.errors[0].name)}</AlertTitle>
-                    <b>Description:</b> {String(releaseResponse.errors[0].message)}
+                  <AlertTitle>{String(releaseResponse.errors[0].name)}</AlertTitle>
+                  {String(releaseResponse.errors[0].message)}
                   <p>Please address the error then try again.</p>
                 </Alert>
               :

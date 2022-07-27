@@ -70,7 +70,7 @@ const Draft = () => {
           urlSearchResponse.errors ?
           <Alert icon={false} severity="error" className={classes.alert}>
               <AlertTitle>{String(urlSearchResponse.errors[0].name)}</AlertTitle>
-              <b>Description:</b> {String(urlSearchResponse.errors[0].message)}
+              {String(urlSearchResponse.errors[0].message)}
           </Alert>
           :
           <Alert icon={false} severity="info">
@@ -141,7 +141,7 @@ const Draft = () => {
               saveResponse.errors ?
                 <Alert icon={false} severity="error" className={classes.alert}>
                   <AlertTitle>{String(saveResponse.errors[0].name)}</AlertTitle>
-                  <b>Description:</b> {String(saveResponse.errors[0].message)}
+                  {String(saveResponse.errors[0].message)}
                   <p>Please address the error then try again.</p>
                 </Alert>
                 :
@@ -155,8 +155,8 @@ const Draft = () => {
         {releaseResponse?
           releaseResponse.errors?
             <Alert icon={false} severity="error" className={classes.alert}>
-                  <AlertTitle>{String(releaseResponse.errors[0].name)}</AlertTitle>
-              <b>Description:</b> {String(releaseResponse.errors[0].message)}
+              <AlertTitle>{String(releaseResponse.errors[0].name)}</AlertTitle>
+              {String(releaseResponse.errors[0].message)}
               <p>Please address the error then try again.</p>
             </Alert>
           :
