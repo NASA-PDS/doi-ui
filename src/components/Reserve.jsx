@@ -98,7 +98,7 @@ const Reserve = () => {
         <div>
           <Alert icon={false} severity="error" className={classes.alert}>
             <p>{String(reserveResponse.errors[0].name)}</p>
-            <p><b>Description:</b> {String(reserveResponse.errors[0].message)}</p>
+            <p>{String(reserveResponse.errors[0].message)}</p>
           </Alert>
   
           <p>
