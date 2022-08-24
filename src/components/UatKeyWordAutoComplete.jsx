@@ -11,8 +11,11 @@ import HelpInfo from "./HelpInfo";
 
 const useStyles = makeStyles((theme) => ({
   keywords: {
-    position: 'relative',
-    bottom: 35
+    display: 'flex',
+    width: '100%'
+  },
+  autocomplete: {
+    width: '100%'
   }
 }));
 
@@ -44,6 +47,7 @@ export default function Tags() {
     <div className={classes.keywords}>
       <HelpInfo type={'keyword'}/>
       <Autocomplete
+        className={classes.autocomplete}
         multiple
         freeSolo
         filterSelectedOptions
