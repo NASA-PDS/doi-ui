@@ -104,20 +104,28 @@ const Release = () => {
     if(searchLidvid){
       dispatch(rootActions.appAction.sendLidvidSearchRequest(searchLidvid));
     }
-  
+  }, []);
+
+  useEffect(() => {
     if (urlSearchResponse !== null) {
       let error = {
         message: null,
         name: null
       };
+      
       if (urlSearchResponse.errors) {
         error.message = urlSearchResponse.errors[0].message;
         error.name = urlSearchResponse.errors[0].name;
+
+        setUrlSearchResponseError(error);
       } else if (!urlSearchResponse.doi || urlSearchResponse.doi !== doi) {
         error.message = "The DOI for this PDS4 label does not match the given DOI or does not exist.";
         error.name =  "Mismatched DOI to PDS4 Label";
+
+        setUrlSearchResponseError(error);
       }
-      setUrlSearchResponseError(error);
+      else{
+      }
     }
   }, [urlSearchResponse]);
 
