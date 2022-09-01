@@ -80,7 +80,7 @@ serve -s build
 
 From the github release page https://github.com/NASA-PDS/pds-doi-ui/releases/
 
-Select the latest version and dowload the zip file in assets `pds-doi-ui.zip`
+Select the latest version and download the zip file in assets `pds-doi-ui.zip`
 
 Unzip and start a standalone server
 
@@ -90,7 +90,7 @@ serve -s pds-doi-ui
 
 The unzipped directory can also be configured to be published by an **apache** or **ngynx** server.
 
-**Troobleshooting:** a serve command is also available in anaconda, be careful not to use it instead of the npm serve.
+**Troubleshooting:** a serve command is also available in anaconda, be careful not to use it instead of the npm serve.
 
 ### SSH Tunnel to DOI Service
 
