@@ -24,6 +24,22 @@ This will install all necessary dependencies.
 
 The config file is located at: `public/config.js` It contains the necessary HTTP request URLs for the application to function correctly. These must be changed to point to your deployed backend server.
 
+### Update the Authentication Related Configurations 
+
+You can set these configurations also in the `public/config.js`. Make sure to use correct URL paths to match with your environment. You may check with the system admins to get the Amazon Cognito related values.
+
+```js
+window['getGlobalConfig'] = {
+    api: 'http://localhost:8080/PDS_APIs/pds_doi_api/0.2/',
+    oauth_client_id: '<CLIENT ID OF COGNITO APP CLIENT>',
+    oauth_redirect_uri: 'http://localhost:3000',
+    oauth_logout_endpoint: 'https://<COGNITO DOMAIN NAME>.auth.us-west-2.amazoncognito.com/logout',
+    oauth_provider_url: 'https://<COGNITO DOMAIN NAME>.auth.us-west-2.amazoncognito.com/oauth2',
+    app_viewer_group_name: 'PDS_Viewer',
+    app_admin_group_name: 'PDS_Admin',
+}
+```
+
 ### Run `npm start`
 
 Runs the app in development mode.<br />
