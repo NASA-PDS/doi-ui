@@ -98,7 +98,6 @@ function AuthenticationWrapper() {
     const logout = async () => {
         tokens = null;
         window.localStorage.clear();
-        console.log("Logout called")
         await authService.logout(true);
         const logoutUrl = OAUTH2_LOGOUT_ENDPOINT +
             "?client_id=" + OAUTH2_CLIENT_ID +
@@ -106,16 +105,14 @@ function AuthenticationWrapper() {
         window.location.replace(logoutUrl);
     }
 
-    // If the user authentication is pending,show a Reset button to retry logout and login
+    // If the user authentication is pending,show a Reset button to logout
     if (authService.isPending()) {
-        return <div align="center">
+        return (<div align="center">
             <h4>Authenticating...</h4>
             <AuthButton onClick={() => {
                 logout().then();
-                login().then();
             }}>Reset</AuthButton>
-
-        </div>
+        </div>);
     }
 
     // If user is not authenticated, then show the Login button
@@ -125,7 +122,7 @@ function AuthenticationWrapper() {
                 <h4>User Not Logged-in</h4>
                 <AuthButton onClick={login}>Login with Cognito</AuthButton>
             </div>
-        )
+        );
     }
 
     // If user is authenticated, then read tokens from the authService
@@ -201,7 +198,7 @@ const AuthProviderWrapper = () => {
         <AuthProvider authService={authService} >
             <AuthenticationWrapper />
         </AuthProvider>
-    )
+    );
 }
 
 export default AuthProviderWrapper;
