@@ -77,7 +77,7 @@ const Draft = () => {
             Your DOI is ready to be drafted. Please update the metadata below as necessary.
           </Alert>
         :
-        null
+        ""
       }
   
     {releaseXml &&

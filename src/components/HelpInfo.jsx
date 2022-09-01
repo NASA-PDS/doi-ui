@@ -15,11 +15,6 @@ const useStyles = makeStyles((theme) => ({
     color: '#0000EE'
   },
   keywordHelp: {
-    display: 'flex',
-    position: 'relative',
-    left: 58,
-    top: 23,
-    zIndex: 1,
     '& .MuiIconButton-label': {
       backgroundColor: 'white'
     }
