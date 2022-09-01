@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import AuthenticationWrapper from './AuthenticationWrapper';
 import * as serviceWorker from './serviceWorker';
 import { HashRouter, Route } from 'react-router-dom'
 
 ReactDOM.render(
   <React.StrictMode>
     <HashRouter>
-      <Route path="/" component={App}/>
+      <Route path="/" component={AuthenticationWrapper}/>
     </HashRouter>
   </React.StrictMode>,
   document.getElementById('root')

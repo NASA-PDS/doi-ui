@@ -3,6 +3,7 @@ import Config from '../Config';
 import {findXmlTag, printXML} from '../utils/xmlUtil';
 import { doiNotFound, recordNotFound } from '../sagas/error';
 import { LidvidUtil } from './LidvidUtil';
+import {getTokens} from "../AuthenticationWrapper";
 var convert = require('xml-js');
 
 const removeJsonTextAttribute = function(value, parentElement) {
@@ -99,7 +100,8 @@ function* sendReserveContent(action){
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getTokens().accessToken
             },
             body: json
         });
@@ -171,17 +173,24 @@ function* sendPds4LabelUrlSearch(action){
     endpoint += '&url=' + encodeURI(labelUrl);
     if (force) endpoint += '&force=' + force;
     
-    
+
     try{
         const response = yield fetch(endpoint, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getTokens().accessToken
             }
         });
 
         let data = yield response.json();
+        let statusCode = yield response.status;
+        let testPassed = true;
+
+        if (statusCode === 401) {
+            testPassed = false;
+        }
 
         if(!data.errors){
             if(data.length < 1){
@@ -211,10 +220,12 @@ function* sendPds4LabelUrlSearch(action){
         }
 
         yield put({ type: 'RENDER_URL_SEARCH_RESULTS', payload: data});
-        yield put({type: 'RENDER_API_TEST_RESULT', payload: true});
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: {testPassed, statusCode}});
     }
     catch(error){
-        yield put({type: 'RENDER_API_TEST_RESULT', payload: false});
+        let testPassed = false;
+        let statusCode = 500;
+        yield put({type: 'RENDER_API_TEST_RESULT', payload: {testPassed, statusCode}});
     }
 }
 
@@ -268,7 +279,8 @@ function* sendRelease(action){
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getTokens().accessToken
             },
             body: sendRecord
         });
@@ -285,7 +297,8 @@ function* sendRelease(action){
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + getTokens().accessToken
                 }
             });
         
@@ -350,7 +363,8 @@ function* sendSaveRelease(action){
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getTokens().accessToken
             },
             body: sendRecord
         });

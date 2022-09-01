@@ -15,7 +15,8 @@ const initialState = {
   searchResponse: null,
   submitter: "",
   node: null,
-  apiTest: true
+  apiTest: true,
+  responseStatusCode: 200
 }
   
 export default (state = initialState, action) => {
@@ -108,7 +109,8 @@ export default (state = initialState, action) => {
     case 'RENDER_API_TEST_RESULT':
       return {
         ...state,
-        apiTest: action.payload
+        apiTest: action.payload.testPassed,
+        responseStatusCode: action.payload.statusCode
       }
     case 'RENDER_RELEASE_RESPONSE':
       return {
