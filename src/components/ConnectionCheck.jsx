@@ -25,7 +25,24 @@ const ConnectionCheck = () => {
     const dispatch = useDispatch();
 
     const apiTestResult = useSelector(state => {
-        return state.appReducer.apiTest;
+        if (state.appReducer.apiTest) {
+            return state.appReducer.apiTest;
+        }
+    });
+
+    const connectionStatusMessage = useSelector(state => {
+        if(state.appReducer.responseStatusCode) {
+            switch (state.appReducer.responseStatusCode) {
+                case 401:
+                    return "You are not authorized to use this service. Please try to login again. " +
+                        "If the problem persists please contact the <a href=\"https://pds-gamma.jpl.nasa.gov/tools/doi/?feedback=true\">PDS Operator</a> for assistance.";
+                default:
+                    return "The doi api is currently unreachable. Please check your internet connection. " +
+                        "If you are connected and the problem persists please contact the <a href=\"https://pds-gamma.jpl.nasa.gov/tools/doi/?feedback=true\">PDS Operator</a> for assistance.";
+            };
+        } else {
+            return "";
+        }
     });
 
     useEffect(() => {
@@ -34,7 +51,7 @@ const ConnectionCheck = () => {
 
     return (
         <div>
-            {apiTestResult ? 
+            {(apiTestResult || connectionStatusMessage.length == 0)?
                 ""
                 :
                 <AppBar position='static' className={classes.pdsBanner}>
@@ -42,7 +59,7 @@ const ConnectionCheck = () => {
                         <Typography
                             variant="p"
                         >
-                            The doi api is currently unreachable. Please check your internet connection. If you are connected and the problem persists please contact the <a href="https://pds-gamma.jpl.nasa.gov/tools/doi/?feedback=true">PDS Operator</a> for assistance.
+                            {connectionStatusMessage}
                         </Typography>
                     </Toolbar>
                 </AppBar>
