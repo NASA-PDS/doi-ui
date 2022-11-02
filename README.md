@@ -88,7 +88,7 @@ Unzip and start a standalone server
 serve -s pds-doi-ui
 ```
 
-The unzipped directory can also be configured to be published by an **apache** or **ngynx** server.
+The unzipped directory can also be configured to be published by an **apache** or **nginx** server.
 
 **Troubleshooting:** a serve command is also available in anaconda, be careful not to use it instead of the npm serve.
 
