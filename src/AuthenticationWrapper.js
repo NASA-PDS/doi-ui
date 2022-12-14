@@ -30,6 +30,7 @@ const OAUTH2_LOGOUT_ENDPOINT = window['getGlobalConfig'].oauth_logout_endpoint
 const OAUTH2_PROVIDER_URL = window['getGlobalConfig'].oauth_provider_url
 const APP_VIEWER_GROUP_NAME = window['getGlobalConfig'].app_admin_group_name
 const APP_ADMIN_GROUP_NAME = window['getGlobalConfig'].app_viewer_group_name
+const PDS_ADMIN_EMAIL = window['getGlobalConfig'].pds_admin_email
 
 // Initialize AuthService
 const authService = new AuthService({
@@ -160,6 +161,7 @@ function AuthenticationWrapper() {
             <div align="center">
                 <h4>  User {loggedInUserName} ({loggedInUserEmail}) is not authorized to access this application.</h4>
                 <h4>  Please check your user groups [{userGroups}].</h4>
+                <h4>  Contact {PDS_ADMIN_EMAIL} to add your user name to relevant user groups.</h4>
                 <AuthButton onClick={logout}>Logout</AuthButton>
 
             </div>
