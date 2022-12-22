@@ -6,4 +6,5 @@ window['getGlobalConfig'] = {
     oauth_provider_url: 'https://<COGNITO DOMAIN NAME>.auth.us-west-2.amazoncognito.com/oauth2',
     app_viewer_group_name: 'PDS_Viewer',
     app_admin_group_name: 'PDS_Admin',
+    pds_admin_email: '<PDS ADMIN EMAIL>'
 }
