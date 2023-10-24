@@ -19,6 +19,10 @@ jobs:
         node-version: [14.x, 16.x, 18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
+      fail-fast: false
+      # When set to true, causes all other jobs in this matrix to terminate if any one job fails. Reference:
+      # https://stackoverflow.com/questions/75793764/node-ci-being-cancelled-with-no-reason-github-actions
+
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
