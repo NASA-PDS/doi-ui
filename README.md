@@ -5,7 +5,7 @@ An example for the reservation excel input file can be found at https://pds-engi
 
 ## Pre-requisites
 
-Install the pds-doi-service:
+### Install the pds-doi-service:
 
 ```
 pip install pds-doi-service
@@ -13,6 +13,21 @@ pds-doi-api
 ```
 
 See https://nasa-pds.github.io/doi-service/ for details
+
+
+### Node Installation
+
+The doi-ui app relies on a specific version of [NodeJS](https://nodejs.org/en). Ensure the NodeJS version specified in the `.nvmrc` file, located at the root of the repository is installed.
+
+We recommend the use of the [Node Version Manager (nvm)](https://github.com/nvm-sh/nvm) to easily facilitate the installation and switching between node versions. After following the `nvm` installation instructions and navigating to the location this repo is cloned on your machine, you can use the following commands to manage the version of node used for this project:
+
+#### Install the node version specified in .nvmrc if it isn't already installed
+
+    nvm install
+
+#### Switch to the node version specified in .nvmrc for all commands in the current shell window
+
+    nvm use
 
 ## To Run And Build Locally
 
