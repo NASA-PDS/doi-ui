@@ -17,7 +17,7 @@ See https://nasa-pds.github.io/doi-service/ for details
 
 ### Node Installation
 
-The doi-ui app relies on the installation of a specific version of NodeJS. Ensure that the NodeJS version specified in the `.nvmrc` file at the root of the repository is installated on your machine.
+The doi-ui app relies on a specific version of [NodeJS](https://nodejs.org/en). Ensure the NodeJS version specified in the `.nvmrc` file, located at the root of the repository is installed.
 
 We recommend the use of the [Node Version Manager (nvm)](https://github.com/nvm-sh/nvm) to easily facilitate the installation and switching between node versions. After following the `nvm` installation instructions and navigating to the location this repo is cloned on your machine, you can use the following commands to manage the version of node used for this project:
 
