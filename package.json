@@ -10,7 +10,7 @@
     "@material-ui/lab": "^4.0.0-alpha.61",
     "@nasapds/pds-wds-react": "0.2.0",
     "@reduxjs/toolkit": "^1.9.7",
-    "@testing-library/jest-dom": "^5.12",
+    "@testing-library/jest-dom": "^6.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^13.1.9",
     "jwt-decode": "^3.1.2",
