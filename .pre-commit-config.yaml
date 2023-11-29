@@ -27,6 +27,7 @@ repos:
               - '.secrets.baseline'
               - --exclude-files '\.secrets..*'
               - --exclude-files '\.git.*'
+              - --exclude-files '\.pre-commit-config\.yaml'
               - --exclude-files 'node_modules'
               - --exclude-files 'build'
 
